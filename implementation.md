@@ -45,6 +45,8 @@ This plan is optimized for small, fast agentic coding models. Each step includes
 - Secrets accidentally appearing in logs or report metadata.
 - Evidence bundle output path errors or partial bundle generation.
 - Captured stdout/stderr too large or contains sensitive data (must be opt-in and truncated).
+- Aggregation across multiple runs: mismatched schema versions, missing or duplicate run IDs, partial runs, and mixed aggregation policies.
+- Coverage append with multiple runs: stale `.coverage` data, missing contexts from earlier runs, and inconsistent run groups.
 
 ---
 
@@ -122,6 +124,7 @@ This plan is optimized for small, fast agentic coding models. Each step includes
 - Include optional captured output fields for failed tests (stdout/stderr, truncated).
   - Field names: `pytest_invocation` (sanitized args list) and `pytest_config_summary` (sanitized ini options).
   - Per-test fields: `llm_opt_out`, `llm_context_override`, `captured_stdout`, `captured_stderr`.
+- Include aggregation metadata: `run_id`, `run_group_id`, `is_aggregated`, `aggregation_policy`, `run_count`, and `source_reports` (path + sha256).
 
 **Files to touch**:
 - `src/pytest_llm_report/models.py`
@@ -143,6 +146,7 @@ This plan is optimized for small, fast agentic coding models. Each step includes
 - Sanitized pytest invocation/config summary fields are present with redaction rules documented.
 - LLM control fields are present and default to false or null.
 - Captured output fields are present only when enabled and truncated deterministically.
+- Aggregation fields are present and defaulted when aggregation is disabled.
 
 **Agent prompt**:
 "Read `AGENTS.md` and draft dataclasses in `src/pytest_llm_report/models.py` for report outputs. Include RunMeta, TestCaseResult, CoverageEntry, LlmAnnotation, ReportWarning, ArtifactEntry, and ReportRoot with `schema_version`. Keep serialization deterministic. Add a JSON schema file at `schemas/report.schema.json` and sync fields with `docs/report-format.md`. Add unit tests in `tests/test_models.py` verifying required fields and schema_version."
@@ -171,6 +175,9 @@ This plan is optimized for small, fast agentic coding models. Each step includes
   - Output capture: `capture_failed_output`, `capture_output_max_chars`.
   - Invocation summary: `include_pytest_invocation`, `invocation_redact_patterns`.
   - Collect-only behavior: `report_collect_only`.
+- Add aggregation controls:
+  - CLI: `--llm-aggregate-dir`, `--llm-aggregate-policy`, `--llm-aggregate-run-id`, `--llm-aggregate-group-id`.
+  - Config: `aggregate_dir`, `aggregate_policy`, `aggregate_run_id`, `aggregate_group_id`, `aggregate_include_history`.
 - "Complete" is a maximum safe mode and still must not send the entire repo; it must respect size caps and file filters.
 - For cloud providers, prefer API keys from environment variables or config files, not CLI flags, to avoid accidental logging.
 - Ensure the report generation runs only on the controller process under xdist to avoid duplicates.
@@ -191,6 +198,7 @@ This plan is optimized for small, fast agentic coding models. Each step includes
 - LLM execution and cache controls are validated and documented.
 - Collect-only mode produces an inventory report when enabled.
 - Evidence bundle output is validated and can be disabled independently.
+- Aggregation options are validated; invalid policies or missing aggregate_dir produce clear errors.
 
 **Agent prompt**:
 "Add pytest plugin entry point in `pyproject.toml` under `pytest11`. Implement `pytest_addoption` and config parsing in `options.py`. Add LLM context options, parameter-value controls, execution limits, cache TTL, and LLM marker options with validation. Add options for collect-only report generation, optional dependency snapshot output, evidence bundle output, output capture for failed tests, and sanitized pytest invocation summary. Keep defaults provider=none and context_mode=minimal. Add tests in `tests/test_options.py` for CLI vs pyproject precedence and invalid values. Ensure `requires-python` and classifiers include 3.11, 3.12, 3.13. Add a guard to skip report generation on xdist workers."
@@ -286,6 +294,7 @@ This plan is optimized for small, fast agentic coding models. Each step includes
 - Write reports atomically to avoid partial outputs on crash.
 - Include sanitized pytest invocation and config summary (redacted) in run metadata.
 - If evidence bundle output is configured, package JSON/HTML/PDF/manifest into a zip with hashes.
+- If aggregation is enabled, read prior run reports from aggregate_dir, merge results per policy, and emit aggregated JSON/HTML.
 
 **Files to touch**:
 - `src/pytest_llm_report/report_writer.py`
@@ -302,9 +311,10 @@ This plan is optimized for small, fast agentic coding models. Each step includes
 - Collection errors appear in JSON and warnings when present.
 - Reports are written atomically (temp file then rename) where possible.
 - Evidence bundle is produced when enabled and includes a manifest with hashes.
+- Aggregated report includes run_count, source_reports, and policy info.
 
 **Agent prompt**:
-"Implement JSON report assembly in `report_writer.py` that merges collector and coverage data into `ReportRoot`. Add run metadata (UTC timestamps, pytest version, plugin version, OS, Python), run status fields (exit code, interrupted, collect-only, collected/selected/deselected counts, rerun counts), sanitized pytest invocation/config summary, and warnings list. Compute and include a sha256 hash of the JSON payload. Ensure output paths are created if missing and write failures become warnings. Sort test rows deterministically by nodeid. If evidence bundle output is configured, package JSON/HTML/PDF/manifest into a zip. Write tests to confirm deterministic output, collect-only behavior, evidence bundle generation, and error handling."
+"Implement JSON report assembly in `report_writer.py` that merges collector and coverage data into `ReportRoot`. Add run metadata (UTC timestamps, pytest version, plugin version, OS, Python), run status fields (exit code, interrupted, collect-only, collected/selected/deselected counts, rerun counts), sanitized pytest invocation/config summary, and warnings list. Compute and include a sha256 hash of the JSON payload. Ensure output paths are created if missing and write failures become warnings. Sort test rows deterministically by nodeid. If evidence bundle output is configured, package JSON/HTML/PDF/manifest into a zip. If aggregation is enabled, read prior run JSON reports from `aggregate_dir` and merge per `aggregate_policy`, then emit aggregated JSON/HTML with source report hashes. Write tests to confirm deterministic output, collect-only behavior, aggregation, evidence bundle generation, and error handling."
 
 ---
 
@@ -320,6 +330,7 @@ This plan is optimized for small, fast agentic coding models. Each step includes
 - Display run status metadata (exit code, collect-only flag, deselected counts, rerun counts) in the summary.
 - Display collection errors or warnings prominently when present.
 - Display captured stdout/stderr for failed tests when enabled (collapsed by default).
+- When aggregation is enabled, show run_count, policy, and source report list in the summary.
 
 **Files to touch**:
 - `src/pytest_llm_report/render.py`
@@ -336,6 +347,7 @@ This plan is optimized for small, fast agentic coding models. Each step includes
 - Summary section shows collected/selected/deselected counts and run status.
 - Collection errors are visible in HTML when present.
 - Captured output is visible only when enabled and is truncated in UI.
+- Aggregation summary is visible when enabled.
 
 **Agent prompt**:
 "Build `render.py` to render HTML via Jinja2 using templates under `templates/`. Output should include summary table with nodeid, status, duration, coverage list, run status metadata (exit code, collect-only flag, deselected counts, rerun counts), and collection errors. Add support for showing captured stdout/stderr for failed tests when enabled. Add JS for simple filters and default collapsing for large suites. Update golden HTML fixtures and tests in `tests/test_render.py`."
@@ -550,6 +562,7 @@ This plan is optimized for small, fast agentic coding models. Each step includes
 - Cover edge cases like setup failures, xfail, and special characters in nodeids.
 - Add scenarios for collect-only runs, deselected tests, rerun outcomes, zero collected tests, and collection errors.
 - Add scenarios for LLM opt-out markers, context override markers, and failed-test output capture.
+- Add scenarios for aggregation across two runs with coverage append enabled.
 
 **Files to touch**:
 - `tests/test_smoke_pytester.py`
@@ -561,9 +574,10 @@ This plan is optimized for small, fast agentic coding models. Each step includes
 - Golden files only change when output intentionally changes.
 - Collect-only, deselection, rerun, zero-test, and collection-error scenarios are covered with stable outputs.
 - Marker behavior and output capture are covered with stable outputs.
+- Aggregation scenario produces a stable aggregated JSON and HTML report.
 
 **Agent prompt**:
-"Add or update pytester tests to run a sample project that generates HTML and JSON reports. Compare outputs to golden fixtures. Ensure the tests cover run-phase contexts, omit tests from coverage by default, include at least one test with special characters in the nodeid, and add scenarios for collect-only, deselected tests, rerun outcomes, zero collected tests, collection errors, LLM opt-out and context override markers, and failed-test output capture."
+"Add or update pytester tests to run a sample project that generates HTML and JSON reports. Compare outputs to golden fixtures. Ensure the tests cover run-phase contexts, omit tests from coverage by default, include at least one test with special characters in the nodeid, and add scenarios for collect-only, deselected tests, rerun outcomes, zero collected tests, collection errors, LLM opt-out and context override markers, failed-test output capture, and aggregation across two runs with coverage append."
 
 ---
 
@@ -583,6 +597,7 @@ This plan is optimized for small, fast agentic coding models. Each step includes
 - Document collection errors and early-stop behavior, including how they appear in JSON and HTML.
 - Document LLM cost controls (max tests, concurrency, timeouts) and cache TTL behavior.
 - Document LLM opt-out and context override markers, evidence bundle packaging, sanitized pytest invocation summary, and failed-test output capture.
+- Document aggregation workflows for multiple runs with coverage append, including policies and source report handling.
 
 **Files to touch**:
 - `docs/report-format.md`
@@ -607,6 +622,7 @@ This plan is optimized for small, fast agentic coding models. Each step includes
 - Collect-only, rerun, deselection, and dependency snapshot behaviors are documented with examples.
 - Collection errors and early-stop behavior are documented with examples.
 - LLM marker behavior, evidence bundle packaging, and output capture are documented with examples.
+- Aggregation workflow is documented with examples and CLI/config snippets.
 
 **Documentation deliverables checklist**:
 - Config reference: every option with default, type, and example; cite pytest and pytest-cov for required flags.
@@ -618,6 +634,7 @@ This plan is optimized for small, fast agentic coding models. Each step includes
 - Supported versions: Python 3.11-3.13 and pytest/pytest-cov minimums.
 - Run status metadata, collect-only, rerun outcomes, and dependency snapshot options.
 - LLM markers, evidence bundle packaging, sanitized invocation summary, and output capture.
+- Aggregation options and policies.
 
 **Citation source list (embed as links in docs)**:
 - pytest docs: https://docs.pytest.org/en/stable/
@@ -636,7 +653,7 @@ This plan is optimized for small, fast agentic coding models. Each step includes
 - LiteLLM providers/auth: https://docs.litellm.ai/docs/providers
 
 **Agent prompt**:
-"Update docs to include compliance-focused usage guidance. Add or update an example project that uses coverage contexts, sets provider=none, and injects metadata. Document LLM context modes and safety boundaries, LLM opt-out and context override markers, evidence bundle packaging, sanitized pytest invocation summary, and failed-test output capture. Add a supported Python versions section (3.11, 3.12, 3.13). Add a parameterization section that explains ids vs raw values and privacy defaults. Create a comprehensive config reference with defaults and examples, and cite upstream docs for pytest, pytest-cov, coverage.py, and each LLM provider. Add usage scenarios (minimal, local LLM, cloud LLM, CI artifacts, compliance packaging). Include detailed LLM setup instructions with subscription steps and API authentication (env vars), with citations. Keep the docs concise and avoid new dependencies."
+"Update docs to include compliance-focused usage guidance. Add or update an example project that uses coverage contexts, sets provider=none, and injects metadata. Document LLM context modes and safety boundaries, LLM opt-out and context override markers, evidence bundle packaging, sanitized pytest invocation summary, failed-test output capture, and aggregation workflows for coverage-append runs. Add a supported Python versions section (3.11, 3.12, 3.13). Add a parameterization section that explains ids vs raw values and privacy defaults. Create a comprehensive config reference with defaults and examples, and cite upstream docs for pytest, pytest-cov, coverage.py, and each LLM provider. Add usage scenarios (minimal, local LLM, cloud LLM, CI artifacts, compliance packaging, aggregation across runs). Include detailed LLM setup instructions with subscription steps and API authentication (env vars), with citations. Keep the docs concise and avoid new dependencies."
 
 ---
 

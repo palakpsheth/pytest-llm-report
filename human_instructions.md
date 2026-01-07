@@ -57,12 +57,14 @@ Open questions or risks:
 - Schema version and run status fields present and tested.
 - Per-test rerun fields, collection error fields, and sanitized invocation fields present.
 - Schema includes `pytest_invocation` and `pytest_config_summary` field names.
+- Aggregation fields present (`run_id`, `run_group_id`, `is_aggregated`, `aggregation_policy`, `run_count`, `source_reports`).
 
 ### Step 2
 - CLI/config options include LLM limits, cache TTL, evidence bundle, output capture, and sanitized invocation.
 - Collect-only and dependency snapshot options present.
 - xdist worker guard in place; Python 3.11-3.13 metadata set.
 - Option names align with the plan (CLI `--llm-report`, `--llm-report-json`, `--llm-pdf`, `--llm-evidence-bundle`, `--llm-dependency-snapshot` and config `report_html`, `report_json`, `report_pdf`, `report_evidence_bundle`, `report_dependency_snapshot`).
+- Aggregation options present (`--llm-aggregate-dir`, `--llm-aggregate-policy`, `--llm-aggregate-run-id`, `--llm-aggregate-group-id`, and config equivalents).
 
 ### Step 3
 - Outcomes, setup/teardown failures, and parametrization recorded.
@@ -78,10 +80,12 @@ Open questions or risks:
 - JSON includes schema_version, run status, warnings, and sanitized invocation summary.
 - Deterministic ordering and atomic writes.
 - Evidence bundle generated when enabled.
+- Aggregated report generated when enabled and includes source report hashes.
 
 ### Step 6
 - HTML includes run status and collection errors.
 - Captured output shown only when enabled and truncated.
+- Aggregation summary shown when enabled.
 
 ### Step 7
 - Noop provider and schema validation; warnings for non-none providers.
@@ -111,11 +115,13 @@ Open questions or risks:
 ### Step 14
 - Pytester scenarios include collect-only, deselection, rerun, zero-test, collection errors.
 - LLM marker behavior and output capture covered.
+- Aggregation across two runs covered.
 
 ### Step 15
 - Docs include full config reference with citations.
 - Usage scenarios include compliance packaging, LLM setup, evidence bundle, output capture, and LLM markers.
 - Docs list concrete CLI/config option names and marker names.
+- Docs include aggregation workflows and policies.
 
 ### Step 16
 - CI tests and builds on Python 3.11, 3.12, 3.13.

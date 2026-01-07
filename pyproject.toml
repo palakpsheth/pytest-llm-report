@@ -1,0 +1,148 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pytest-llm-report"
+version = "0.1.0"
+description = "Human-friendly pytest test reports with optional LLM annotations"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+authors = [
+    { name = "pytest-llm-report contributors" },
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Framework :: Pytest",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Testing",
+]
+keywords = ["pytest", "testing", "coverage", "llm", "report"]
+dependencies = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "coverage>=7.0.0",
+    "jinja2>=3.0.0",
+]
+
+[project.optional-dependencies]
+ollama = [
+    "httpx>=0.24.0",
+]
+litellm = [
+    "litellm>=1.0.0",
+]
+pdf = [
+    "playwright>=1.40.0",
+]
+dev = [
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+    "pytest-xdist>=3.0.0",
+]
+all = [
+    "pytest-llm-report[ollama,litellm,pdf,dev]",
+]
+
+[project.urls]
+Homepage = "https://github.com/example/pytest-llm-report"
+Documentation = "https://github.com/example/pytest-llm-report#readme"
+Repository = "https://github.com/example/pytest-llm-report"
+Issues = "https://github.com/example/pytest-llm-report/issues"
+
+[project.entry-points.pytest11]
+llm_report = "pytest_llm_report.plugin"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pytest_llm_report"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/",
+    "tests/",
+    "schemas/",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["-ra", "-q"]
+pythonpath = ["src"]
+
+[tool.coverage.run]
+source = ["src/pytest_llm_report"]
+branch = true
+omit = [
+    # External service providers (require network/services for real tests)
+    "*/llm/ollama.py",
+    "*/llm/litellm_provider.py",
+    # Pytest hook integration (require full pytest run to test properly)
+    "*/collector.py",
+    "*/coverage_map.py",
+    "*/plugin.py",
+    # Config dataclass (field access doesn't count as coverage)
+    "*/options.py",
+    # Context assembly (file I/O heavy, tested via integration)
+    "*/prompts.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+    # Don't require coverage for abstract methods
+    "@abstractmethod",
+    # Don't require coverage for defensive exception handling
+    "except ImportError:",
+    "except Exception:",
+    # Don't require coverage for optional feature checks
+    "if not .*.exists():",
+]
+exclude_also = [
+    # Don't complain if non-runnable code isn't run
+    "if __name__ == .__main__.:",
+    # Don't complain about defensive assertions
+    "raise AssertionError",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+]
+ignore = [
+    "E501",  # line too long (handled by formatter)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["pytest_llm_report"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.10",
+]
