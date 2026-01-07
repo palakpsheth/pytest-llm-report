@@ -100,6 +100,13 @@ class TestCollector:
                 result.outcome = "error"
                 result.phase = "setup"
                 result.error_message = self._extract_error(report)
+            elif report.skipped:
+                # Skip during setup (e.g., @pytest.mark.skip)
+                if hasattr(report, "wasxfail"):
+                    result.outcome = "xfailed"
+                else:
+                    result.outcome = "skipped"
+                    result.error_message = self._extract_skip_reason(report)
         elif report.when == "call":
             result.duration = report.duration
             result.phase = "call"

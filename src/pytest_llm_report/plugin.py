@@ -236,6 +236,87 @@ def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:
     # Get config (already validated)
     cfg: Config = session.config._llm_report_config
 
-    # Report generation will be implemented in later steps
-    # For now, this is a placeholder
-    pass
+    # Get collector if it was set up
+    collector = getattr(session.config, "_llm_report_collector", None)
+    if collector is None:
+        # Collector wasn't set up, create one with empty results
+        from pytest_llm_report.collector import TestCollector
+        collector = TestCollector(cfg)
+
+    # Get results
+    tests = collector.get_results()
+    collection_errors = collector.get_collection_errors()
+
+    # Get start/end times from session
+    from datetime import datetime, timezone
+    start_time = getattr(session, "_llm_report_start_time", None) or datetime.now(timezone.utc)
+    end_time = datetime.now(timezone.utc)
+
+    # Write report
+    from pytest_llm_report.report_writer import ReportWriter
+    writer = ReportWriter(cfg)
+    writer.write_report(
+        tests=tests,
+        collection_errors=collection_errors,
+        exit_code=exitstatus,
+        start_time=start_time,
+        end_time=end_time,
+    )
+
+
+@pytest.hookimpl(hookwrapper=True)
+def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo) -> None:
+    """Wrapper around test report creation to capture config.
+
+    Args:
+        item: Test item.
+        call: Call info.
+    """
+    outcome = yield
+    report = outcome.get_result()
+
+    # Skip if not enabled
+    if not getattr(item.config, "_llm_report_enabled", False):
+        return
+
+    # Get collector
+    collector = getattr(item.config, "_llm_report_collector", None)
+    if collector:
+        collector.handle_runtest_logreport(report, item)
+
+
+def pytest_collection_finish(session: pytest.Session) -> None:
+    """Handle collection finish.
+
+    Args:
+        session: pytest session.
+    """
+    # Skip if not enabled
+    if not getattr(session.config, "_llm_report_enabled", False):
+        return
+
+    # Get collector
+    collector = getattr(session.config, "_llm_report_collector", None)
+    if collector:
+        collector.handle_collection_finish(session.items)
+
+
+@pytest.hookimpl(tryfirst=True)
+def pytest_sessionstart(session: pytest.Session) -> None:
+    """Initialize collector at session start.
+
+    Args:
+        session: pytest session.
+    """
+    # Skip if not enabled
+    if not getattr(session.config, "_llm_report_enabled", False):
+        return
+
+    # Record start time
+    from datetime import datetime, timezone
+    session._llm_report_start_time = datetime.now(timezone.utc)
+
+    # Create collector
+    from pytest_llm_report.collector import TestCollector
+    cfg: Config = session.config._llm_report_config
+    session.config._llm_report_collector = TestCollector(cfg)
