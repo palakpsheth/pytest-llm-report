@@ -1,0 +1,34 @@
+# pytest-llm-report Documentation
+
+Welcome to pytest-llm-report, a pytest plugin for generating human-friendly test reports with optional LLM annotations.
+
+## Quick Start
+
+Install the plugin:
+```bash
+pip install pytest-llm-report
+```
+
+Run tests with a report:
+```bash
+pytest --cov=my_pkg --cov-context=test --llm-report=report.html
+```
+
+## Features
+
+- **HTML and JSON reports** with per-test coverage
+- **LLM annotations** describing what each test verifies
+- **Local or cloud LLM** support (Ollama, OpenAI, Anthropic)
+- **Privacy-first** - LLM is disabled by default
+- **CI/CD ready** - artifacts for pipelines
+
+## Documentation
+
+- [Getting Started](getting-started.md)
+- [Configuration](configuration.md)
+- [LLM Providers](providers.md)
+- [Coverage Setup](coverage.md)
+- [Report Format](report-format.md)
+- [Privacy](privacy.md)
+- [Security](security.md)
+- [Troubleshooting](troubleshooting.md)
