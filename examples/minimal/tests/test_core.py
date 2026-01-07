@@ -1,7 +1,6 @@
 """Tests for core module."""
 
 import pytest
-
 from example_pkg.core import add, divide, multiply, subtract
 
 

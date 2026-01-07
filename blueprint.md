@@ -7,7 +7,7 @@ This document consolidates everything we outlined:
 3. Example end-user usage scenarios with **uv** and **pyproject.toml**
 4. Public publishing steps (manual + automated via GitHub Actions)
 
-> Note on naming: the standard Python packaging/config file is **`pyproject.toml`** (not `project.toml`).  
+> Note on naming: the standard Python packaging/config file is **`pyproject.toml`** (not `project.toml`).
 > In the examples below, configuration lives in `pyproject.toml`.
 
 ---
@@ -211,16 +211,16 @@ To minimize repeated code, the design leans on:
 
 #### `.github/workflows/`
 
-- `ci.yml` — lint + unit tests + integration tests (pytester-based) on PRs/pushes  
-- `docs.yml` — build docs (MkDocs) and optionally deploy (GitHub Pages)  
-- `release.yml` — build wheel/sdist and publish to PyPI on tags  
-- `provenance.yml` — optional supply-chain provenance/attestations  
-- `codeql.yml` — CodeQL static analysis → SARIF in GitHub Security tab  
-- `snyk.yml` — Snyk dependency scan and/or SAST (skip fork PRs if using secrets)  
-- `dependency-review.yml` — GitHub dependency review action on PRs  
-- `ossf-scorecard.yml` — OSSF Scorecard posture checks  
-- `trivy.yml` — optional container/IaC scanning (remove if you don’t ship images)  
-- `pip-audit.yml` — tokenless Python dependency vuln scan  
+- `ci.yml` — lint + unit tests + integration tests (pytester-based) on PRs/pushes
+- `docs.yml` — build docs (MkDocs) and optionally deploy (GitHub Pages)
+- `release.yml` — build wheel/sdist and publish to PyPI on tags
+- `provenance.yml` — optional supply-chain provenance/attestations
+- `codeql.yml` — CodeQL static analysis → SARIF in GitHub Security tab
+- `snyk.yml` — Snyk dependency scan and/or SAST (skip fork PRs if using secrets)
+- `dependency-review.yml` — GitHub dependency review action on PRs
+- `ossf-scorecard.yml` — OSSF Scorecard posture checks
+- `trivy.yml` — optional container/IaC scanning (remove if you don’t ship images)
+- `pip-audit.yml` — tokenless Python dependency vuln scan
 - `secret-scan.yml` — optional secret scanning (gitleaks/trufflehog style)
 
 #### `.github/codeql/`

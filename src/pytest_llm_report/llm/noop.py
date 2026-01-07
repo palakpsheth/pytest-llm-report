@@ -23,7 +23,7 @@ class NoopProvider(LlmProvider):
     Used when LLM features are disabled.
     """
 
-    def __init__(self, config: "Config") -> None:
+    def __init__(self, config: Config) -> None:
         """Initialize the no-op provider.
 
         Args:
@@ -33,7 +33,7 @@ class NoopProvider(LlmProvider):
 
     def annotate(
         self,
-        test: "TestCaseResult",
+        test: TestCaseResult,
         test_source: str,
         context_files: dict[str, str] | None = None,
     ) -> LlmAnnotation:

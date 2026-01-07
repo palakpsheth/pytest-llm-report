@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: MIT
 """Tests for pytest_llm_report.report_writer module."""
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
-from pytest_llm_report.models import CoverageEntry, LlmAnnotation, TestCaseResult
+from pytest_llm_report.models import CoverageEntry, TestCaseResult
 from pytest_llm_report.options import Config
 from pytest_llm_report.report_writer import ReportWriter, compute_sha256
 
@@ -61,8 +61,8 @@ class TestReportWriter:
         writer = ReportWriter(config)
 
         tests = [TestCaseResult(nodeid="test1", outcome="passed")]
-        start = datetime(2024, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
-        end = datetime(2024, 1, 1, 12, 1, 0, tzinfo=timezone.utc)
+        start = datetime(2024, 1, 1, 12, 0, 0, tzinfo=UTC)
+        end = datetime(2024, 1, 1, 12, 1, 0, tzinfo=UTC)
 
         meta = writer._build_run_meta(
             tests, exit_code=0, start_time=start, end_time=end
@@ -116,7 +116,7 @@ class TestReportWriterWithFiles:
         writer = ReportWriter(config)
 
         tests = [TestCaseResult(nodeid="test1", outcome="passed")]
-        report = writer.write_report(tests)
+        _report = writer.write_report(tests)
 
         # File should exist
         assert (tmp_path / "report.json").exists()

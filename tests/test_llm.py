@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 """Tests for LLM provider modules."""
 
-from pytest_llm_report.llm.base import LlmProvider, get_provider
+from pytest_llm_report.llm.base import get_provider
 from pytest_llm_report.llm.noop import NoopProvider
 from pytest_llm_report.models import LlmAnnotation, TestCaseResult
 from pytest_llm_report.options import Config
@@ -50,7 +50,7 @@ class TestGetProvider:
         config = Config(provider="unknown")
         try:
             get_provider(config)
-            assert False, "Should have raised ValueError"
+            raise AssertionError("Should have raised ValueError")
         except ValueError as e:
             assert "unknown" in str(e).lower()
 

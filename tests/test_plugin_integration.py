@@ -56,7 +56,9 @@ class TestReportGeneration:
         writer = ReportWriter(config)
 
         tests = [
-            TestCaseResult(nodeid="test_a.py::test_pass", outcome="passed", duration=0.1),
+            TestCaseResult(
+                nodeid="test_a.py::test_pass", outcome="passed", duration=0.1
+            ),
             TestCaseResult(
                 nodeid="test_b.py::test_fail",
                 outcome="failed",
@@ -65,7 +67,7 @@ class TestReportGeneration:
             ),
         ]
 
-        report = writer.write_report(tests)
+        _report = writer.write_report(tests)
 
         # Verify JSON
         assert (tmp_path / "report.json").exists()
@@ -80,4 +82,3 @@ class TestReportGeneration:
         html = (tmp_path / "report.html").read_text()
         assert "test_a.py" in html
         assert "test_b.py" in html
-

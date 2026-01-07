@@ -61,7 +61,7 @@ def compute_hmac(content: bytes, key: bytes) -> str:
     return hmac.new(key, content, hashlib.sha256).hexdigest()
 
 
-def load_hmac_key(config: "Config") -> bytes | None:
+def load_hmac_key(config: Config) -> bytes | None:
     """Load HMAC key from config.
 
     Args:
@@ -83,7 +83,7 @@ def load_hmac_key(config: "Config") -> bytes | None:
         return None
 
 
-def compute_config_hash(config: "Config") -> str:
+def compute_config_hash(config: Config) -> str:
     """Compute a hash of the config for reproducibility.
 
     Args:

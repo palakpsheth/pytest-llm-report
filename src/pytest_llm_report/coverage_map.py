@@ -13,7 +13,6 @@ Component Contract:
 from __future__ import annotations
 
 import glob
-import os
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -36,7 +35,7 @@ class CoverageMapper:
         warnings: Warnings generated during mapping.
     """
 
-    def __init__(self, config: "Config") -> None:
+    def __init__(self, config: Config) -> None:
         """Initialize the coverage mapper.
 
         Args:
@@ -57,7 +56,7 @@ class CoverageMapper:
 
         return self._extract_contexts(coverage_data)
 
-    def _load_coverage_data(self) -> "CoverageData | None":
+    def _load_coverage_data(self) -> CoverageData | None:
         """Load coverage data from .coverage file(s).
 
         Handles xdist/parallel mode by combining .coverage.* files.
@@ -108,7 +107,7 @@ class CoverageMapper:
             )
             return None
 
-    def _extract_contexts(self, data: "CoverageData") -> dict[str, list[CoverageEntry]]:
+    def _extract_contexts(self, data: CoverageData) -> dict[str, list[CoverageEntry]]:
         """Extract per-test coverage from coverage data.
 
         Args:

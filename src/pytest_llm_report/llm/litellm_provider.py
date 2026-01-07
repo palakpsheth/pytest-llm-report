@@ -35,7 +35,7 @@ Respond ONLY with valid JSON in this exact format:
 class LiteLLMProvider(LlmProvider):
     """LiteLLM provider for multiple LLM backends."""
 
-    def __init__(self, config: "Config") -> None:
+    def __init__(self, config: Config) -> None:
         """Initialize the LiteLLM provider.
 
         Args:
@@ -46,7 +46,7 @@ class LiteLLMProvider(LlmProvider):
 
     def annotate(
         self,
-        test: "TestCaseResult",
+        test: TestCaseResult,
         test_source: str,
         context_files: dict[str, str] | None = None,
     ) -> LlmAnnotation:
@@ -107,7 +107,7 @@ class LiteLLMProvider(LlmProvider):
 
     def _build_prompt(
         self,
-        test: "TestCaseResult",
+        test: TestCaseResult,
         test_source: str,
         context_files: dict[str, str] | None = None,
     ) -> str:

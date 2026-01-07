@@ -20,7 +20,7 @@ class AnnotationSchema:
     confidence: float | None = None
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "AnnotationSchema":
+    def from_dict(cls, data: dict[str, Any]) -> AnnotationSchema:
         """Create from dictionary.
 
         Args:

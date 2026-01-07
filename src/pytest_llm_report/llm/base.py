@@ -26,7 +26,7 @@ class LlmProvider(ABC):
     All LLM providers must implement this interface.
     """
 
-    def __init__(self, config: "Config") -> None:
+    def __init__(self, config: Config) -> None:
         """Initialize the provider.
 
         Args:
@@ -37,10 +37,10 @@ class LlmProvider(ABC):
     @abstractmethod
     def annotate(
         self,
-        test: "TestCaseResult",
+        test: TestCaseResult,
         test_source: str,
         context_files: dict[str, str] | None = None,
-    ) -> "LlmAnnotation":
+    ) -> LlmAnnotation:
         """Generate an LLM annotation for a test.
 
         Args:
@@ -71,7 +71,7 @@ class LlmProvider(ABC):
         return self.config.model or ""
 
 
-def get_provider(config: "Config") -> LlmProvider:
+def get_provider(config: Config) -> LlmProvider:
     """Get the appropriate LLM provider for the config.
 
     Args:

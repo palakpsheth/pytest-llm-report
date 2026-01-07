@@ -124,9 +124,15 @@ class TestFullPipeline:
         """Full pipeline generates valid JSON report."""
         # Create test results
         tests = [
-            TestCaseResult(nodeid="tests/test_a.py::test_one", outcome="passed", duration=0.1),
-            TestCaseResult(nodeid="tests/test_a.py::test_two", outcome="failed", duration=0.2),
-            TestCaseResult(nodeid="tests/test_b.py::test_skip", outcome="skipped", duration=0.0),
+            TestCaseResult(
+                nodeid="tests/test_a.py::test_one", outcome="passed", duration=0.1
+            ),
+            TestCaseResult(
+                nodeid="tests/test_a.py::test_two", outcome="failed", duration=0.2
+            ),
+            TestCaseResult(
+                nodeid="tests/test_b.py::test_skip", outcome="skipped", duration=0.0
+            ),
         ]
 
         # Configure report writer
@@ -137,7 +143,7 @@ class TestFullPipeline:
         writer = ReportWriter(config)
 
         # Generate report
-        report = writer.write_report(tests)
+        writer.write_report(tests)
 
         # Verify JSON output
         json_path = tmp_path / "report.json"

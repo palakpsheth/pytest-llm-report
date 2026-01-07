@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: MIT
 """Tests for util/fs module."""
 
-import os
 
 from pytest_llm_report.util.fs import (
     is_python_file,

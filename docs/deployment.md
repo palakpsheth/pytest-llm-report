@@ -89,19 +89,19 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.11", "3.12", "3.13"]
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Install uv
         uses: astral-sh/setup-uv@v4
-      
+
       - name: Set up Python ${{ matrix.python-version }}
         run: uv python install ${{ matrix.python-version }}
-      
+
       - name: Install dependencies
         run: uv sync --all-extras
-      
+
       - name: Run tests
         run: |
           uv run pytest \
@@ -109,7 +109,7 @@ jobs:
             --cov-context=test \
             --cov-report=xml \
             --cov-fail-under=90
-      
+
       - name: Upload coverage
         uses: codecov/codecov-action@v4
 
@@ -126,14 +126,14 @@ jobs:
     needs: [test, lint]
     runs-on: ubuntu-latest
     if: github.event_name == 'release'
-    
+
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v4
-      
+
       - name: Build
         run: uv build
-      
+
       - name: Publish to PyPI
         run: uv publish
         env:

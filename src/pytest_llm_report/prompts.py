@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 class ContextAssembler:
     """Assembles context for LLM prompts."""
 
-    def __init__(self, config: "Config") -> None:
+    def __init__(self, config: Config) -> None:
         """Initialize the context assembler.
 
         Args:
@@ -34,7 +34,7 @@ class ContextAssembler:
 
     def assemble(
         self,
-        test: "TestCaseResult",
+        test: TestCaseResult,
         repo_root: Path | None = None,
     ) -> tuple[str, dict[str, str]]:
         """Assemble context for a test.
@@ -116,7 +116,7 @@ class ContextAssembler:
         return "\n".join(func_lines)
 
     def _get_balanced_context(
-        self, test: "TestCaseResult", repo_root: Path
+        self, test: TestCaseResult, repo_root: Path
     ) -> dict[str, str]:
         """Get balanced context from coverage.
 
@@ -163,7 +163,7 @@ class ContextAssembler:
         return context
 
     def _get_complete_context(
-        self, test: "TestCaseResult", repo_root: Path
+        self, test: TestCaseResult, repo_root: Path
     ) -> dict[str, str]:
         """Get complete context from coverage.
 

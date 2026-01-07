@@ -13,6 +13,7 @@ Component Contract:
 from __future__ import annotations
 
 import warnings
+from datetime import UTC
 
 import pytest
 
@@ -241,6 +242,7 @@ def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:
     if collector is None:
         # Collector wasn't set up, create one with empty results
         from pytest_llm_report.collector import TestCollector
+
         collector = TestCollector(cfg)
 
     # Get results
@@ -248,12 +250,14 @@ def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:
     collection_errors = collector.get_collection_errors()
 
     # Get start/end times from session
-    from datetime import datetime, timezone
-    start_time = getattr(session, "_llm_report_start_time", None) or datetime.now(timezone.utc)
-    end_time = datetime.now(timezone.utc)
+    from datetime import datetime
+
+    start_time = getattr(session, "_llm_report_start_time", None) or datetime.now(UTC)
+    end_time = datetime.now(UTC)
 
     # Write report
     from pytest_llm_report.report_writer import ReportWriter
+
     writer = ReportWriter(cfg)
     writer.write_report(
         tests=tests,
@@ -313,10 +317,12 @@ def pytest_sessionstart(session: pytest.Session) -> None:
         return
 
     # Record start time
-    from datetime import datetime, timezone
-    session._llm_report_start_time = datetime.now(timezone.utc)
+    from datetime import datetime
+
+    session._llm_report_start_time = datetime.now(UTC)
 
     # Create collector
     from pytest_llm_report.collector import TestCollector
+
     cfg: Config = session.config._llm_report_config
     session.config._llm_report_collector = TestCollector(cfg)

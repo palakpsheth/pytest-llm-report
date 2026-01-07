@@ -38,7 +38,7 @@ class OllamaProvider(LlmProvider):
     Connects to a local or remote Ollama server.
     """
 
-    def __init__(self, config: "Config") -> None:
+    def __init__(self, config: Config) -> None:
         """Initialize the Ollama provider.
 
         Args:
@@ -49,7 +49,7 @@ class OllamaProvider(LlmProvider):
 
     def annotate(
         self,
-        test: "TestCaseResult",
+        test: TestCaseResult,
         test_source: str,
         context_files: dict[str, str] | None = None,
     ) -> LlmAnnotation:
@@ -64,7 +64,7 @@ class OllamaProvider(LlmProvider):
             LlmAnnotation with parsed response.
         """
         try:
-            import httpx
+            import httpx  # noqa: F401
         except ImportError:
             return LlmAnnotation(
                 error="httpx not installed. Install with: pip install httpx"
@@ -102,7 +102,7 @@ class OllamaProvider(LlmProvider):
 
     def _build_prompt(
         self,
-        test: "TestCaseResult",
+        test: TestCaseResult,
         test_source: str,
         context_files: dict[str, str] | None = None,
     ) -> str:

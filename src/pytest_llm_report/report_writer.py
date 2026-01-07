@@ -19,7 +19,7 @@ import platform
 import subprocess
 import sys
 import tempfile
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -83,7 +83,7 @@ class ReportWriter:
         warnings: Warnings generated during report assembly.
     """
 
-    def __init__(self, config: "Config") -> None:
+    def __init__(self, config: Config) -> None:
         """Initialize the report writer.
 
         Args:
@@ -95,9 +95,9 @@ class ReportWriter:
 
     def write_report(
         self,
-        tests: list["TestCaseResult"],
+        tests: list[TestCaseResult],
         coverage: dict[str, list] | None = None,
-        collection_errors: list["CollectionError"] | None = None,
+        collection_errors: list[CollectionError] | None = None,
         exit_code: int = 0,
         start_time: datetime | None = None,
         end_time: datetime | None = None,
@@ -149,7 +149,7 @@ class ReportWriter:
 
     def _build_run_meta(
         self,
-        tests: list["TestCaseResult"],
+        tests: list[TestCaseResult],
         exit_code: int,
         start_time: datetime | None,
         end_time: datetime | None,
@@ -167,7 +167,7 @@ class ReportWriter:
         """
         import pytest
 
-        now = datetime.now(timezone.utc)
+        now = datetime.now(UTC)
         start = start_time or now
         end = end_time or now
         duration = (end - start).total_seconds()
@@ -191,7 +191,7 @@ class ReportWriter:
             run_group_id=self.config.aggregate_group_id,
         )
 
-    def _build_summary(self, tests: list["TestCaseResult"]) -> Summary:
+    def _build_summary(self, tests: list[TestCaseResult]) -> Summary:
         """Build summary statistics.
 
         Args:

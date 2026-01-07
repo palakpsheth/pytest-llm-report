@@ -6,7 +6,7 @@ Tests validate schema normalization and noop behavior.
 
 from pytest_llm_report.llm.base import LlmProvider, get_provider
 from pytest_llm_report.llm.noop import NoopProvider
-from pytest_llm_report.llm.schemas import AnnotationSchema, ANNOTATION_JSON_SCHEMA
+from pytest_llm_report.llm.schemas import ANNOTATION_JSON_SCHEMA, AnnotationSchema
 from pytest_llm_report.options import Config
 
 
@@ -72,6 +72,7 @@ class TestNoopProvider:
     def test_noop_returns_empty_annotation(self):
         """NoopProvider returns empty annotation."""
         from pytest_llm_report.models import TestCaseResult
+
         config = Config()
         provider = NoopProvider(config)
         test = TestCaseResult(nodeid="test_nodeid", outcome="passed")
@@ -108,6 +109,7 @@ class TestProviderContract:
     def test_annotate_returns_annotation(self):
         """Annotate returns LlmAnnotation-like object."""
         from pytest_llm_report.models import TestCaseResult
+
         config = Config()
         provider = NoopProvider(config)
         test = TestCaseResult(nodeid="test::nodeid", outcome="passed")
@@ -121,6 +123,7 @@ class TestProviderContract:
     def test_provider_handles_empty_code(self):
         """Provider handles empty code gracefully."""
         from pytest_llm_report.models import TestCaseResult
+
         config = Config()
         provider = NoopProvider(config)
         test = TestCaseResult(nodeid="test::nodeid", outcome="passed")
@@ -130,6 +133,7 @@ class TestProviderContract:
     def test_provider_handles_none_context(self):
         """Provider handles None context gracefully."""
         from pytest_llm_report.models import TestCaseResult
+
         config = Config()
         provider = NoopProvider(config)
         test = TestCaseResult(nodeid="test::nodeid", outcome="passed")

@@ -87,7 +87,7 @@ def outcome_to_css_class(outcome: str) -> str:
     return mapping.get(outcome, "outcome-unknown")
 
 
-def render_html(report: "ReportRoot") -> str:
+def render_html(report: ReportRoot) -> str:
     """Render the HTML report.
 
     Args:
@@ -107,7 +107,7 @@ def render_html(report: "ReportRoot") -> str:
     return template.render(report=report)
 
 
-def render_fallback_html(report: "ReportRoot") -> str:
+def render_fallback_html(report: ReportRoot) -> str:
     """Render a simple fallback HTML report.
 
     Used when template files are not available.
@@ -142,7 +142,8 @@ def render_fallback_html(report: "ReportRoot") -> str:
         if test.error_message:
             error_html = f'<div class="error-message">{test.error_message}</div>'
 
-        tests_html.append(f"""
+        tests_html.append(
+            f"""
         <div class="test {css_class}">
             <span class="outcome">{test.outcome.upper()}</span>
             <span class="nodeid">{test.nodeid}</span>
@@ -151,7 +152,8 @@ def render_fallback_html(report: "ReportRoot") -> str:
             {coverage_html}
             {annotation_html}
         </div>
-        """)
+        """
+        )
 
     summary = report.summary
     return f"""<!DOCTYPE html>

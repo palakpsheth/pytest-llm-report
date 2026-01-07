@@ -14,7 +14,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import os
 import time
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -31,7 +30,7 @@ class LlmCache:
     Cache keys are based on the test nodeid and source hash.
     """
 
-    def __init__(self, config: "Config") -> None:
+    def __init__(self, config: Config) -> None:
         """Initialize the cache.
 
         Args:

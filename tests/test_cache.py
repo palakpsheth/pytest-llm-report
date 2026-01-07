@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: MIT
 """Tests for pytest_llm_report.cache module."""
 
-import time
 
 from pytest_llm_report.cache import LlmCache, hash_source
 from pytest_llm_report.models import LlmAnnotation
