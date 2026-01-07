@@ -1,0 +1,50 @@
+{# Individual test row #}
+<article class="test outcome-{{ test.outcome }}" data-outcome="{{ test.outcome }}">
+    <header class="test-header">
+        <span class="outcome-badge">{{ test.outcome | upper }}</span>
+        <code class="nodeid">{{ test.nodeid }}</code>
+        <span class="duration">{{ test.duration | duration }}</span>
+    </header>
+
+    {% if test.error_message %}
+    <div class="error-message">
+        <pre>{{ test.error_message }}</pre>
+    </div>
+    {% endif %}
+
+    {% if test.coverage %}
+    <details class="coverage">
+        <summary>Coverage ({{ test.coverage | length }} files)</summary>
+        {% include 'components/coverage_list.html.j2' %}
+    </details>
+    {% endif %}
+
+    {% if test.llm_annotation and test.llm_annotation.scenario %}
+    <div class="llm-annotation">
+        <div class="scenario">
+            <strong>Scenario:</strong> {{ test.llm_annotation.scenario }}
+        </div>
+        {% if test.llm_annotation.why_needed %}
+        <div class="why-needed">
+            <strong>Why needed:</strong> {{ test.llm_annotation.why_needed }}
+        </div>
+        {% endif %}
+        {% if test.llm_annotation.key_assertions %}
+        <div class="key-assertions">
+            <strong>Key assertions:</strong>
+            <ul>
+                {% for assertion in test.llm_annotation.key_assertions %}
+                <li>{{ assertion }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% if test.requirements %}
+    <div class="requirements">
+        {% include 'components/badges.html.j2' %}
+    </div>
+    {% endif %}
+</article>

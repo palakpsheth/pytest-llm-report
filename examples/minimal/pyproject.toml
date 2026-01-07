@@ -1,0 +1,34 @@
+[project]
+name = "example-minimal"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-llm-report>=0.1.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = [
+    "-ra",
+    "--cov=example_pkg",
+    "--cov-context=test",
+    "--cov-report=",
+    "--llm-report=reports/pytest_llm_report.html",
+    "--llm-report-json=reports/pytest_llm_report.json",
+]
+
+[tool.pytest_llm_report]
+provider = "none"
+omit_tests_from_coverage = true
+include_phase = "run"
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.html]
+show_contexts = true

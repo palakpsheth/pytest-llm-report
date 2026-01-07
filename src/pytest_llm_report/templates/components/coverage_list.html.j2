@@ -1,0 +1,9 @@
+{# Coverage list #}
+<ul class="coverage-list">
+    {% for entry in test.coverage %}
+    <li>
+        <code>{{ entry.file_path }}</code>
+        <span class="line-info">{{ entry.line_count }} lines ({{ entry.line_ranges }})</span>
+    </li>
+    {% endfor %}
+</ul>
