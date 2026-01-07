@@ -1,9 +1,9 @@
 # Development Plan Instructions
 
-Use this file to coordinate a human + agent workflow for `pytest-llm-report_implementation.md`.
+Use this file to coordinate a human + agent workflow for `implementation.md`.
 
 ## Quick start
-1. Read `AGENTS.md` and `pytest-llm-report_implementation.md`.
+1. Read `AGENTS.md` and `implementation.md`.
 2. Pick one step only and send the prompt template below.
 3. Require the handoff report and verify acceptance criteria before moving on.
 
@@ -16,7 +16,7 @@ Use this file to coordinate a human + agent workflow for `pytest-llm-report_impl
 ## Prompt templates
 Initial prompt:
 ```
-Implement STEP_X from `pytest-llm-report_implementation.md`.
+Implement STEP_X from `implementation.md`.
 Follow `AGENTS.md` exactly. Make the minimal change to satisfy the step.
 Add or update tests and report the commands you ran.
 Do not use network access. Do not include secrets or PHI.
@@ -25,7 +25,7 @@ At the end, provide: changed files, tests run, and how acceptance criteria are m
 
 Follow-up prompt:
 ```
-Provide a handoff report using the template in `pytest-llm-report_human_instructions.md`.
+Provide a handoff report using the template in `human_instructions.md`.
 If any acceptance criteria are not met, list what is missing.
 ```
 
