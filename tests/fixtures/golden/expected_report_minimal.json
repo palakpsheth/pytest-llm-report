@@ -1,0 +1,41 @@
+{
+    "schema_version": "1.0.0",
+    "run_meta": {
+        "start_time": "2026-01-07T10:00:00Z",
+        "end_time": "2026-01-07T10:00:01Z",
+        "duration": 1.234,
+        "plugin_version": "0.1.0",
+        "is_aggregated": false,
+        "run_count": 1
+    },
+    "summary": {
+        "total": 3,
+        "passed": 2,
+        "failed": 1,
+        "skipped": 0,
+        "xfailed": 0,
+        "xpassed": 0,
+        "error": 0
+    },
+    "tests": [
+        {
+            "nodeid": "tests/test_core.py::TestAdd::test_positive",
+            "outcome": "passed",
+            "duration": 0.001,
+            "phase": "call"
+        },
+        {
+            "nodeid": "tests/test_core.py::TestAdd::test_zero",
+            "outcome": "passed",
+            "duration": 0.001,
+            "phase": "call"
+        },
+        {
+            "nodeid": "tests/test_core.py::TestDivide::test_by_zero",
+            "outcome": "failed",
+            "duration": 0.002,
+            "phase": "call",
+            "error_message": "AssertionError: Expected ValueError"
+        }
+    ]
+}
