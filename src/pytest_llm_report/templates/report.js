@@ -33,14 +33,13 @@ function togglePassed(checkbox) {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
 
-            // Filter tests
+            // Filter tests by outcome class
             document.querySelectorAll('.test-row').forEach(test => {
                 if (filter === 'all') {
                     test.classList.remove('hidden');
                 } else {
-                    const isPassed = test.classList.contains('passed');
-                    const isFilter = test.classList.contains(filter);
-                    test.classList.toggle('hidden', !isFilter);
+                    const matchesFilter = test.classList.contains(filter);
+                    test.classList.toggle('hidden', !matchesFilter);
                 }
             });
         });
