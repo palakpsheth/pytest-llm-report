@@ -16,6 +16,8 @@
     --skipped-text: #854d0e;
     --xfailed-bg: #ffedd5;
     --xfailed-text: #9a3412;
+    --xpassed-bg: #f3e8ff;
+    --xpassed-text: #6b21a8;
     --error-bg: #fee2e2;
     --error-text: #991b1b;
 }
@@ -107,6 +109,14 @@ h1 {
     color: var(--skipped-text);
 }
 
+.summary-card.xfailed .count {
+    color: var(--xfailed-text);
+}
+
+.summary-card.xpassed .count {
+    color: var(--xpassed-text);
+}
+
 .summary-card.coverage .count {
     color: var(--primary-color);
 }
@@ -184,6 +194,11 @@ h1 {
 .status-xfailed {
     background: var(--xfailed-bg);
     color: var(--xfailed-text);
+}
+
+.status-xpassed {
+    background: var(--xpassed-bg);
+    color: var(--xpassed-text);
 }
 
 .status-error {

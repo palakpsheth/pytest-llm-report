@@ -183,6 +183,24 @@ class TestReportWriterWithFiles:
         assert "PASSED" in html
         assert "FAILED" in html
 
+    def test_write_html_includes_xfail_summary(self, tmp_path):
+        """Should include xfail outcomes in the HTML summary."""
+        html_path = str(tmp_path / "report.html")
+        config = Config(report_html=html_path)
+        writer = ReportWriter(config)
+
+        tests = [
+            TestCaseResult(nodeid="test_xfail", outcome="xfailed"),
+            TestCaseResult(nodeid="test_xpass", outcome="xpassed"),
+        ]
+        writer.write_report(tests)
+
+        html = (tmp_path / "report.html").read_text()
+        assert "XFAILED" in html
+        assert "XFailed" in html
+        assert "XPASSED" in html
+        assert "XPassed" in html
+
     def test_creates_directory_if_missing(self, tmp_path):
         """Should create output directory if it doesn't exist."""
         json_path = str(tmp_path / "subdir" / "report.json")
