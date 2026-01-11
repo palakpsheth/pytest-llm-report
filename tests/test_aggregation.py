@@ -155,7 +155,8 @@ class TestAggregator:
             with open(Path(tmpdir) / "missing_fields.json", "w") as f:
                 json.dump({"foo": "bar"}, f)
 
-            result = aggregator.aggregate()
+            with pytest.warns(UserWarning, match="Skipping invalid report file"):
+                result = aggregator.aggregate()
             assert result is not None
             assert result.run_meta.run_count == 1  # Only valid report counted
 
