@@ -233,8 +233,19 @@ def pytest_configure(config: pytest.Config) -> None:
 def pytest_terminal_summary(
     terminalreporter: pytest.TerminalReporter, exitstatus: int, config: pytest.Config
 ) -> None:
-    """Generate the report at end of session.
+    """Generate the report at end of session using pytest's terminal summary hook.
 
+    This function previously used the ``pytest_sessionfinish`` hook, but was moved
+    to ``pytest_terminal_summary`` because:
+
+    * ``pytest_terminal_summary`` runs after the built-in terminal reporting is
+      complete and has direct access to the ``terminalreporter`` instance, which
+      is the natural integration point for session-level reporting.
+    * It avoids ordering and interaction issues that can occur with
+      ``pytest_sessionfinish`` when other plugins also use that hook or modify
+      session state during teardown.
+    * It provides a more stable point in the lifecycle for generating the final
+      LLM report once all tests have been collected, executed, and reported.
     Args:
         terminalreporter: pytest terminal reporter.
         exitstatus: pytest exit status code.
