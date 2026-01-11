@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: MIT
-"""Tests for pytest_llm_report.models module."""
+"""Tests for models module."""
+
 
 from pytest_llm_report.models import (
     SCHEMA_VERSION,
@@ -192,6 +193,39 @@ class TestRunMeta:
         assert d["collected_count"] == 10
         assert d["selected_count"] == 8
         assert d["deselected_count"] == 2
+
+    def test_run_meta_to_dict_full(self):
+        """Test RunMeta to dict with all optional fields."""
+        meta = RunMeta(
+            pytest_version="7.4.0",
+            plugin_version="0.1.0",
+            python_version="3.11",
+            platform="linux",
+            git_sha="abc1234",
+            git_dirty=True,
+            config_hash="def5678",
+            pytest_invocation="pytest -v",
+            pytest_config_summary="config_summary",
+            run_id="run-1",
+            run_group_id="group-1",
+            is_aggregated=True,
+            aggregation_policy="merge",
+        )
+
+        # Add dummy source report
+        meta.source_reports = [SourceReport(path="p", sha256="abc", run_id="r1")]
+
+        data = meta.to_dict()
+
+        assert data["git_sha"] == "abc1234"
+        assert data["git_dirty"] is True
+        assert data["config_hash"] == "def5678"
+        assert data["pytest_invocation"] == "pytest -v"
+        assert data["pytest_config_summary"] == "config_summary"
+        assert data["run_id"] == "run-1"
+        assert data["run_group_id"] == "group-1"
+        assert data["aggregation_policy"] == "merge"
+        assert len(data["source_reports"]) == 1
 
 
 class TestReportRoot:
