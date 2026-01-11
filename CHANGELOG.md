@@ -35,5 +35,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Secret file patterns excluded from LLM context by default
 - Command-line redaction patterns for sensitive arguments
 
-[Unreleased]: https://github.com/example/pytest-llm-report/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/example/pytest-llm-report/releases/tag/v0.1.0
+[Unreleased]: https://github.com/palakpsheth/pytest-llm-report/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/palakpsheth/pytest-llm-report/releases/tag/v0.1.0

@@ -59,7 +59,7 @@ pytest --cov=my_pkg --cov-context=test --llm-report=report.html
 
 ## Still stuck?
 
-Open an issue with:
+[Open an issue on GitHub](https://github.com/palakpsheth/pytest-llm-report/issues/new) with:
 - pytest-llm-report version
 - Full pytest output (with `-v`)
 - Your pyproject.toml configuration

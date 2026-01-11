@@ -32,3 +32,4 @@ pytest --cov=my_pkg --cov-context=test --llm-report=report.html
 - [Privacy](privacy.md)
 - [Security](security.md)
 - [Troubleshooting](troubleshooting.md)
+- [Contributing](https://github.com/palakpsheth/pytest-llm-report/blob/main/CONTRIBUTING.md)
