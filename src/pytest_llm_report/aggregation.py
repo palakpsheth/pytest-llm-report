@@ -12,6 +12,7 @@ Policies:
 
 from __future__ import annotations
 
+import copy
 import json
 import warnings
 from pathlib import Path
@@ -67,7 +68,7 @@ class Aggregator:
         # Create aggregated report
         # We use the metadata from the latest run, but update counts
         latest_report = max(reports, key=lambda r: r.run_meta.start_time)
-        meta = latest_report.run_meta
+        meta = copy.deepcopy(latest_report.run_meta)
 
         # Update metadata to reflect aggregation
         meta.is_aggregated = True
@@ -76,7 +77,7 @@ class Aggregator:
         meta.selected_count = len(aggregated_tests)
 
         # Recalculate summary
-        summary = self._recalculate_summary(aggregated_tests)
+        summary = self._recalculate_summary(aggregated_tests, latest_report.summary)
 
         return ReportRoot(
             run_meta=meta,
@@ -171,16 +172,21 @@ class Aggregator:
         """
         return self._latest_tests(reports)
 
-    def _recalculate_summary(self, tests: list[TestCaseResult]) -> Summary:
+    def _recalculate_summary(
+        self, tests: list[TestCaseResult], latest_summary: Summary
+    ) -> Summary:
         """Recalculate summary stats for aggregated tests.
 
         Args:
             tests: List of tests.
+            latest_summary: Summary from the latest report (for coverage preservation).
 
         Returns:
             Updated Summary.
         """
         summary = Summary(total=len(tests))
+        # Preserve coverage percentage from the latest report
+        summary.coverage_total_percent = latest_summary.coverage_total_percent
         for test in tests:
             summary.total_duration += test.duration
             if test.outcome == "passed":

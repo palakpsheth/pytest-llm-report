@@ -6,7 +6,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 from pytest_llm_report.aggregation import Aggregator
-from pytest_llm_report.models import TestCaseResult
+from pytest_llm_report.models import Summary, TestCaseResult
 from pytest_llm_report.options import Config
 
 
@@ -164,7 +164,11 @@ class TestAggregator:
             TestCaseResult(nodeid="6", outcome="error", duration=1.0, phase="call"),
         ]
 
-        summary = aggregator._recalculate_summary(tests)
+        # Create a mock latest summary with coverage
+        latest_summary = Summary(
+            total=6, passed=1, failed=1, skipped=1, xfailed=1, xpassed=1, error=1, coverage_total_percent=85.5
+        )
+        summary = aggregator._recalculate_summary(tests, latest_summary)
 
         assert summary.total == 6
         assert summary.passed == 1
@@ -173,4 +177,6 @@ class TestAggregator:
         assert summary.xfailed == 1
         assert summary.xpassed == 1
         assert summary.error == 1
+        # Verify coverage percentage is preserved
+        assert summary.coverage_total_percent == 85.5
         assert summary.total_duration == 5.0
