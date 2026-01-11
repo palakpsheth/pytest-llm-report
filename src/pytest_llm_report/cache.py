@@ -135,6 +135,7 @@ class LlmCache:
                 cache_file.unlink()
                 count += 1
             except Exception:
+                # Ignore errors when deleting cache files (file may be in use or deleted)
                 pass
 
         return count

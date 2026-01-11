@@ -116,7 +116,7 @@ class TestReportWriterWithFiles:
         writer = ReportWriter(config)
 
         tests = [TestCaseResult(nodeid="test1", outcome="passed")]
-        _report = writer.write_report(tests)
+        writer.write_report(tests)
 
         # File should exist
         assert (tmp_path / "report.json").exists()

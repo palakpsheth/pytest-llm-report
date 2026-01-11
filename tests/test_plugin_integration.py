@@ -67,7 +67,7 @@ class TestReportGeneration:
             ),
         ]
 
-        _report = writer.write_report(tests)
+        writer.write_report(tests)
 
         # Verify JSON
         assert (tmp_path / "report.json").exists()

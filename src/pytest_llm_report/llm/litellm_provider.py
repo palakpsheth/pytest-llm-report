@@ -156,6 +156,7 @@ class LiteLLMProvider(LlmProvider):
                     confidence=0.8,
                 )
         except json.JSONDecodeError:
+            # Fall through to return error annotation below
             pass
 
         return LlmAnnotation(error="Failed to parse LLM response as JSON")
