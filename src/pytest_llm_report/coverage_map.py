@@ -81,32 +81,25 @@ class CoverageMapper:
             return None
 
         coverage_file = Path.cwd() / ".coverage"
-        print(f"DEBUG: CoverageMapper cwd: {Path.cwd()}")
-        print(
-            f"DEBUG: Checking for coverage file: {coverage_file}, Exists: {coverage_file.exists()}"
-        )
 
         # Check for parallel mode files
         parallel_files = list(glob.glob(".coverage.*"))
-        print(f"DEBUG: Parallel files found: {parallel_files}")
 
         if not coverage_file.exists() and not parallel_files:
-            print("DEBUG: No coverage files found, returning None")
             self.warnings.append(make_warning(WarningCode.W001_NO_COVERAGE).to_dict())
             return None
 
         try:
+            data = CoverageData()
+
             # Load main coverage file if exists
             if coverage_file.exists():
-                data = CoverageData(basename=str(coverage_file))
-                data.read()
-            else:
-                data = CoverageData()
+                data.read_file(str(coverage_file))
 
             # Combine parallel files (xdist mode)
             for pfile in parallel_files:
-                pdata = CoverageData(basename=pfile)
-                pdata.read()
+                pdata = CoverageData()
+                pdata.read_file(pfile)
                 data.update(pdata)
 
             return data
@@ -126,9 +119,6 @@ class CoverageMapper:
         # Get all measured files
         try:
             measured_files = data.measured_files()
-            print(
-                f"DEBUG: measured_files count: {len(measured_files) if measured_files else 0}"
-            )
         except AttributeError:
             # Older coverage.py API
             measured_files = getattr(data, "_lines", {}).keys()
@@ -146,15 +136,11 @@ class CoverageMapper:
                     non_empty = [c for lines in contexts.values() for c in lines if c]
                     if non_empty:
                         has_contexts = True
-                        print(
-                            f"DEBUG: Found non-empty contexts in {path}: {non_empty[0]}"
-                        )
                         break
             except Exception:
                 continue
 
         if not has_contexts:
-            print("DEBUG: No contexts found in measured files")
             self.warnings.append(make_warning(WarningCode.W002_NO_CONTEXTS).to_dict())
             return result
 

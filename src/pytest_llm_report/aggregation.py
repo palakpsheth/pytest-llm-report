@@ -13,6 +13,7 @@ Policies:
 from __future__ import annotations
 
 import json
+import warnings
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -127,8 +128,12 @@ class Aggregator:
                             artifacts=[],
                         )
                     )
-            except Exception:
-                # Skip invalid files
+            except (json.JSONDecodeError, KeyError, TypeError) as e:
+                # Skip invalid files, but don't silently ignore
+                warnings.warn(
+                    f"Skipping invalid report file {file_path}: {e}",
+                    stacklevel=2,
+                )
                 continue
 
         return reports

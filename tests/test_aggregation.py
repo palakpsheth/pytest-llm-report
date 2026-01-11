@@ -64,8 +64,9 @@ class TestAggregator:
             assert aggregator.aggregate() is None
 
     def test_aggregate_no_reports(self, aggregator):
-        with patch("pathlib.Path.exists", return_value=True), patch(
-            "pathlib.Path.glob", return_value=[]
+        with (
+            patch("pathlib.Path.exists", return_value=True),
+            patch("pathlib.Path.glob", return_value=[]),
         ):
             assert aggregator.aggregate() is None
 
