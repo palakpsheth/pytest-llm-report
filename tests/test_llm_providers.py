@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import json
 from types import SimpleNamespace
 
 import pytest
@@ -21,6 +22,24 @@ class FakeLiteLLMResponse:
         self.choices = [SimpleNamespace(message=SimpleNamespace(content=content))]
 
 
+@pytest.fixture
+def mock_import_error(monkeypatch: pytest.MonkeyPatch):
+    """Return a factory that makes imports raise ImportError for a module."""
+    import builtins
+
+    real_import = builtins.__import__
+
+    def _factory(module_name: str) -> None:
+        def fake_import(name, *args, **kwargs):
+            if name == module_name:
+                raise ImportError(f"No module named {module_name}")
+            return real_import(name, *args, **kwargs)
+
+        monkeypatch.setattr(builtins, "__import__", fake_import)
+
+    return _factory
+
+
 class TestLiteLLMProvider:
     """Tests for the LiteLLM provider."""
 
@@ -30,10 +49,12 @@ class TestLiteLLMProvider:
 
         def fake_completion(**kwargs):
             captured.update(kwargs)
-            return FakeLiteLLMResponse(
-                '{"scenario": "Checks login", "why_needed": "Stops regressions", '
-                '"key_assertions": ["status ok", "redirect"]}'
-            )
+            response_data = {
+                "scenario": "Checks login",
+                "why_needed": "Stops regressions",
+                "key_assertions": ["status ok", "redirect"],
+            }
+            return FakeLiteLLMResponse(json.dumps(response_data))
 
         fake_litellm = SimpleNamespace(completion=fake_completion)
         monkeypatch.setitem(__import__("sys").modules, "litellm", fake_litellm)
@@ -55,10 +76,13 @@ class TestLiteLLMProvider:
 
     def test_annotate_invalid_key_assertions(self, monkeypatch: pytest.MonkeyPatch):
         """LiteLLM provider rejects invalid key_assertions payloads."""
+        response_data = {
+            "scenario": "",
+            "why_needed": "",
+            "key_assertions": "oops",
+        }
         fake_litellm = SimpleNamespace(
-            completion=lambda **_: FakeLiteLLMResponse(
-                '{"scenario": "", "why_needed": "", "key_assertions": "oops"}'
-            )
+            completion=lambda **_: FakeLiteLLMResponse(json.dumps(response_data))
         )
         monkeypatch.setitem(__import__("sys").modules, "litellm", fake_litellm)
 
@@ -85,18 +109,9 @@ class TestLiteLLMProvider:
 
         assert annotation.error == "boom"
 
-    def test_annotate_missing_dependency(self, monkeypatch: pytest.MonkeyPatch):
+    def test_annotate_missing_dependency(self, mock_import_error):
         """LiteLLM provider reports missing dependency cleanly."""
-        import builtins
-
-        real_import = builtins.__import__
-
-        def fake_import(name, *args, **kwargs):
-            if name == "litellm":
-                raise ImportError("missing")
-            return real_import(name, *args, **kwargs)
-
-        monkeypatch.setattr(builtins, "__import__", fake_import)
+        mock_import_error("litellm")
 
         config = Config(provider="litellm")
         provider = LiteLLMProvider(config)
@@ -126,11 +141,13 @@ class TestOllamaProvider:
         """Ollama provider parses valid JSON responses."""
         config = Config(provider="ollama")
         provider = OllamaProvider(config)
+        response_data = {
+            "scenario": "Tests feature",
+            "why_needed": "Stops bugs",
+            "key_assertions": ["assert a", "assert b"],
+        }
 
-        annotation = provider._parse_response(
-            '{"scenario": "Tests feature", "why_needed": "Stops bugs", '
-            '"key_assertions": ["assert a", "assert b"]}'
-        )
+        annotation = provider._parse_response(json.dumps(response_data))
 
         assert annotation.scenario == "Tests feature"
         assert annotation.why_needed == "Stops bugs"
@@ -150,25 +167,19 @@ class TestOllamaProvider:
         """Ollama provider rejects invalid key_assertions payloads."""
         config = Config(provider="ollama")
         provider = OllamaProvider(config)
+        response_data = {
+            "scenario": "",
+            "why_needed": "",
+            "key_assertions": "oops",
+        }
 
-        annotation = provider._parse_response(
-            '{"scenario": "", "why_needed": "", "key_assertions": "oops"}'
-        )
+        annotation = provider._parse_response(json.dumps(response_data))
 
         assert annotation.error == "Invalid response: key_assertions must be a list"
 
-    def test_annotate_missing_httpx(self, monkeypatch: pytest.MonkeyPatch):
+    def test_annotate_missing_httpx(self, mock_import_error):
         """Ollama provider reports missing httpx dependency."""
-        import builtins
-
-        real_import = builtins.__import__
-
-        def fake_import(name, *args, **kwargs):
-            if name == "httpx":
-                raise ImportError("missing")
-            return real_import(name, *args, **kwargs)
-
-        monkeypatch.setattr(builtins, "__import__", fake_import)
+        mock_import_error("httpx")
 
         config = Config(provider="ollama")
         provider = OllamaProvider(config)
