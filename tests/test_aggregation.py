@@ -6,7 +6,7 @@ from unittest.mock import Mock, patch
 import pytest
 
 from pytest_llm_report.aggregation import Aggregator
-from pytest_llm_report.models import Summary, TestCaseResult
+from pytest_llm_report.models import CoverageEntry, LlmAnnotation, Summary, TestCaseResult
 from pytest_llm_report.options import Config
 
 
@@ -187,3 +187,76 @@ class TestAggregator:
         # Verify coverage percentage is preserved
         assert summary.coverage_total_percent == 85.5
         assert summary.total_duration == 5.0
+
+    def test_aggregate_with_coverage_and_llm_annotations(self, aggregator):
+        """Test that coverage and LLM annotations are properly deserialized and can be re-serialized."""
+        t1 = "2024-01-01T10:00:00"
+        
+        # Create a test with coverage and LLM annotation
+        test_case = {
+            "nodeid": "tests/test_foo.py::test_bar",
+            "outcome": "passed",
+            "duration": 0.5,
+            "phase": "call",
+            "coverage": [
+                {
+                    "file_path": "src/module.py",
+                    "line_ranges": "1-10, 15-20",
+                    "line_count": 16,
+                },
+                {
+                    "file_path": "src/helper.py", 
+                    "line_ranges": "5-8",
+                    "line_count": 4,
+                },
+            ],
+            "llm_annotation": {
+                "scenario": "Tests the feature works correctly",
+                "why_needed": "Prevents regression in core functionality",
+                "key_assertions": ["Assert A", "Assert B", "Assert C"],
+                "confidence": 0.95,
+            },
+        }
+        
+        report1 = self.create_dummy_report("run1", t1, [test_case])
+        
+        with tempfile.TemporaryDirectory() as tmpdir:
+            aggregator.config.aggregate_dir = tmpdir
+            
+            # Write report
+            with open(Path(tmpdir) / "report_1.json", "w") as f:
+                json.dump(report1, f)
+            
+            # Aggregate (loads from JSON)
+            result = aggregator.aggregate()
+            
+            assert result is not None
+            assert len(result.tests) == 1
+            
+            test = result.tests[0]
+            
+            # Verify coverage was properly deserialized
+            assert len(test.coverage) == 2
+            assert isinstance(test.coverage[0], CoverageEntry)
+            assert test.coverage[0].file_path == "src/module.py"
+            assert test.coverage[0].line_ranges == "1-10, 15-20"
+            assert test.coverage[0].line_count == 16
+            assert isinstance(test.coverage[1], CoverageEntry)
+            assert test.coverage[1].file_path == "src/helper.py"
+            
+            # Verify LLM annotation was properly deserialized
+            assert test.llm_annotation is not None
+            assert isinstance(test.llm_annotation, LlmAnnotation)
+            assert test.llm_annotation.scenario == "Tests the feature works correctly"
+            assert test.llm_annotation.why_needed == "Prevents regression in core functionality"
+            assert len(test.llm_annotation.key_assertions) == 3
+            assert test.llm_annotation.confidence == 0.95
+            
+            # Most importantly: verify it can be re-serialized (this would fail before the fix)
+            serialized = test.to_dict()
+            assert "coverage" in serialized
+            assert len(serialized["coverage"]) == 2
+            assert serialized["coverage"][0]["file_path"] == "src/module.py"
+            assert "llm_annotation" in serialized
+            assert serialized["llm_annotation"]["scenario"] == "Tests the feature works correctly"
+
