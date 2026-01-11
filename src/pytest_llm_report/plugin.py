@@ -265,9 +265,9 @@ def pytest_terminal_summary(
             writer = ReportWriter(cfg)
 
             if cfg.report_json:
-                writer._write_json(report, cfg.report_json)
+                writer.write_json(report, cfg.report_json)
             if cfg.report_html:
-                writer._write_html(report, cfg.report_html)
+                writer.write_html(report, cfg.report_html)
             return
 
     # Get collector if it was set up

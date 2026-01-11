@@ -21,7 +21,8 @@ function togglePassed(checkbox) {
     filterTests();
 }
 
-(function () {
+// Initialize interactive features after DOM is ready
+document.addEventListener('DOMContentLoaded', function () {
     'use strict';
 
     // Filter by outcome (for button-based filtering if present)
@@ -49,4 +50,4 @@ function togglePassed(checkbox) {
     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
         document.documentElement.dataset.theme = 'dark';
     }
-})();
+});
