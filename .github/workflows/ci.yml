@@ -132,14 +132,16 @@ jobs:
           script: |
             const prNumber = context.issue.number;
             const repo = context.repo.owner + "/" + context.repo.repo;
-            const url = `https://${context.repo.owner}.github.io/${context.repo.repo}/pr-${prNumber}/reports/`;
+            const baseUrl = `https://${context.repo.owner}.github.io/${context.repo.repo}/pr-${prNumber}`;
+            const reportUrl = `${baseUrl}/reports/`;
 
             const body = `<!-- pytest-llm-report-link -->
-            ## 📊 Test Report Ready
+            ## 📊 Test Report & Docs Ready
 
-            Coverage and test results for this PR are checking in!
+            Preview the documentation and test results for this PR:
 
-            🔗 **[View Full interactive Report](${url})**
+            * 📘 **[Documentation Preview](${baseUrl}/)**
+            * � **[Interactive Test Report](${reportUrl})**
             `;
 
             // Find existing comment
