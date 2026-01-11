@@ -1,0 +1,47 @@
+{# Summary section #}
+<section class="summary">
+    <div class="summary-grid">
+        <div class="summary-item total">
+            <span class="count">{{ report.summary.total }}</span>
+            <span class="label">Total</span>
+        </div>
+        <div class="summary-item passed">
+            <span class="count">{{ report.summary.passed }}</span>
+            <span class="label">Passed</span>
+        </div>
+        <div class="summary-item failed">
+            <span class="count">{{ report.summary.failed }}</span>
+            <span class="label">Failed</span>
+        </div>
+        <div class="summary-item skipped">
+            <span class="count">{{ report.summary.skipped }}</span>
+            <span class="label">Skipped</span>
+        </div>
+        {% if report.summary.xfailed %}
+        <div class="summary-item xfailed">
+            <span class="count">{{ report.summary.xfailed }}</span>
+            <span class="label">XFailed</span>
+        </div>
+        {% endif %}
+        {% if report.summary.xpassed %}
+        <div class="summary-item xpassed">
+            <span class="count">{{ report.summary.xpassed }}</span>
+            <span class="label">XPassed</span>
+        </div>
+        {% endif %}
+        {% if report.summary.error %}
+        <div class="summary-item error">
+            <span class="count">{{ report.summary.error }}</span>
+            <span class="label">Error</span>
+        </div>
+        {% endif %}
+    </div>
+
+    {% if report.run_meta.is_aggregated %}
+    <div class="aggregation-info">
+        <strong>Aggregated Report</strong> |
+        Policy: {{ report.run_meta.aggregation_policy }} |
+        Runs: {{ report.run_meta.run_count }}
+    </div>
+    {% endif %}
+</section>

@@ -1,0 +1,10 @@
+{# Requirement badges #}
+{% for req in test.requirements %}
+<span class="badge requirement">{{ req }}</span>
+{% endfor %}
+{% if test.param_id %}
+<span class="badge param">{{ test.param_id }}</span>
+{% endif %}
+{% if test.llm_opt_out %}
+<span class="badge opt-out">LLM opt-out</span>
+{% endif %}

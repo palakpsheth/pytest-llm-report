@@ -53,32 +53,32 @@ A public **pytest plugin** that generates a **human-friendly test report** (HTML
 
 ## Repo map (where to change what)
 
-- `src/pytest_llm_report/plugin.py`  
+- `src/pytest_llm_report/plugin.py`
   pytest plugin entry point + session orchestration (report generation trigger)
 
-- `src/pytest_llm_report/options.py`  
+- `src/pytest_llm_report/options.py`
   CLI flags + config loading from `pyproject.toml` (`[tool.pytest_llm_report]`)
 
-- `src/pytest_llm_report/collector.py`  
+- `src/pytest_llm_report/collector.py`
   Collects per-test outcomes via pytest hooks (nodeid, outcome, duration, errors)
 
-- `src/pytest_llm_report/coverage_map.py`  
+- `src/pytest_llm_report/coverage_map.py`
   Converts coverage contexts → per-test covered files/line ranges (core feature)
 
-- `src/pytest_llm_report/llm/`  
+- `src/pytest_llm_report/llm/`
   Providers:
   - `noop.py` (default)
   - `ollama.py` (local)
   - `litellm_provider.py` (cloud via LiteLLM)
   - `schemas.py` (response schema normalization/validation)
 
-- `src/pytest_llm_report/render.py` + `templates/` + `static/`  
+- `src/pytest_llm_report/render.py` + `templates/` + `static/`
   HTML report rendering; keep templates simple and maintainable
 
-- `tests/`  
+- `tests/`
   Unit tests + `pytester` integration tests (must be kept green)
 
-- `docs/` and `examples/`  
+- `docs/` and `examples/`
   End-user documentation and runnable examples (prevent docs rot)
 
 ---
@@ -240,4 +240,3 @@ LLM output must be parsed/validated into a stable schema (JSON). Keep it short:
 - Prefer reading the relevant code + tests rather than guessing.
 - If behavior involves pytest internals, add a `pytester` test to lock it down.
 - If output format is unclear, implement the simplest version, then iterate with golden tests.
-
