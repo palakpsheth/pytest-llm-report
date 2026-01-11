@@ -1,8 +1,30 @@
 // pytest-llm-report interactive features
+
+// Global state for filters
+let showPassed = true;
+
+// Filter tests based on search input and outcome filters
+function filterTests() {
+    const query = document.getElementById('searchInput').value.toLowerCase();
+    document.querySelectorAll('.test-row').forEach(row => {
+        const nodeid = row.querySelector('.test-name').textContent.toLowerCase();
+        const isPassed = row.classList.contains('passed');
+        const matchesSearch = nodeid.includes(query);
+        const matchesFilter = showPassed || !isPassed;
+        row.classList.toggle('hidden', !matchesSearch || !matchesFilter);
+    });
+}
+
+// Toggle visibility of passed tests
+function togglePassed(checkbox) {
+    showPassed = checkbox.checked;
+    filterTests();
+}
+
 (function () {
     'use strict';
 
-    // Filter by outcome
+    // Filter by outcome (for button-based filtering if present)
     document.querySelectorAll('.filter-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const filter = btn.dataset.filter;
@@ -12,33 +34,17 @@
             btn.classList.add('active');
 
             // Filter tests
-            document.querySelectorAll('.test').forEach(test => {
+            document.querySelectorAll('.test-row').forEach(test => {
                 if (filter === 'all') {
                     test.classList.remove('hidden');
                 } else {
-                    const outcome = test.dataset.outcome;
-                    test.classList.toggle('hidden', outcome !== filter);
+                    const isPassed = test.classList.contains('passed');
+                    const isFilter = test.classList.contains(filter);
+                    test.classList.toggle('hidden', !isFilter);
                 }
             });
         });
     });
-
-    // Search
-    const searchInput = document.getElementById('search');
-    if (searchInput) {
-        searchInput.addEventListener('input', () => {
-            const query = searchInput.value.toLowerCase();
-
-            document.querySelectorAll('.test').forEach(test => {
-                const nodeid = test.querySelector('.nodeid').textContent.toLowerCase();
-                test.classList.toggle('hidden', !nodeid.includes(query));
-            });
-
-            // Reset filter buttons
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            document.querySelector('.filter-btn[data-filter="all"]').classList.add('active');
-        });
-    }
 
     // Toggle dark mode on preference
     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
