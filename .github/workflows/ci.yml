@@ -77,14 +77,11 @@ jobs:
   report:
     needs: test
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    # Run on main push OR pull request
+    if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || github.event_name == 'pull_request'
     permissions:
-      contents: read
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      contents: write  # Required to push to gh-pages branch
+
 
     steps:
       - uses: actions/checkout@v6
@@ -114,17 +111,18 @@ jobs:
             --llm-report=site/reports/index.html \
             --llm-report-json=site/reports/latest.json
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload pages artifact
-        uses: actions/upload-pages-artifact@v4
-        with:
-          path: site/
-
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: site
+          # Clean only if main, but exclude PR folders
+          clean: ${{ github.ref == 'refs/heads/main' }}
+          clean-exclude: |
+            pr-*
+          # Target folder: root for main, 'pr-{id}' for PRs
+          target-folder: ${{ github.ref == 'refs/heads/main' && '.' || format('pr-{0}', github.event.number) }}
+
 
   publish:
     needs: [test, lint]
