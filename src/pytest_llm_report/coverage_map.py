@@ -90,11 +90,12 @@ class CoverageMapper:
             return None
 
         try:
-            data = CoverageData(basename=str(coverage_file) if coverage_file.exists() else None)
-
-            # Load main coverage file if exists
+            # Initialize with the main coverage file if it exists
             if coverage_file.exists():
+                data = CoverageData(basename=str(coverage_file))
                 data.read()
+            else:
+                data = CoverageData()
 
             # Combine parallel files (xdist mode)
             for pfile in parallel_files:
