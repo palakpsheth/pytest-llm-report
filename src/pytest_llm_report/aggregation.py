@@ -127,8 +127,14 @@ class Aggregator:
                             artifacts=[],
                         )
                     )
-            except Exception:
-                # Skip invalid files
+            except (json.JSONDecodeError, KeyError, TypeError) as e:
+                # Skip invalid files, but don't silently ignore
+                import warnings
+
+                warnings.warn(
+                    f"Skipping invalid report file {file_path}: {e}",
+                    stacklevel=2,
+                )
                 continue
 
         return reports

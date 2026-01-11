@@ -248,10 +248,6 @@ def pytest_terminal_summary(
     if not config.stash.get(_enabled_key, False):
         return
 
-    # Skip if report not enabled
-    if not config.stash.get(_enabled_key, False):
-        return
-
     # Get config (already validated)
     cfg: Config = config.stash[_config_key]
 
@@ -319,8 +315,11 @@ def pytest_terminal_summary(
                 out = io.StringIO()
                 val = cov.report(file=out)
                 coverage_percent = round(val, 2)
-        except Exception:
-            pass
+        except Exception as e:
+            warnings.warn(
+                f"Failed to compute coverage percentage from .coverage file: {e}",
+                stacklevel=2,
+            )
     except Exception as e:
         warnings.warn(f"Failed to map coverage: {e}", stacklevel=2)
 

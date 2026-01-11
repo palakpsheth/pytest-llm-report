@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: MIT
 """Tests for models module."""
 
-
 from pytest_llm_report.models import (
     SCHEMA_VERSION,
     ArtifactEntry,
