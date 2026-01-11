@@ -1,8 +1,9 @@
 # Test Report
 
-View the live test report for this project, generated from the latest CI run.
+<iframe src="../reports/index.html" style="width: 100%; height: 90vh; border: 1px solid #e2e8f0; border-radius: 0.5rem;" title="Interactive Test Report"></iframe>
 
-[🧪 Open Interactive Test Report](reports/index.html){ .md-button .md-button--primary target="_blank" }
+!!! info "Direct Link"
+    If the embedded report doesn't display correctly, you can [open it in a new tab](reports/index.html){ target="_blank" }.
 
 ## About the Test Report
 
