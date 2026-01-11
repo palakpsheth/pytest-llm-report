@@ -59,6 +59,20 @@ When aggregation is enabled (`--llm-aggregate-dir`):
 | `run_count` | integer | Number of runs aggregated |
 | `source_reports` | array | Source report paths and hashes |
 
+## Summary Statistics (`summary`)
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `total` | integer | Total number of tests |
+| `passed` | integer | Number of passed tests |
+| `failed` | integer | Number of failed tests |
+| `skipped` | integer | Number of skipped tests |
+| `xfailed` | integer | Number of xfailed tests |
+| `xpassed` | integer | Number of xpassed tests |
+| `error` | integer | Number of tests with errors |
+| `total_duration` | number | Total duration in seconds |
+| `coverage_total_percent` | number | Total coverage percentage (if available) |
+
 ## Test Result Fields
 
 Each test in the `tests` array has:
