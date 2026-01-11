@@ -81,6 +81,8 @@ jobs:
     if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || github.event_name == 'pull_request'
     permissions:
       contents: write  # Required to push to gh-pages branch
+      pull-requests: write # Required to post comments
+
 
 
     steps:
@@ -122,6 +124,49 @@ jobs:
             pr-*
           # Target folder: root for main, 'pr-{id}' for PRs
           target-folder: ${{ github.ref == 'refs/heads/main' && '.' || format('pr-{0}', github.event.number) }}
+
+      - name: Post Report Link to PR
+        uses: actions/github-script@v7
+        if: github.event_name == 'pull_request'
+        with:
+          script: |
+            const prNumber = context.issue.number;
+            const repo = context.repo.owner + "/" + context.repo.repo;
+            const url = `https://${context.repo.owner}.github.io/${context.repo.repo}/pr-${prNumber}/reports/`;
+
+            const body = `<!-- pytest-llm-report-link -->
+            ## 📊 Test Report Ready
+
+            Coverage and test results for this PR are checking in!
+
+            🔗 **[View Full interactive Report](${url})**
+            `;
+
+            // Find existing comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+            });
+
+            const botComment = comments.find(c => c.body.includes('<!-- pytest-llm-report-link -->'));
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: body
+              });
+            }
+
 
 
   publish:
