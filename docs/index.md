@@ -2,6 +2,12 @@
 
 Welcome to pytest-llm-report, a pytest plugin for generating human-friendly test reports with optional LLM annotations.
 
+!!! tip "Live Test Report Available"
+    View the latest test report for this project:
+
+    [🧪 Interactive Test Report](reports/index.html){ .md-button .md-button--primary }
+
+
 ## Quick Start
 
 Install the plugin:
@@ -21,6 +27,7 @@ pytest --cov=my_pkg --cov-context=test --llm-report=report.html
 - **Local or cloud LLM** support (Ollama, OpenAI, Anthropic)
 - **Privacy-first** - LLM is disabled by default
 - **CI/CD ready** - artifacts for pipelines
+- **Aggregation** - Combine reports from multiple runs (see [Aggregation](aggregation.md))
 
 ## Documentation
 

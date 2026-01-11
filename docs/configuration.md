@@ -10,7 +10,7 @@ Complete configuration reference for pytest-llm-report.
 | `--llm-report-json PATH` | JSON report output path | None |
 | `--llm-pdf PATH` | PDF report output (requires Playwright) | None |
 | `--llm-evidence-bundle PATH` | Evidence bundle zip output | None |
-| `--llm-aggregate-dir DIR` | Directory with reports to aggregate | None |
+| `--llm-aggregate-dir DIR` | Directory with reports to [aggregate](aggregation.md) | None |
 | `--llm-aggregate-policy POLICY` | Aggregation policy: latest, merge, all | latest |
 | `--llm-aggregate-run-id ID` | Unique run ID | Auto-generated |
 | `--llm-aggregate-group-id ID` | Group ID for related runs | None |

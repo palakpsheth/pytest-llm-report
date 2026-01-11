@@ -28,11 +28,13 @@ theme:
 
 nav:
   - Home: index.md
+  - Test Report: test-report.md
   - Getting Started: getting-started.md
   - Configuration: configuration.md
   - LLM Providers: providers.md
   - Coverage: coverage.md
   - Report Format: report-format.md
+  - Aggregation: aggregation.md
   - Privacy: privacy.md
   - Security: security.md
   - Troubleshooting: troubleshooting.md
@@ -45,6 +47,8 @@ markdown_extensions:
       alternate_style: true
   - admonition
   - tables
+  - attr_list
+
 
 plugins:
   - search

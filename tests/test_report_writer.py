@@ -55,6 +55,39 @@ class TestReportWriter:
         assert summary.failed == 1
         assert summary.skipped == 1
 
+    def test_build_summary_all_outcomes(self):
+        """Summary should count all outcome types."""
+        config = Config()
+        writer = ReportWriter(config)
+
+        tests = [
+            TestCaseResult(nodeid="1", outcome="passed"),
+            TestCaseResult(nodeid="2", outcome="failed"),
+            TestCaseResult(nodeid="3", outcome="skipped"),
+            TestCaseResult(nodeid="4", outcome="xfailed"),
+            TestCaseResult(nodeid="5", outcome="xpassed"),
+            TestCaseResult(nodeid="6", outcome="error"),
+        ]
+
+        summary = writer._build_summary(tests)
+
+        assert summary.total == 6
+        assert summary.passed == 1
+        assert summary.failed == 1
+        assert summary.skipped == 1
+        assert summary.xfailed == 1
+        assert summary.xpassed == 1
+        assert summary.error == 1
+
+    def test_write_report_includes_coverage_percent(self):
+        """Report should include total coverage percentage."""
+        config = Config()
+        writer = ReportWriter(config)
+
+        report = writer.write_report([], coverage_percent=85.5)
+
+        assert report.summary.coverage_total_percent == 85.5
+
     def test_build_run_meta(self):
         """Run meta should include version info."""
         config = Config()
@@ -160,3 +193,45 @@ class TestReportWriterWithFiles:
         writer.write_report(tests)
 
         assert (tmp_path / "subdir" / "report.json").exists()
+
+    def test_atomic_write_fallback(self, tmp_path):
+        """Should fall back to direct write if atomic write fails."""
+        from unittest.mock import patch
+
+        json_path = str(tmp_path / "report.json")
+        config = Config(report_json=json_path)
+        writer = ReportWriter(config)
+
+        # Mock os.replace to fail
+        with patch("os.replace", side_effect=OSError("Cross-device link")):
+            writer.write_report([])
+
+        assert (tmp_path / "report.json").exists()
+        assert any(w.code == "W203" for w in writer.warnings)
+
+    def test_ensure_dir_failure(self, tmp_path):
+        """Should capture warning if directory creation fails."""
+        from unittest.mock import patch
+
+        # Path that definitely doesn't exist
+        json_path = str(tmp_path / "nonexistent" / "report.json")
+
+        config = Config(report_json=json_path)
+        writer = ReportWriter(config)
+
+        # Mock mkdir to raise OSError
+        with patch("pathlib.Path.mkdir", side_effect=OSError("Permission denied")):
+            writer._ensure_dir(json_path)
+
+        assert any(w.code == "W201" for w in writer.warnings)
+
+    def test_git_info_failure(self):
+        """Should handle git command failures gracefully."""
+        from unittest.mock import patch
+
+        from pytest_llm_report.report_writer import get_git_info
+
+        with patch("subprocess.check_output", side_effect=Exception("Git not found")):
+            sha, dirty = get_git_info()
+            assert sha is None
+            assert dirty is None

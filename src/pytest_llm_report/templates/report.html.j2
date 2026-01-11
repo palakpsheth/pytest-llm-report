@@ -1,66 +1,127 @@
-{# Main report template #}
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Report - {{ report.summary.total }} tests</title>
-    <link rel="stylesheet" href="data:text/css,{% include 'style.css' %}">
+    <title>Test Report &bull; {{ report.run_meta.collected_count }} tests</title>
+    <!-- Optional: Inter font from rsms.me CDN. Falls back to system fonts if unavailable. -->
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <style>
+        {% include "style.css" %}
+    </style>
+    <script>
+        {% include "report.js" %}
+    </script>
 </head>
 <body>
-    <header>
-        <h1>Test Report</h1>
-        <p class="meta">
-            Generated {{ report.run_meta.end_time }} |
-            Duration: {{ report.run_meta.duration | duration }} |
-            Schema v{{ report.schema_version }}
-            {% if report.run_meta.git_sha %}
-            | Git: <code>{{ report.run_meta.git_sha[:8] }}</code>{% if report.run_meta.git_dirty %} (dirty){% endif %}
+    <div class="container">
+        <header>
+            <div>
+                <h1>Test Report</h1>
+                <div class="meta">
+                    Run ID: {{ report.run_meta.run_id or "N/A" }} &bull;
+                    Generated: {{ report.run_meta.end_time[:19].replace('T', ' ') }} &bull;
+                    Duration: {{ report.run_meta.duration | duration }}
+                </div>
+            </div>
+            {% if report.summary.coverage_total_percent is not none %}
+            <div style="text-align: right">
+                <div style="font-size: 2rem; font-weight: 700; color: var(--primary-color)">
+                    {{ report.summary.coverage_total_percent }}%
+                </div>
+                <div class="meta">Total Coverage</div>
+            </div>
             {% endif %}
-        </p>
-    </header>
+        </header>
 
-    <main>
-        {% include 'summary.html.j2' %}
+        <!-- Summary Cards -->
+        <div class="summary">
+            <div class="summary-card">
+                <div class="count">{{ report.summary.total }}</div>
+                <div class="label">Total Tests</div>
+            </div>
+            <div class="summary-card passed">
+                <div class="count">{{ report.summary.passed }}</div>
+                <div class="label">Passed</div>
+            </div>
+            {% if report.summary.failed %}
+            <div class="summary-card failed">
+                <div class="count">{{ report.summary.failed }}</div>
+                <div class="label">Failed</div>
+            </div>
+            {% endif %}
+            {% if report.summary.skipped %}
+            <div class="summary-card skipped">
+                <div class="count">{{ report.summary.skipped }}</div>
+                <div class="label">Skipped</div>
+            </div>
+            {% endif %}
+            {% if report.summary.error %}
+            <div class="summary-card failed">
+                <div class="count">{{ report.summary.error }}</div>
+                <div class="label">Errors</div>
+            </div>
+            {% endif %}
+        </div>
 
-        <section class="filters">
-            {% include 'components/filters.html.j2' %}
-        </section>
+        <!-- Filters -->
+        <div class="filters">
+            <input type="text" id="searchInput" class="filter-input" placeholder="Search tests..." onkeyup="filterTests()">
+            <label><input type="checkbox" onchange="togglePassed(this)" checked> Show Passed</label>
+        </div>
 
-        <section class="tests">
-            <h2>Tests</h2>
-            {% for test in report.tests | sort(attribute='nodeid') %}
-            {% include 'test_row.html.j2' %}
-            {% endfor %}
-        </section>
+        <!-- Test List -->
+        <div class="test-list">
+            {% for test in report.tests %}
+            <div class="test-row {{ test.outcome | outcome_class }}">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-{{ test.outcome }}">{{ test.outcome | upper }}</span>
+                        <span class="test-name">{{ test.nodeid }}</span>
+                        <div class="test-meta">
+                            <span>{{ test.duration | duration }}</span>
+                            {% if test.coverage %}
+                            <span title="Covered file count">🛡️ {{ test.coverage | length }}</span>
+                            {% endif %}
+                        </div>
+                    </summary>
 
-        {% if report.collection_errors %}
-        <section class="errors">
-            <h2>Collection Errors</h2>
-            {% for error in report.collection_errors %}
-            <div class="error">
-                <code>{{ error.nodeid }}</code>: {{ error.message }}
+                    <div class="test-details">
+                        {% if test.error_message %}
+                        <div class="detail-section">
+                            <div class="detail-title">Error</div>
+                            <div class="error-message">{{ test.error_message }}</div>
+                        </div>
+                        {% endif %}
+
+                        {% if test.llm_annotation %}
+                        <div class="detail-section">
+                            <div class="detail-title">AI Assessment</div>
+                            <div class="llm-annotation">
+                                <p><strong>Scenario:</strong> {{ test.llm_annotation.scenario }}</p>
+                                <p><strong>Why Needed:</strong> {{ test.llm_annotation.why_needed }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if test.coverage %}
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div style="background: white; border-radius: 0.375rem; border: 1px solid #e2e8f0; overflow: hidden;">
+                                {% for cov in test.coverage %}
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>{{ cov.file_path }}</span>
+                                    <span style="color: var(--text-secondary)">{{ cov.line_count }} lines (ranges: {{ cov.line_ranges }})</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </details>
             </div>
             {% endfor %}
-        </section>
-        {% endif %}
-
-        {% if report.warnings %}
-        <section class="warnings">
-            <h2>Warnings</h2>
-            {% for warning in report.warnings %}
-            <div class="warning">
-                <code>{{ warning.code }}</code>: {{ warning.message }}
-            </div>
-            {% endfor %}
-        </section>
-        {% endif %}
-    </main>
-
-    <footer>
-        <p>Generated by <a href="https://github.com/example/pytest-llm-report">pytest-llm-report</a> v{{ report.run_meta.plugin_version }}</p>
-    </footer>
-
-    <script>{% include 'report.js' %}</script>
+        </div>
+    </div>
 </body>
 </html>
