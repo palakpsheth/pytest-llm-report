@@ -2,7 +2,10 @@
 
 Welcome to pytest-llm-report, a pytest plugin for generating human-friendly test reports with optional LLM annotations.
 
-[View Test Report](reports/index.html){ .md-button .md-button--primary }
+!!! tip "Live Test Report Available"
+    View the latest test report for this project:
+    
+    [🧪 Interactive Test Report](reports/index.html){ .md-button .md-button--primary }
 
 
 ## Quick Start
