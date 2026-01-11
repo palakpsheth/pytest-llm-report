@@ -102,13 +102,31 @@ uv run pytest -q tests/path/test_file.py::test_name
 
 ### Lint / format / typecheck (project standards)
 (Exact tool choices come from `pyproject.toml`; keep commands here stable.)
+
+**ALWAYS run these before committing code changes:**
 ```bash
-uv run ruff check .
+uv run ruff check --fix .
 uv run ruff format .
+```
+
+Optional type checking:
+```bash
 # if used:
 uv run mypy .
 # or:
 uv run pyright
+```
+
+**Pre-commit hooks:**
+The repository uses pre-commit hooks that automatically run linters and formatters.
+Install them with:
+```bash
+uv run pre-commit install
+```
+
+Then run manually to check all files:
+```bash
+uv run pre-commit run --all-files
 ```
 
 ### Build distributions
@@ -163,6 +181,10 @@ When asked to implement or modify behavior:
 4. **Verify locally**
    - Run targeted tests first, then full suite
    - Ensure report artifacts are generated in integration tests
+   - **ALWAYS run linters/formatters before committing:**
+     - `uv run ruff check --fix .`
+     - `uv run ruff format .`
+   - Optionally run `uv run pre-commit run --all-files` to catch any remaining issues
 
 5. **Polish**
    - Keep output stable (avoid unnecessary HTML/JSON churn)
