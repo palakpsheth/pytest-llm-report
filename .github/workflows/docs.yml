@@ -26,12 +26,8 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v7
 
-      - name: Install dependencies
-        run: |
-          uv pip install --system mkdocs-material
-
       - name: Build docs
-        run: mkdocs build
+        run: uv tool run --from mkdocs-material mkdocs build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
