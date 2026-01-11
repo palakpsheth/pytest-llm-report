@@ -932,7 +932,7 @@
 </code></pre></div>
 <blockquote>
 <p>[!NOTE]
-We use <code>--collect-only</code> to avoid running tests during aggregation. The plugin intercepts the session finish hook to perform aggregation instead.</p>
+We use <code>--collect-only</code> so that pytest performs collection and runs its terminal summary hooks without executing any tests. The plugin performs aggregation in the <code>pytest_terminal_summary</code> hook when <code>--llm-aggregate-dir</code> is set, which lets aggregation run once after collection without introducing a separate pytest command.</p>
 </blockquote>
 <h2 id="configuration-options">Configuration Options</h2>
 <table>
