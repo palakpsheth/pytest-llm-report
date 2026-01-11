@@ -752,6 +752,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#summary-statistics-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary Statistics (summary)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#test-result-fields" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -973,6 +984,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary-statistics-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary Statistics (summary)
+      
+    </span>
+  </a>
   
 </li>
       
@@ -1249,6 +1271,63 @@
 <td><code>source_reports</code></td>
 <td>array</td>
 <td>Source report paths and hashes</td>
+</tr>
+</tbody>
+</table>
+<h2 id="summary-statistics-summary">Summary Statistics (<code>summary</code>)</h2>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>total</code></td>
+<td>integer</td>
+<td>Total number of tests</td>
+</tr>
+<tr>
+<td><code>passed</code></td>
+<td>integer</td>
+<td>Number of passed tests</td>
+</tr>
+<tr>
+<td><code>failed</code></td>
+<td>integer</td>
+<td>Number of failed tests</td>
+</tr>
+<tr>
+<td><code>skipped</code></td>
+<td>integer</td>
+<td>Number of skipped tests</td>
+</tr>
+<tr>
+<td><code>xfailed</code></td>
+<td>integer</td>
+<td>Number of xfailed tests</td>
+</tr>
+<tr>
+<td><code>xpassed</code></td>
+<td>integer</td>
+<td>Number of xpassed tests</td>
+</tr>
+<tr>
+<td><code>error</code></td>
+<td>integer</td>
+<td>Number of tests with errors</td>
+</tr>
+<tr>
+<td><code>total_duration</code></td>
+<td>number</td>
+<td>Total duration in seconds</td>
+</tr>
+<tr>
+<td><code>coverage_total_percent</code></td>
+<td>number</td>
+<td>Total coverage percentage (if available)</td>
 </tr>
 </tbody>
 </table>
