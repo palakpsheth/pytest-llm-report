@@ -19,7 +19,7 @@ Component Contract:
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, ClassVar
 
 import pytest
 
@@ -47,7 +47,7 @@ class TestCollector:
     collection_errors: list[CollectionError] = field(default_factory=list)
     collected_count: int = 0
     deselected_count: int = 0
-    __test__ = False
+    __test__: ClassVar[bool] = False
 
     def handle_collection_report(self, report: pytest.CollectReport) -> None:
         """Handle a collection report.
