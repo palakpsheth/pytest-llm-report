@@ -149,10 +149,27 @@ class LiteLLMProvider(LlmProvider):
                 json_str = response[start:end]
                 data = json.loads(json_str)
 
+                # Validate response structure
+                scenario = data.get("scenario", "")
+                why_needed = data.get("why_needed", "")
+                key_assertions = data.get("key_assertions", [])
+
+                # Ensure types are correct
+                if not isinstance(scenario, str):
+                    scenario = str(scenario) if scenario else ""
+                if not isinstance(why_needed, str):
+                    why_needed = str(why_needed) if why_needed else ""
+                if not isinstance(key_assertions, list):
+                    return LlmAnnotation(
+                        error="Invalid response: key_assertions must be a list"
+                    )
+                # Ensure all assertions are strings
+                key_assertions = [str(a) for a in key_assertions if a]
+
                 return LlmAnnotation(
-                    scenario=data.get("scenario", ""),
-                    why_needed=data.get("why_needed", ""),
-                    key_assertions=data.get("key_assertions", []),
+                    scenario=scenario,
+                    why_needed=why_needed,
+                    key_assertions=key_assertions,
                     confidence=0.8,
                 )
         except json.JSONDecodeError:

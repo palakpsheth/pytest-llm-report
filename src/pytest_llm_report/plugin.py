@@ -13,11 +13,22 @@ Component Contract:
 from __future__ import annotations
 
 import warnings
-from datetime import UTC
+from datetime import UTC, datetime
+from typing import TYPE_CHECKING
 
 import pytest
+from pytest import StashKey
 
 from pytest_llm_report.options import Config
+
+if TYPE_CHECKING:
+    from pytest_llm_report.collector import TestCollector
+
+# Stash keys for storing plugin state (official pytest API)
+_config_key: StashKey[Config] = StashKey()
+_enabled_key: StashKey[bool] = StashKey()
+_collector_key: StashKey[TestCollector] = StashKey()
+_start_time_key: StashKey[datetime] = StashKey()
 
 
 def pytest_addoption(parser: pytest.Parser) -> None:
@@ -214,9 +225,9 @@ def pytest_configure(config: pytest.Config) -> None:
             stacklevel=1,
         )
 
-    # Store config and enable flag
-    config._llm_report_config = cfg
-    config._llm_report_enabled = bool(cfg.report_html or cfg.report_json)
+    # Store config and enable flag using stash (official pytest API)
+    config.stash[_config_key] = cfg
+    config.stash[_enabled_key] = bool(cfg.report_html or cfg.report_json)
 
 
 def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:
@@ -231,14 +242,14 @@ def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:
         return
 
     # Skip if report not enabled
-    if not getattr(session.config, "_llm_report_enabled", False):
+    if not session.config.stash.get(_enabled_key, False):
         return
 
     # Get config (already validated)
-    cfg: Config = session.config._llm_report_config
+    cfg: Config = session.config.stash[_config_key]
 
     # Get collector if it was set up
-    collector = getattr(session.config, "_llm_report_collector", None)
+    collector = session.config.stash.get(_collector_key, None)
     if collector is None:
         # Collector wasn't set up, create one with empty results
         from pytest_llm_report.collector import TestCollector
@@ -250,9 +261,7 @@ def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:
     collection_errors = collector.get_collection_errors()
 
     # Get start/end times from session
-    from datetime import datetime
-
-    start_time = getattr(session, "_llm_report_start_time", None) or datetime.now(UTC)
+    start_time = session.config.stash.get(_start_time_key, None) or datetime.now(UTC)
     end_time = datetime.now(UTC)
 
     # Write report
@@ -280,13 +289,37 @@ def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo) -> None:
     report = outcome.get_result()
 
     # Skip if not enabled
-    if not getattr(item.config, "_llm_report_enabled", False):
+    if not item.config.stash.get(_enabled_key, False):
         return
 
     # Get collector
-    collector = getattr(item.config, "_llm_report_collector", None)
+    collector = item.config.stash.get(_collector_key, None)
     if collector:
         collector.handle_runtest_logreport(report, item)
+
+
+def pytest_collectreport(report: pytest.CollectReport) -> None:
+    """Handle collection reports to capture collection errors.
+
+    Args:
+        report: pytest collection report.
+    """
+    # Get config from report - need to access via fspath or session
+    # This hook is called per-node, so we access stash via the session
+    if hasattr(report, "session") and report.session is not None:
+        config = report.session.config
+    else:
+        # Fallback: can't access config, skip
+        return
+
+    # Skip if not enabled
+    if not config.stash.get(_enabled_key, False):
+        return
+
+    # Get collector
+    collector = config.stash.get(_collector_key, None)
+    if collector:
+        collector.handle_collection_report(report)
 
 
 def pytest_collection_finish(session: pytest.Session) -> None:
@@ -296,11 +329,11 @@ def pytest_collection_finish(session: pytest.Session) -> None:
         session: pytest session.
     """
     # Skip if not enabled
-    if not getattr(session.config, "_llm_report_enabled", False):
+    if not session.config.stash.get(_enabled_key, False):
         return
 
     # Get collector
-    collector = getattr(session.config, "_llm_report_collector", None)
+    collector = session.config.stash.get(_collector_key, None)
     if collector:
         collector.handle_collection_finish(session.items)
 
@@ -313,16 +346,14 @@ def pytest_sessionstart(session: pytest.Session) -> None:
         session: pytest session.
     """
     # Skip if not enabled
-    if not getattr(session.config, "_llm_report_enabled", False):
+    if not session.config.stash.get(_enabled_key, False):
         return
 
     # Record start time
-    from datetime import datetime
-
-    session._llm_report_start_time = datetime.now(UTC)
+    session.config.stash[_start_time_key] = datetime.now(UTC)
 
     # Create collector
     from pytest_llm_report.collector import TestCollector
 
-    cfg: Config = session.config._llm_report_config
-    session.config._llm_report_collector = TestCollector(cfg)
+    cfg: Config = session.config.stash[_config_key]
+    session.config.stash[_collector_key] = TestCollector(cfg)

@@ -60,6 +60,7 @@ def get_git_info() -> tuple[str | None, bool | None]:
             ["git", "rev-parse", "HEAD"],
             stderr=subprocess.DEVNULL,
             text=True,
+            timeout=5,  # Prevent hanging on slow/network-mounted repos
         ).strip()
 
         # Check for uncommitted changes
@@ -67,6 +68,7 @@ def get_git_info() -> tuple[str | None, bool | None]:
             ["git", "status", "--porcelain"],
             stderr=subprocess.DEVNULL,
             text=True,
+            timeout=5,  # Prevent hanging
         )
         dirty = bool(status.strip())
 
@@ -126,6 +128,15 @@ class ReportWriter:
 
         # Build summary
         summary = self._build_summary(tests)
+
+        # Warn if no tests were collected
+        if summary.total == 0:
+            self.warnings.append(
+                ReportWarning(
+                    code="W100",
+                    message="No tests were collected. Report may be empty.",
+                )
+            )
 
         # Assemble report
         report = ReportRoot(

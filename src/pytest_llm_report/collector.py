@@ -131,6 +131,8 @@ class TestCollector:
             # Check for rerun (pytest-rerunfailures)
             if hasattr(report, "rerun"):
                 result.rerun_count = getattr(report, "rerun", 0)
+                # Set final_outcome to the current outcome (may be updated on future reports)
+                result.final_outcome = result.outcome
 
         elif report.when == "teardown":
             if report.failed and result.outcome == "passed":
