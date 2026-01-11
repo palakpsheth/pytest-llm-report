@@ -20,9 +20,8 @@ repos:
     hooks:
       - id: pytest
         name: pytest
-        entry: python -m pytest -q --tb=short
-        language: python
-        additional_dependencies: [pytest]
+        entry: uv run pytest -q --tb=short
+        language: system
         types: [python]
         pass_filenames: false
         always_run: true

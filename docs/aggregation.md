@@ -17,7 +17,7 @@ pytest --collect-only \
 ```
 
 > [!NOTE]
-> We use `--collect-only` to avoid running tests during aggregation. The plugin intercepts the session finish hook to perform aggregation instead.
+> We use `--collect-only` so that pytest performs collection and runs its terminal summary hooks without executing any tests. The plugin performs aggregation in the `pytest_terminal_summary` hook when `--llm-aggregate-dir` is set, which lets aggregation run once after collection without introducing a separate pytest command.
 
 ## Configuration Options
 
