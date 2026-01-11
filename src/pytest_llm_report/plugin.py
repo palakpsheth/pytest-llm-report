@@ -315,7 +315,7 @@ def pytest_terminal_summary(
                 out = io.StringIO()
                 val = cov.report(file=out)
                 coverage_percent = round(val, 2)
-        except Exception as e:
+        except (ImportError, OSError, ValueError) as e:
             warnings.warn(
                 f"Failed to compute coverage percentage from .coverage file: {e}",
                 stacklevel=2,
