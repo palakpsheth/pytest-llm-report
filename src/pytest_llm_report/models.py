@@ -119,6 +119,7 @@ class TestCaseResult:
     captured_stdout: str | None = None
     captured_stderr: str | None = None
     requirements: list[str] = field(default_factory=list)
+    __test__ = False
 
     def to_dict(self) -> dict:
         """Convert to dictionary for JSON serialization."""

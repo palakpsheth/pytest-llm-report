@@ -47,6 +47,7 @@ class TestCollector:
     collection_errors: list[CollectionError] = field(default_factory=list)
     collected_count: int = 0
     deselected_count: int = 0
+    __test__ = False
 
     def handle_collection_report(self, report: pytest.CollectReport) -> None:
         """Handle a collection report.
