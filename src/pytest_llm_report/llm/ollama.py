@@ -185,6 +185,7 @@ class OllamaProvider(LlmProvider):
                     confidence=0.8,  # Default confidence for successful parse
                 )
         except json.JSONDecodeError:
+            # Fall through to return error annotation below
             pass
 
         return LlmAnnotation(error="Failed to parse LLM response as JSON")
