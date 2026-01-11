@@ -19,6 +19,8 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from pytest_llm_report.models import (
+    CoverageEntry,
+    LlmAnnotation,
     ReportRoot,
     RunMeta,
     Summary,
@@ -117,6 +119,20 @@ class Aggregator:
                         # Handle potential field discrepancies
                         if "llm_opt_out" not in t_data:
                             t_data["llm_opt_out"] = False
+
+                        # Convert coverage dicts to CoverageEntry objects
+                        if "coverage" in t_data and t_data["coverage"]:
+                            t_data["coverage"] = [
+                                CoverageEntry(**c) if isinstance(c, dict) else c
+                                for c in t_data["coverage"]
+                            ]
+
+                        # Convert llm_annotation dict to LlmAnnotation object
+                        if "llm_annotation" in t_data and t_data["llm_annotation"]:
+                            ann_data = t_data["llm_annotation"]
+                            if isinstance(ann_data, dict):
+                                t_data["llm_annotation"] = LlmAnnotation(**ann_data)
+
                         tests.append(TestCaseResult(**t_data))
 
                     reports.append(

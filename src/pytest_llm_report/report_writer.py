@@ -153,11 +153,11 @@ class ReportWriter:
 
         # Write JSON
         if self.config.report_json:
-            self._write_json(report, self.config.report_json)
+            self.write_json(report, self.config.report_json)
 
         # Write HTML
         if self.config.report_html:
-            self._write_html(report, self.config.report_html)
+            self.write_html(report, self.config.report_html)
 
         return report
 
@@ -234,7 +234,7 @@ class ReportWriter:
 
         return summary
 
-    def _write_json(self, report: ReportRoot, path: str) -> None:
+    def write_json(self, report: ReportRoot, path: str) -> None:
         """Write JSON report to file.
 
         Args:
@@ -270,7 +270,7 @@ class ReportWriter:
             )
         )
 
-    def _write_html(self, report: ReportRoot, path: str) -> None:
+    def write_html(self, report: ReportRoot, path: str) -> None:
         """Write HTML report to file.
 
         Args:
