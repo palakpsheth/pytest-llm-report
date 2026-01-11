@@ -31,6 +31,8 @@ jobs:
         run: uv sync --all-extras
 
       - name: Run tests
+        id: pytest
+        continue-on-error: true
         run: |
           mkdir -p reports
           uv run pytest \
@@ -40,6 +42,9 @@ jobs:
             --cov-fail-under=90 \
             --llm-report-json=reports/pytest_llm_report.json \
             --llm-aggregate-run-id="${{ github.run_id }}-py${{ matrix.python-version }}"
+          exit_code=$?
+          echo "exit_code=${exit_code}" >> "${GITHUB_OUTPUT}"
+          exit 0
 
       - name: Upload coverage
         uses: codecov/codecov-action@v5
@@ -50,10 +55,15 @@ jobs:
 
       - name: Upload report artifact
         uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: report-py${{ matrix.python-version }}
           path: reports/pytest_llm_report.json
           retention-days: 7
+
+      - name: Fail if tests failed
+        if: steps.pytest.outputs.exit_code != '0'
+        run: exit 1
 
   lint:
     runs-on: ubuntu-latest
@@ -78,7 +88,7 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     # Run on main push OR pull request
-    if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || github.event_name == 'pull_request'
+    if: always() && ((github.ref == 'refs/heads/main' && github.event_name == 'push') || github.event_name == 'pull_request')
     permissions:
       contents: write  # Required to push to gh-pages branch
       pull-requests: write # Required to post comments
