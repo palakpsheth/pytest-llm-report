@@ -166,7 +166,14 @@ class TestAggregator:
 
         # Create a mock latest summary with coverage
         latest_summary = Summary(
-            total=6, passed=1, failed=1, skipped=1, xfailed=1, xpassed=1, error=1, coverage_total_percent=85.5
+            total=6,
+            passed=1,
+            failed=1,
+            skipped=1,
+            xfailed=1,
+            xpassed=1,
+            error=1,
+            coverage_total_percent=85.5,
         )
         summary = aggregator._recalculate_summary(tests, latest_summary)
 
