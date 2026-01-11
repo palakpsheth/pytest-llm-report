@@ -60,3 +60,4 @@ Open `report.html` in a browser to see:
 - [Configuration](configuration.md) - All options
 - [Coverage Setup](coverage.md) - Coverage contexts explained
 - [LLM Providers](providers.md) - Add AI annotations
+- [Troubleshooting](troubleshooting.md) - Common issues and solutions

@@ -2,11 +2,13 @@
 
 Thank you for your interest in contributing!
 
+For full documentation, see: [palakpsheth.github.io/pytest-llm-report](https://palakpsheth.github.io/pytest-llm-report/)
+
 ## Development Setup
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/pytest-llm-report.git
+git clone https://github.com/palakpsheth/pytest-llm-report.git
 cd pytest-llm-report
 
 # Install with dev dependencies

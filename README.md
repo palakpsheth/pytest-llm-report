@@ -43,11 +43,24 @@ provider = "none"  # "none", "ollama", or "litellm"
 report_json = "reports/pytest_llm_report.json"
 ```
 
+## Documentation
+
+📖 **Full documentation**: [palakpsheth.github.io/pytest-llm-report](https://palakpsheth.github.io/pytest-llm-report/)
+
 ## Requirements
 
 - Python 3.11+
 - pytest >= 7.0.0
 - pytest-cov >= 4.0.0
+
+## Contributing
+
+Contributions are welcome! Please see:
+
+- [Contributing Guide](CONTRIBUTING.md) - Development setup and guidelines
+- [Code of Conduct](CODE_OF_CONDUCT.md) - Community guidelines
+- [Security Policy](SECURITY.md) - Reporting vulnerabilities
+- [Changelog](CHANGELOG.md) - Version history
 
 ## License
 

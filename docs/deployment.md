@@ -12,7 +12,7 @@ This guide covers publishing pytest-llm-report to PyPI and setting up CI/CD.
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/pytest-llm-report.git
+git clone https://github.com/palakpsheth/pytest-llm-report.git
 cd pytest-llm-report
 
 # Create virtual environment and install
