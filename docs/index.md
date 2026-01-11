@@ -21,6 +21,7 @@ pytest --cov=my_pkg --cov-context=test --llm-report=report.html
 - **Local or cloud LLM** support (Ollama, OpenAI, Anthropic)
 - **Privacy-first** - LLM is disabled by default
 - **CI/CD ready** - artifacts for pipelines
+- **Aggregation** - Combine reports from multiple runs (see [Aggregation](aggregation.md))
 
 ## Documentation
 

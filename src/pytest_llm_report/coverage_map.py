@@ -44,13 +44,18 @@ class CoverageMapper:
         self.config = config
         self.warnings: list[ReportWarning] = []
 
-    def map_coverage(self) -> dict[str, list[CoverageEntry]]:
+    def map_coverage(
+        self, data: CoverageData | None = None
+    ) -> dict[str, list[CoverageEntry]]:
         """Map coverage data to per-test entries.
+
+        Args:
+            data: Optional CoverageData to use instead of loading from disk.
 
         Returns:
             Dictionary mapping nodeids to coverage entries.
         """
-        coverage_data = self._load_coverage_data()
+        coverage_data = data or self._load_coverage_data()
         if coverage_data is None:
             return {}
 
@@ -76,25 +81,32 @@ class CoverageMapper:
             return None
 
         coverage_file = Path.cwd() / ".coverage"
+        print(f"DEBUG: CoverageMapper cwd: {Path.cwd()}")
+        print(
+            f"DEBUG: Checking for coverage file: {coverage_file}, Exists: {coverage_file.exists()}"
+        )
 
         # Check for parallel mode files
         parallel_files = list(glob.glob(".coverage.*"))
+        print(f"DEBUG: Parallel files found: {parallel_files}")
 
         if not coverage_file.exists() and not parallel_files:
+            print("DEBUG: No coverage files found, returning None")
             self.warnings.append(make_warning(WarningCode.W001_NO_COVERAGE).to_dict())
             return None
 
         try:
-            data = CoverageData()
-
             # Load main coverage file if exists
             if coverage_file.exists():
-                data.read_file(coverage_file)
+                data = CoverageData(basename=str(coverage_file))
+                data.read()
+            else:
+                data = CoverageData()
 
             # Combine parallel files (xdist mode)
             for pfile in parallel_files:
-                pdata = CoverageData()
-                pdata.read_file(pfile)
+                pdata = CoverageData(basename=pfile)
+                pdata.read()
                 data.update(pdata)
 
             return data
@@ -108,19 +120,15 @@ class CoverageMapper:
             return None
 
     def _extract_contexts(self, data: CoverageData) -> dict[str, list[CoverageEntry]]:
-        """Extract per-test coverage from coverage data.
-
-        Args:
-            data: CoverageData instance.
-
-        Returns:
-            Dictionary mapping nodeids to coverage entries.
-        """
+        """Extract per-test coverage from coverage data."""
         result: dict[str, list[CoverageEntry]] = {}
 
         # Get all measured files
         try:
             measured_files = data.measured_files()
+            print(
+                f"DEBUG: measured_files count: {len(measured_files) if measured_files else 0}"
+            )
         except AttributeError:
             # Older coverage.py API
             measured_files = getattr(data, "_lines", {}).keys()
@@ -134,12 +142,19 @@ class CoverageMapper:
             try:
                 contexts = data.contexts_by_lineno(path)
                 if contexts:
-                    has_contexts = True
-                    break
+                    # check if contexts are not empty strings
+                    non_empty = [c for lines in contexts.values() for c in lines if c]
+                    if non_empty:
+                        has_contexts = True
+                        print(
+                            f"DEBUG: Found non-empty contexts in {path}: {non_empty[0]}"
+                        )
+                        break
             except Exception:
                 continue
 
         if not has_contexts:
+            print("DEBUG: No contexts found in measured files")
             self.warnings.append(make_warning(WarningCode.W002_NO_CONTEXTS).to_dict())
             return result
 

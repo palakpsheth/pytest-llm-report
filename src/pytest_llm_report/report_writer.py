@@ -99,6 +99,7 @@ class ReportWriter:
         self,
         tests: list[TestCaseResult],
         coverage: dict[str, list] | None = None,
+        coverage_percent: float | None = None,
         collection_errors: list[CollectionError] | None = None,
         exit_code: int = 0,
         start_time: datetime | None = None,
@@ -128,6 +129,8 @@ class ReportWriter:
 
         # Build summary
         summary = self._build_summary(tests)
+        if coverage_percent is not None:
+            summary.coverage_total_percent = coverage_percent
 
         # Warn if no tests were collected
         if summary.total == 0:

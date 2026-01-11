@@ -76,9 +76,22 @@ include = [
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = ["-ra", "-q"]
+addopts = [
+    "-ra",
+    "-q",
+    "--cov=src/pytest_llm_report",
+    "--cov-context=test",
+    "--cov-report=",
+    "--llm-report=reports/pytest_llm_report.html",
+    "--llm-report-json=reports/pytest_llm_report.json",
+]
 pythonpath = ["src"]
 norecursedirs = ["tests/fixtures"]
+
+[tool.pytest_llm_report]
+provider = "none"
+omit_tests_from_coverage = true
+include_phase = "run"
 
 [tool.coverage.run]
 source = ["src/pytest_llm_report"]

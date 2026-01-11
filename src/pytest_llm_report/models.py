@@ -367,10 +367,11 @@ class Summary:
     xpassed: int = 0
     error: int = 0
     total_duration: float = 0.0
+    coverage_total_percent: float | None = None
 
     def to_dict(self) -> dict:
         """Convert to dictionary for JSON serialization."""
-        return {
+        result = {
             "total": self.total,
             "passed": self.passed,
             "failed": self.failed,
@@ -380,6 +381,9 @@ class Summary:
             "error": self.error,
             "total_duration": self.total_duration,
         }
+        if self.coverage_total_percent is not None:
+            result["coverage_total_percent"] = self.coverage_total_percent
+        return result
 
 
 @dataclass

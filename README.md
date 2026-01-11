@@ -12,7 +12,7 @@ Human-friendly pytest test reports with optional LLM annotations.
   - **Key assertions**: Critical checks performed
 - HTML and JSON output formats
 - Optional PDF generation
-- Aggregation across multiple test runs
+- Aggregation across multiple test runs (see [Aggregation](docs/aggregation.md))
 
 ## Installation
 

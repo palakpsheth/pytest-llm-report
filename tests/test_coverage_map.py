@@ -17,15 +17,19 @@ class TestCoverageMapper:
 
     def test_map_coverage_no_coverage_file(self):
         """Should return empty dict when no coverage file."""
+        from unittest.mock import patch
+
         config = Config()
         mapper = CoverageMapper(config)
 
-        # This will generate a warning since there's no .coverage file
-        result = mapper.map_coverage()
+        # Mock Path.exists to return False and glob to return empty
+        with patch("pytest_llm_report.coverage_map.Path.exists", return_value=False):
+            with patch("pytest_llm_report.coverage_map.glob.glob", return_value=[]):
+                result = mapper.map_coverage()
 
-        assert result == {}
-        # Should have at least one warning
-        assert len(mapper.warnings) >= 1
+                assert result == {}
+                # Should have at least one warning
+                assert len(mapper.warnings) >= 1
 
     def test_get_warnings(self):
         """Should return list of warnings."""

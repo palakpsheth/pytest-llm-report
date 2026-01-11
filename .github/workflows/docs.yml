@@ -1,3 +1,7 @@
+# Docs workflow for documentation-only changes
+# Note: Main branch pushes that trigger CI will deploy docs via the CI report job
+# This workflow handles docs-only changes that don't trigger CI tests
+
 name: Docs
 
 on:
@@ -6,6 +10,10 @@ on:
     paths:
       - 'docs/**'
       - 'mkdocs.yml'
+      # Exclude paths that trigger CI (which handles its own docs build)
+      - '!src/**'
+      - '!tests/**'
+      - '!pyproject.toml'
   workflow_dispatch:
 
 permissions:

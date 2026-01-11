@@ -230,26 +230,52 @@ def pytest_configure(config: pytest.Config) -> None:
     config.stash[_enabled_key] = bool(cfg.report_html or cfg.report_json)
 
 
-def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:
-    """Generate the report at session end.
+def pytest_terminal_summary(
+    terminalreporter: pytest.TerminalReporter, exitstatus: int, config: pytest.Config
+) -> None:
+    """Generate the report at end of session.
 
     Args:
-        session: pytest session.
+        terminalreporter: pytest terminal reporter.
         exitstatus: pytest exit status code.
+        config: pytest configuration.
     """
     # Skip report generation on workers (xdist)
-    if hasattr(session.config, "workerinput"):
+    if hasattr(config, "workerinput"):
         return
 
     # Skip if report not enabled
-    if not session.config.stash.get(_enabled_key, False):
+    if not config.stash.get(_enabled_key, False):
+        return
+
+    # Skip if report not enabled
+    if not config.stash.get(_enabled_key, False):
         return
 
     # Get config (already validated)
-    cfg: Config = session.config.stash[_config_key]
+    cfg: Config = config.stash[_config_key]
+
+    # Handle aggregation if configured
+    if cfg.aggregate_dir:
+        from pytest_llm_report.aggregation import Aggregator
+
+        aggregator = Aggregator(cfg)
+        report = aggregator.aggregate()
+
+        # If aggregation was successful, write it and return
+        if report:
+            from pytest_llm_report.report_writer import ReportWriter
+
+            writer = ReportWriter(cfg)
+
+            if cfg.report_json:
+                writer._write_json(report, cfg.report_json)
+            if cfg.report_html:
+                writer._write_html(report, cfg.report_html)
+            return
 
     # Get collector if it was set up
-    collector = session.config.stash.get(_collector_key, None)
+    collector = config.stash.get(_collector_key, None)
     if collector is None:
         # Collector wasn't set up, create one with empty results
         from pytest_llm_report.collector import TestCollector
@@ -260,16 +286,49 @@ def pytest_sessionfinish(session: pytest.Session, exitstatus: int) -> None:
     tests = collector.get_results()
     collection_errors = collector.get_collection_errors()
 
-    # Get start/end times from session
-    start_time = session.config.stash.get(_start_time_key, None) or datetime.now(UTC)
+    # Get start/end times from config (stored early) or use now
+    start_time = config.stash.get(_start_time_key, None) or datetime.now(UTC)
     end_time = datetime.now(UTC)
 
     # Write report
+    from pytest_llm_report.coverage_map import CoverageMapper
     from pytest_llm_report.report_writer import ReportWriter
+
+    # Collect coverage data if available
+    coverage = None
+    coverage_percent = None
+    try:
+        mapper = CoverageMapper(cfg)
+        # Load from disk (pytest-cov should have saved it by now)
+        coverage = mapper.map_coverage()
+
+        # Calculate total coverage percentage
+        try:
+            from pathlib import Path
+
+            from coverage import Coverage
+
+            # Use the .coverage file in cwd (or repo root)
+            cov_file = Path.cwd() / ".coverage"
+            if cov_file.exists():
+                cov = Coverage(data_file=str(cov_file))
+                cov.load()
+
+                import io
+
+                out = io.StringIO()
+                val = cov.report(file=out)
+                coverage_percent = round(val, 2)
+        except Exception:
+            pass
+    except Exception as e:
+        warnings.warn(f"Failed to map coverage: {e}", stacklevel=2)
 
     writer = ReportWriter(cfg)
     writer.write_report(
         tests=tests,
+        coverage=coverage,
+        coverage_percent=coverage_percent,
         collection_errors=collection_errors,
         exit_code=exitstatus,
         start_time=start_time,

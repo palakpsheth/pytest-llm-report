@@ -1,0 +1,194 @@
+# SPDX-License-Identifier: MIT
+"""Aggregation logic for merging multiple test reports.
+
+This module handles reading multiple JSON reports and combining them
+into a single report based on the configured policy.
+
+Policies:
+- latest: Keep only the latest result for each test (by start time)
+- merge: Merge results, keeping all outcomes (useful for flaky tests)
+- all: Keep all results as separate entries
+"""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+from typing import TYPE_CHECKING
+
+from pytest_llm_report.models import (
+    ReportRoot,
+    RunMeta,
+    Summary,
+    TestCaseResult,
+)
+
+if TYPE_CHECKING:
+    from pytest_llm_report.options import Config
+
+
+class Aggregator:
+    """Aggregates multiple test reports."""
+
+    def __init__(self, config: Config) -> None:
+        """Initialize aggregator.
+
+        Args:
+            config: Plugin configuration.
+        """
+        self.config = config
+
+    def aggregate(self) -> ReportRoot | None:
+        """Perform aggregation.
+
+        Returns:
+            Aggregated ReportRoot, or None if no reports found.
+        """
+        if not self.config.aggregate_dir:
+            return None
+
+        reports = self._load_reports()
+        if not reports:
+            return None
+
+        if self.config.aggregate_policy == "all":
+            # For "all", we just concatenate tests
+            aggregated_tests = []
+            for r in reports:
+                aggregated_tests.extend(r.tests)
+        elif self.config.aggregate_policy == "merge":
+            # For "merge", we group by nodeid and merge results
+            aggregated_tests = self._merge_tests(reports)
+        else:
+            # Default "latest": group by nodeid and pick latest start time
+            aggregated_tests = self._latest_tests(reports)
+
+        # Create aggregated report
+        # We use the metadata from the latest run, but update counts
+        latest_report = max(reports, key=lambda r: r.run_meta.start_time)
+        meta = latest_report.run_meta
+
+        # Update metadata to reflect aggregation
+        meta.is_aggregated = True
+        meta.run_count = len(reports)
+        meta.collected_count = len(aggregated_tests)
+        meta.selected_count = len(aggregated_tests)
+
+        # Recalculate summary
+        summary = self._recalculate_summary(aggregated_tests)
+
+        return ReportRoot(
+            run_meta=meta,
+            summary=summary,
+            tests=aggregated_tests,
+            collection_errors=[],  # We don't aggregate collection errors for now
+            warnings=[],
+            artifacts=[],
+        )
+
+    def _load_reports(self) -> list[ReportRoot]:
+        """Load all JSON reports from aggregate_dir.
+
+        Returns:
+            List of ReportRoot objects.
+        """
+        dir_path = Path(self.config.aggregate_dir)
+        if not dir_path.exists():
+            return []
+
+        reports = []
+        for file_path in dir_path.glob("*.json"):
+            try:
+                with open(file_path, encoding="utf-8") as f:
+                    data = json.load(f)
+                    # Basic validation - check for required fields
+                    if "run_meta" not in data or "tests" not in data:
+                        continue
+
+                    # Convert dict to models (simplified)
+                    # Note: We're doing a partial reconstruction here
+                    # Ideally we'd have a from_dict method on models
+                    meta = RunMeta(**data["run_meta"])
+
+                    tests = []
+                    for t_data in data["tests"]:
+                        # Handle potential field discrepancies
+                        if "llm_opt_out" not in t_data:
+                            t_data["llm_opt_out"] = False
+                        tests.append(TestCaseResult(**t_data))
+
+                    reports.append(
+                        ReportRoot(
+                            run_meta=meta,
+                            summary=Summary(**data["summary"]),
+                            tests=tests,
+                            collection_errors=[],
+                            warnings=[],
+                            artifacts=[],
+                        )
+                    )
+            except Exception:
+                # Skip invalid files
+                continue
+
+        return reports
+
+    def _latest_tests(self, reports: list[ReportRoot]) -> list[TestCaseResult]:
+        """Keep only the latest result for each test.
+
+        Args:
+            reports: List of reports.
+
+        Returns:
+            List of unique latest tests.
+        """
+        # Map nodeid to (start_time, test)
+        latest_map: dict[str, tuple[str, TestCaseResult]] = {}
+
+        for report in reports:
+            run_start = report.run_meta.start_time
+            for test in report.tests:
+                if test.nodeid not in latest_map:
+                    latest_map[test.nodeid] = (run_start, test)
+                else:
+                    curr_start, _ = latest_map[test.nodeid]
+                    if run_start > curr_start:
+                        latest_map[test.nodeid] = (run_start, test)
+
+        return sorted([t for _, t in latest_map.values()], key=lambda x: x.nodeid)
+
+    def _merge_tests(self, reports: list[ReportRoot]) -> list[TestCaseResult]:
+        """Merge results for the same test.
+
+        Note: For now this is similar to latest, but in future could combine histories.
+        Currently implementation falls back to latest logic as deep merging
+        is complex without a history list in TestCaseResult.
+        """
+        return self._latest_tests(reports)
+
+    def _recalculate_summary(self, tests: list[TestCaseResult]) -> Summary:
+        """Recalculate summary stats for aggregated tests.
+
+        Args:
+            tests: List of tests.
+
+        Returns:
+            Updated Summary.
+        """
+        summary = Summary(total=len(tests))
+        for test in tests:
+            summary.total_duration += test.duration
+            if test.outcome == "passed":
+                summary.passed += 1
+            elif test.outcome == "failed":
+                summary.failed += 1
+            elif test.outcome == "skipped":
+                summary.skipped += 1
+            elif test.outcome == "xfailed":
+                summary.xfailed += 1
+            elif test.outcome == "xpassed":
+                summary.xpassed += 1
+            elif test.outcome == "error":
+                summary.error += 1
+
+        return summary

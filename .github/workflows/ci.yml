@@ -7,6 +7,9 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -29,11 +32,14 @@ jobs:
 
       - name: Run tests
         run: |
+          mkdir -p reports
           uv run pytest \
             --cov=pytest_llm_report \
             --cov-context=test \
             --cov-report=xml \
-            --cov-fail-under=90
+            --cov-fail-under=90 \
+            --llm-report-json=reports/pytest_llm_report.json \
+            --llm-aggregate-run-id="${{ github.run_id }}-py${{ matrix.python-version }}"
 
       - name: Upload coverage
         uses: codecov/codecov-action@v5
@@ -41,6 +47,13 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: false
+
+      - name: Upload report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: report-py${{ matrix.python-version }}
+          path: reports/pytest_llm_report.json
+          retention-days: 7
 
   lint:
     runs-on: ubuntu-latest
@@ -58,6 +71,60 @@ jobs:
 
       - name: Format check
         run: uv run ruff format --check .
+
+  # Aggregate reports and deploy to GitHub Pages (main branch only)
+  # This job builds both docs AND test reports to avoid overwriting each other
+  report:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Build docs
+        run: uv tool run --from mkdocs-material mkdocs build
+
+      - name: Download all report artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: report-py*
+          path: collected-reports/
+          merge-multiple: true
+
+      - name: Generate aggregated report
+        run: |
+          mkdir -p site/reports
+          uv run pytest --collect-only -q \
+            --llm-aggregate-dir=collected-reports/ \
+            --llm-aggregate-policy=merge \
+            --llm-report=site/reports/index.html \
+            --llm-report-json=site/reports/latest.json
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: site/
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
 
   publish:
     needs: [test, lint]
