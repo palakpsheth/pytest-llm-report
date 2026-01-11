@@ -108,6 +108,30 @@ class TestOutcomes:
         data = json.loads(report_path.read_text())
         assert data["summary"]["xfailed"] == 1
 
+    def test_multiple_xfail_outcomes(self, pytester: pytest.Pytester):
+        """Multiple xfailed tests are recorded in the report."""
+        pytester.makepyfile(
+            """
+            import pytest
+
+            @pytest.mark.xfail
+            def test_xfail_one():
+                assert False
+
+            @pytest.mark.xfail
+            def test_xfail_two():
+                assert False
+            """
+        )
+
+        report_path = pytester.path / "report.json"
+        pytester.runpytest(f"--llm-report-json={report_path}")
+
+        data = json.loads(report_path.read_text())
+        assert data["summary"]["xfailed"] == 2
+        outcomes = [test["outcome"] for test in data["tests"]]
+        assert outcomes == ["xfailed", "xfailed"]
+
 
 class TestParametrization:
     """Tests for parameterized tests."""

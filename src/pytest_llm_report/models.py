@@ -15,7 +15,7 @@ Component Contracts:
 """
 
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, ClassVar
 
 # Schema version for report format compatibility
 SCHEMA_VERSION = "1.0.0"
@@ -119,6 +119,7 @@ class TestCaseResult:
     captured_stdout: str | None = None
     captured_stderr: str | None = None
     requirements: list[str] = field(default_factory=list)
+    __test__: ClassVar[bool] = False
 
     def to_dict(self) -> dict:
         """Convert to dictionary for JSON serialization."""
