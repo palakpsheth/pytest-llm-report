@@ -1,7 +1,6 @@
 # SPDX-License-Identifier: MIT
 """Tests for pytest_llm_report.collector module."""
 
-
 from pytest_llm_report.collector import TestCollector
 from pytest_llm_report.models import CollectionError
 from pytest_llm_report.options import Config
