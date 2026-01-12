@@ -13,6 +13,7 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 120
     strategy:
       fail-fast: false
       matrix:
@@ -33,20 +34,33 @@ jobs:
       - name: Install Playwright browsers
         run: uv run playwright install chromium
 
+      - name: Install Ollama
+        if: github.ref == 'refs/heads/main'
+        run: curl -fsSL https://ollama.com/install.sh | sh
+
+      - name: Start Ollama
+        if: github.ref == 'refs/heads/main'
+        run: ollama serve &
+
+      - name: Pull LLM Model
+        if: github.ref == 'refs/heads/main'
+        run: |
+          sleep 5
+          ollama pull llama3.2:1b
+
       - name: Run tests
         id: pytest
         continue-on-error: true
-        env:
-          GEMINI_API_TOKEN: ${{ secrets.GEMINI_API_TOKEN }}
         run: |
           mkdir -p reports
           json_report="reports/pytest_llm_report-py${{ matrix.python-version }}.json"
           pdf_report="reports/pytest_llm_report-py${{ matrix.python-version }}.pdf"
           llm_args=()
-          if [ -n "${GEMINI_API_TOKEN}" ] && [ "${{ matrix.python-version }}" = "3.12" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
-            llm_args+=(
-              -o llm_report_provider=gemini
-              -o llm_report_model=all
+          if [ "${{ matrix.python-version }}" = "3.12" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
+             llm_args+=(
+              -o llm_report_provider=ollama
+              -o llm_report_model=llama3.2:1b
+              -o llm_report_context_mode=minimal
             )
           fi
           uv run pytest \

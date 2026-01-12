@@ -70,15 +70,43 @@ class OllamaProvider(LlmProvider):
                 error="httpx not installed. Install with: pip install httpx"
             )
 
+        import time
+
         # Build prompt
         prompt = self._build_prompt(test, test_source, context_files)
 
-        # Make request
-        try:
-            response = self._call_ollama(prompt)
-            return self._parse_response(response)
-        except Exception as e:
-            return LlmAnnotation(error=str(e))
+        max_retries = 3
+        last_error = None
+
+        for attempt in range(max_retries):
+            try:
+                response = self._call_ollama(prompt)
+                annotation = self._parse_response(response)
+
+                # If we got a valid annotation (no error), return it
+                if not annotation.error:
+                    return annotation
+
+                # If error is about JSON parsing, we can retry
+                last_error = annotation.error
+                if "Failed to parse LLM response as JSON" not in annotation.error:
+                    return annotation  # Don't retry other errors? Or maybe we should?
+                    # Actually, for transient LLM weirdness, retrying is good.
+                    # But if it's "context too long" or something, maybe not.
+                    # For now, let's retry mainly on JSON errors or network flakiness.
+
+                # If we are here, we have a JSON error, so we retry
+
+            except Exception as e:
+                last_error = str(e)
+                # Network errors etc.
+
+            if attempt < max_retries - 1:
+                time.sleep(2 * (attempt + 1))  # 2s, 4s, 6s backoff
+
+        return LlmAnnotation(
+            error=f"Failed after {max_retries} retries. Last error: {last_error}"
+        )
 
     def is_available(self) -> bool:
         """Check if Ollama is available.

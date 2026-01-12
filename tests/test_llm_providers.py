@@ -636,6 +636,9 @@ class TestOllamaProvider:
 
     def test_annotate_handles_call_error(self, monkeypatch: pytest.MonkeyPatch):
         """Ollama provider surfaces call errors in annotation."""
+        # Mock sleep to avoid waiting during retries
+        monkeypatch.setattr("time.sleep", lambda s: None)
+
         config = Config(provider="ollama")
         provider = OllamaProvider(config)
         test = CaseResult(nodeid="tests/test_sample.py::test_case", outcome="passed")
@@ -647,7 +650,7 @@ class TestOllamaProvider:
         monkeypatch.setattr(provider, "_call_ollama", fake_call)
         annotation = provider.annotate(test, "def test_case(): assert True")
 
-        assert annotation.error == "boom"
+        assert annotation.error == "Failed after 3 retries. Last error: boom"
 
     def test_parse_response_json_in_code_fence(self):
         """Ollama provider extracts JSON from markdown code fences."""
