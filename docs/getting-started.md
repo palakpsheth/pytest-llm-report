@@ -51,6 +51,16 @@ addopts = [
 pytest --llm-report=report.html
 ```
 
+#### Optional: PDF output
+
+PDF output uses Playwright to render the HTML report.
+
+```bash
+pip install playwright
+playwright install chromium
+pytest --llm-report=report.html --llm-pdf=report.pdf
+```
+
 ### 3. View the report
 
 Open `report.html` in a browser to see:

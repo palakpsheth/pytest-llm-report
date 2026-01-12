@@ -13,6 +13,7 @@ Component Contract:
 from __future__ import annotations
 
 import hashlib
+import importlib.util
 import json
 import os
 import platform
@@ -24,6 +25,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from pytest_llm_report.__about__ import __version__
+from pytest_llm_report.errors import WARNING_MESSAGES, WarningCode
 from pytest_llm_report.models import (
     ArtifactEntry,
     ReportRoot,
@@ -164,6 +166,10 @@ class ReportWriter:
         # Write HTML
         if self.config.report_html:
             self.write_html(report, self.config.report_html)
+
+        # Write PDF
+        if self.config.report_pdf:
+            self.write_pdf(report, self.config.report_pdf)
 
         return report
 
@@ -306,6 +312,69 @@ class ReportWriter:
                 size_bytes=len(html_bytes),
             )
         )
+
+    def write_pdf(self, report: ReportRoot, path: str) -> None:
+        """Write PDF report to file using Playwright."""
+        if importlib.util.find_spec("playwright.sync_api") is None:
+            self.warnings.append(
+                ReportWarning(
+                    code=WarningCode.W204_PDF_PLAYWRIGHT_MISSING.value,
+                    message=WARNING_MESSAGES[WarningCode.W204_PDF_PLAYWRIGHT_MISSING],
+                )
+            )
+            return
+
+        from playwright.sync_api import sync_playwright
+
+        self._ensure_dir(path)
+
+        html_path, is_temp = self._resolve_pdf_html_source(report)
+        try:
+            with sync_playwright() as playwright:
+                browser = playwright.chromium.launch()
+                page = browser.new_page()
+                page.goto(html_path.resolve().as_uri())
+                page.wait_for_load_state("networkidle")
+                page.pdf(path=path, format="A4", print_background=True)
+                browser.close()
+        except Exception as exc:
+            self.warnings.append(
+                ReportWarning(
+                    code=WarningCode.W201_OUTPUT_PATH_INVALID.value,
+                    message=WARNING_MESSAGES[WarningCode.W201_OUTPUT_PATH_INVALID],
+                    detail=str(exc),
+                )
+            )
+            return
+        finally:
+            if is_temp:
+                html_path.unlink(missing_ok=True)
+
+        pdf_bytes = Path(path).read_bytes()
+        sha256 = compute_sha256(pdf_bytes)
+        self.artifacts.append(
+            ArtifactEntry(
+                path=path,
+                sha256=sha256,
+                size_bytes=len(pdf_bytes),
+            )
+        )
+
+    def _resolve_pdf_html_source(self, report: ReportRoot) -> tuple[Path, bool]:
+        if self.config.report_html:
+            html_path = Path(self.config.report_html)
+            if html_path.exists():
+                return html_path, False
+
+        from pytest_llm_report.render import render_html
+
+        html_content = render_html(report)
+        fd, temp_path = tempfile.mkstemp(suffix=".html")
+        try:
+            os.write(fd, html_content.encode("utf-8"))
+        finally:
+            os.close(fd)
+        return Path(temp_path), True
 
     def _ensure_dir(self, path: str) -> None:
         """Ensure the directory for a path exists.

@@ -180,6 +180,17 @@ class TestGeminiProvider:
             return FakeGeminiResponse(payload)
 
         def fake_get(url, **_kwargs):
+            if "models?" in url:
+                captured["models_url"] = url
+                models_payload = {
+                    "models": [
+                        {
+                            "name": "models/gemini-1.5-pro",
+                            "supportedGenerationMethods": ["generateContent"],
+                        }
+                    ]
+                }
+                return FakeGeminiResponse(models_payload)
             captured["rate_url"] = url
             rate_limits_payload = {
                 "rateLimits": [
@@ -207,6 +218,7 @@ class TestGeminiProvider:
         assert "gemini-1.5-pro" in captured["url"]
         assert "key=test-token" in captured["url"]
         assert "gemini-1.5-pro" in captured["rate_url"]
+        assert "models?key=test-token" in captured["models_url"]
         assert captured["json"]["system_instruction"]["parts"][0]["text"]
         assert (
             "tests/test_auth.py::test_login"
@@ -284,6 +296,16 @@ class TestGeminiProvider:
             return next(responses)
 
         def fake_get(url, **_kwargs):
+            if "models?" in url:
+                models_payload = {
+                    "models": [
+                        {
+                            "name": "models/gemini-1.5-pro",
+                            "supportedGenerationMethods": ["generateContent"],
+                        }
+                    ]
+                }
+                return FakeGeminiResponse(models_payload)
             rate_limits_payload = {
                 "rateLimits": [{"name": "requestsPerMinute", "value": 60}]
             }
@@ -327,6 +349,16 @@ class TestGeminiProvider:
             return FakeGeminiResponse(payload)
 
         def fake_get(url, **_kwargs):
+            if "models?" in url:
+                models_payload = {
+                    "models": [
+                        {
+                            "name": "models/gemini-1.5-pro",
+                            "supportedGenerationMethods": ["generateContent"],
+                        }
+                    ]
+                }
+                return FakeGeminiResponse(models_payload)
             rate_limits_payload = {
                 "rateLimits": [{"name": "requestsPerDay", "value": 1}]
             }
@@ -348,6 +380,67 @@ class TestGeminiProvider:
             second.error == "Gemini requests-per-day limit reached; skipping annotation"
         )
         assert len(calls) == 1
+
+    def test_annotate_rotates_models_on_daily_limit(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Gemini provider rotates models when daily limit is exhausted."""
+        calls = []
+
+        def fake_post(url, **kwargs):
+            calls.append((url, kwargs))
+            response_data = {
+                "scenario": "Checks login",
+                "why_needed": "Stops regressions",
+                "key_assertions": ["status ok", "redirect"],
+            }
+            payload = {
+                "candidates": [
+                    {"content": {"parts": [{"text": json.dumps(response_data)}]}}
+                ]
+            }
+            return FakeGeminiResponse(payload)
+
+        def fake_get(url, **_kwargs):
+            if "models?" in url:
+                models_payload = {
+                    "models": [
+                        {
+                            "name": "models/gemini-1.5-pro",
+                            "supportedGenerationMethods": ["generateContent"],
+                        },
+                        {
+                            "name": "models/gemini-1.5-flash",
+                            "supportedGenerationMethods": ["generateContent"],
+                        },
+                    ]
+                }
+                return FakeGeminiResponse(models_payload)
+            if "gemini-1.5-pro" in url:
+                rate_limits_payload = {
+                    "rateLimits": [{"name": "requestsPerDay", "value": 1}]
+                }
+                return FakeGeminiResponse(rate_limits_payload)
+            rate_limits_payload = {
+                "rateLimits": [{"name": "requestsPerDay", "value": 1}]
+            }
+            return FakeGeminiResponse(rate_limits_payload)
+
+        fake_httpx = SimpleNamespace(post=fake_post, get=fake_get)
+        monkeypatch.setitem(__import__("sys").modules, "httpx", fake_httpx)
+        monkeypatch.setenv("GEMINI_API_TOKEN", "test-token")
+
+        config = Config(provider="gemini", model="all")
+        provider = GeminiProvider(config)
+        test = CaseResult(nodeid="tests/test_auth.py::test_login", outcome="passed")
+
+        first = provider.annotate(test, "def test_login(): assert True")
+        second = provider.annotate(test, "def test_login(): assert True")
+
+        assert first.error is None
+        assert second.error is None
+        assert "gemini-1.5-pro" in calls[0][0]
+        assert "gemini-1.5-flash" in calls[1][0]
 
 
 class TestOllamaProvider:
