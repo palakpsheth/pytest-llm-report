@@ -1,23 +1,27 @@
 // pytest-llm-report interactive features
 
 // Global state for filters
-let showPassed = true;
+const activeStatuses = new Set(['passed', 'failed', 'skipped', 'xfailed', 'xpassed', 'error']);
 
 // Filter tests based on search input and outcome filters
 function filterTests() {
     const query = document.getElementById('searchInput').value.toLowerCase();
     document.querySelectorAll('.test-row').forEach(row => {
         const nodeid = row.querySelector('.test-name').textContent.toLowerCase();
-        const isPassed = row.classList.contains('passed');
+        const statusMatch = Array.from(activeStatuses).some(status => row.classList.contains(status));
         const matchesSearch = nodeid.includes(query);
-        const matchesFilter = showPassed || !isPassed;
-        row.classList.toggle('hidden', !matchesSearch || !matchesFilter);
+        row.classList.toggle('hidden', !matchesSearch || !statusMatch);
     });
 }
 
-// Toggle visibility of passed tests
-function togglePassed(checkbox) {
-    showPassed = checkbox.checked;
+// Toggle visibility of status filters
+function toggleStatus(checkbox) {
+    const status = checkbox.dataset.status;
+    if (checkbox.checked) {
+        activeStatuses.add(status);
+    } else {
+        activeStatuses.delete(status);
+    }
     filterTests();
 }
 

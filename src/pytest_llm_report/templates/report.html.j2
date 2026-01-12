@@ -69,7 +69,32 @@
         <!-- Filters -->
         <div class="filters">
             <input type="text" id="searchInput" class="filter-input" placeholder="Search tests..." onkeyup="filterTests()">
-            <label><input type="checkbox" onchange="togglePassed(this)" checked> Show Passed</label>
+            <div class="filter-statuses" aria-label="Filter by status">
+                <label class="filter-chip passed">
+                    <input type="checkbox" data-status="passed" checked onchange="toggleStatus(this)">
+                    Passed
+                </label>
+                <label class="filter-chip failed">
+                    <input type="checkbox" data-status="failed" checked onchange="toggleStatus(this)">
+                    Failed
+                </label>
+                <label class="filter-chip skipped">
+                    <input type="checkbox" data-status="skipped" checked onchange="toggleStatus(this)">
+                    Skipped
+                </label>
+                <label class="filter-chip xfailed">
+                    <input type="checkbox" data-status="xfailed" checked onchange="toggleStatus(this)">
+                    XFailed
+                </label>
+                <label class="filter-chip xpassed">
+                    <input type="checkbox" data-status="xpassed" checked onchange="toggleStatus(this)">
+                    XPassed
+                </label>
+                <label class="filter-chip error">
+                    <input type="checkbox" data-status="error" checked onchange="toggleStatus(this)">
+                    Error
+                </label>
+            </div>
         </div>
 
         <!-- Test List -->
