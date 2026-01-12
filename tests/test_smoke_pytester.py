@@ -6,6 +6,7 @@ and validate that reports are generated correctly.
 """
 
 import json
+import re
 
 import pytest
 
@@ -72,6 +73,76 @@ class TestBasicReportGeneration:
         content = report_path.read_text()
         assert "<html" in content
         assert "test_simple" in content
+
+    def test_html_summary_counts_all_statuses(self, pytester: pytest.Pytester):
+        """HTML summary counts should include all statuses."""
+        pytester.makepyfile(
+            """
+            import pytest
+
+            def test_pass():
+                assert True
+
+            def test_fail():
+                assert False
+
+            @pytest.mark.skip(reason="skip me")
+            def test_skip():
+                assert True
+
+            @pytest.mark.xfail(reason="expected failure")
+            def test_xfail():
+                assert False
+
+            @pytest.mark.xfail(reason="unexpected pass")
+            def test_xpass():
+                assert True
+
+            @pytest.fixture
+            def boom():
+                raise RuntimeError("boom")
+
+            def test_error(boom):
+                assert True
+            """
+        )
+
+        report_path = pytester.path / "report.html"
+        pytester.runpytest(f"--llm-report={report_path}")
+
+        html = report_path.read_text()
+
+        def assert_summary(labels: list[str], expected: int) -> None:
+            for label in labels:
+                card_pattern = (
+                    rf"<div class=\"summary-card[^\"]*\">\s*"
+                    rf"<div class=\"count\">(\d+)</div>\s*"
+                    rf"<div class=\"label\">{label}</div>"
+                )
+                match = re.search(card_pattern, html, re.S)
+                if match:
+                    assert int(match.group(1)) == expected
+                    return
+
+                fallback_pattern = (
+                    rf"<div class=\"summary-item\"[^>]*>\s*"
+                    rf"<div class=\"count\">(\d+)</div>\s*"
+                    rf"{label}</div>"
+                )
+                match = re.search(fallback_pattern, html, re.S)
+                if match:
+                    assert int(match.group(1)) == expected
+                    return
+            joined_labels = ", ".join(labels)
+            raise AssertionError(f"missing summary label: {joined_labels}")
+
+        assert_summary(["Total Tests", "Total"], 6)
+        assert_summary(["Passed"], 1)
+        assert_summary(["Failed"], 1)
+        assert_summary(["Skipped"], 1)
+        assert_summary(["XFailed"], 1)
+        assert_summary(["XPassed"], 1)
+        assert_summary(["Errors", "Error"], 1)
 
 
 class TestOutcomes:

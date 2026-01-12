@@ -123,3 +123,19 @@ class TestRenderFallbackHtml:
 
         assert "Tests login flow" in html
         assert "Prevents auth bypass" in html
+
+    def test_renders_xpass_summary(self):
+        """Should include xfailed/xpassed summary entries."""
+        report = ReportRoot(
+            run_meta=RunMeta(end_time="2024-01-01"),
+            summary=Summary(total=2, xfailed=1, xpassed=1),
+            tests=[
+                TestCaseResult(nodeid="test::xfail", outcome="xfailed"),
+                TestCaseResult(nodeid="test::xpass", outcome="xpassed"),
+            ],
+        )
+
+        html = render_fallback_html(report)
+
+        assert "XFailed" in html
+        assert "XPassed" in html

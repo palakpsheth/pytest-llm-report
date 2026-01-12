@@ -103,11 +103,10 @@ class TestCollector:
                 result.error_message = self._extract_error(report)
             elif report.skipped:
                 # Skip during setup (e.g., @pytest.mark.skip)
-                if hasattr(report, "wasxfail"):
-                    result.outcome = "xfailed"
-                else:
-                    result.outcome = "skipped"
-                    result.error_message = self._extract_skip_reason(report)
+                result.outcome = "skipped"
+                result.error_message = self._extract_skip_reason(report)
+
+            self._apply_xfail_outcome(report, result)
         elif report.when == "call":
             result.duration = report.duration
             result.phase = "call"
@@ -119,15 +118,10 @@ class TestCollector:
                 result.error_message = self._extract_error(report)
             elif report.skipped:
                 # Check for xfail
-                if hasattr(report, "wasxfail"):
-                    result.outcome = "xfailed"
-                else:
-                    result.outcome = "skipped"
-                    result.error_message = self._extract_skip_reason(report)
+                result.outcome = "skipped"
+                result.error_message = self._extract_skip_reason(report)
 
-            # Handle xpassed (xfail that passed)
-            if hasattr(report, "wasxfail") and report.passed:
-                result.outcome = "xpassed"
+            self._apply_xfail_outcome(report, result)
 
             # Check for rerun (pytest-rerunfailures)
             if hasattr(report, "rerun"):
@@ -204,6 +198,22 @@ class TestCollector:
         req_marker = item.get_closest_marker("requirement")
         if req_marker:
             result.requirements = list(req_marker.args)
+
+    def _apply_xfail_outcome(self, report: TestReport, result: TestCaseResult) -> None:
+        """Apply xfail/xpass outcomes based on pytest report flags.
+
+        Args:
+            report: pytest test report.
+            result: Test result to update.
+        """
+        if not hasattr(report, "wasxfail"):
+            return
+
+        if report.passed:
+            result.outcome = "xpassed"
+            result.error_message = None
+        else:
+            result.outcome = "xfailed"
 
     def _extract_error(self, report: TestReport) -> str:
         """Extract a short error message from a report.

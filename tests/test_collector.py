@@ -97,3 +97,53 @@ class TestCollectorCollectionErrors:
         error = CollectionError(nodeid="test_bad.py", message="SyntaxError")
         assert error.nodeid == "test_bad.py"
         assert error.message == "SyntaxError"
+
+
+class TestCollectorXfailHandling:
+    """Tests for xfail/xpass handling in collector."""
+
+    def test_xfail_failed_is_xfailed(self):
+        """xfail failures should be recorded as xfailed."""
+        from types import SimpleNamespace
+
+        config = Config()
+        collector = TestCollector(config=config)
+
+        report = SimpleNamespace(
+            nodeid="test_xfail.py::test_expected_fail",
+            when="call",
+            passed=False,
+            failed=True,
+            skipped=False,
+            duration=0.01,
+            longrepr="AssertionError",
+            wasxfail="expected failure",
+        )
+
+        collector.handle_runtest_logreport(report)
+
+        result = collector.results[report.nodeid]
+        assert result.outcome == "xfailed"
+
+    def test_xfail_passed_is_xpassed(self):
+        """xfail passes should be recorded as xpassed."""
+        from types import SimpleNamespace
+
+        config = Config()
+        collector = TestCollector(config=config)
+
+        report = SimpleNamespace(
+            nodeid="test_xfail.py::test_unexpected_pass",
+            when="call",
+            passed=True,
+            failed=False,
+            skipped=False,
+            duration=0.01,
+            longrepr="",
+            wasxfail="expected failure",
+        )
+
+        collector.handle_runtest_logreport(report)
+
+        result = collector.results[report.nodeid]
+        assert result.outcome == "xpassed"
