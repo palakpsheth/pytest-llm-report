@@ -4,7 +4,7 @@
 
 !!! info "Direct Links"
     - [Open the latest CI-generated report](https://palakpsheth.github.io/pytest-llm-report/reports/index.html){ target="_blank" }
-    - [Open the latest CI-generated PDF report](https://palakpsheth.github.io/pytest-llm-report/reports/latest.pdf){ target="_blank" }
+    - [Open the latest CI-generated PDF report](reports/latest.pdf){ target="_blank" }
     - [Open the static example report](example-report/index.html){ target="_blank" }
 
 The embedded report above is the latest CI-generated run. The static example showcases a mix of passed, failed, skipped, xfailed, xpassed, and error results.
