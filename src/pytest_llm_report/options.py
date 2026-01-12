@@ -118,8 +118,8 @@ class Config:
     llm_param_value_max_chars: int = 100
 
     # LLM execution controls
-    llm_max_tests: int = 100
-    llm_max_concurrency: int = 4
+    llm_max_tests: int = 0  # 0 = no limit (annotate all tests)
+    llm_max_concurrency: int = 1
     llm_requests_per_minute: int = 5
     llm_timeout_seconds: int = 30
     llm_cache_ttl_seconds: int = 86400  # 24 hours
@@ -201,8 +201,8 @@ class Config:
         # Validate numeric ranges
         if self.llm_context_bytes < 1000:
             errors.append("llm_context_bytes must be at least 1000")
-        if self.llm_max_tests < 1:
-            errors.append("llm_max_tests must be at least 1")
+        if self.llm_max_tests < 0:
+            errors.append("llm_max_tests must be 0 (no limit) or positive")
         if self.llm_requests_per_minute < 1:
             errors.append("llm_requests_per_minute must be at least 1")
         if self.llm_timeout_seconds < 1:

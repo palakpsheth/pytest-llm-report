@@ -58,6 +58,8 @@ class TestRenderFallbackHtml:
             run_meta=RunMeta(
                 end_time="2024-01-01T12:00:00",
                 duration=5.0,
+                plugin_version="0.1.0",
+                repo_version="1.2.3",
             ),
             summary=Summary(total=2, passed=1, failed=1),
             tests=[
@@ -79,6 +81,10 @@ class TestRenderFallbackHtml:
         assert "test::failed" in html
         assert "PASSED" in html
         assert "FAILED" in html
+        assert "PASSED" in html
+        assert "FAILED" in html
+        assert "Plugin:</strong> v0.1.0" in html
+        assert "Repo:</strong> v1.2.3" in html
 
     def test_renders_coverage(self):
         """Should include coverage information."""

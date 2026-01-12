@@ -227,7 +227,13 @@ def render_fallback_html(report: ReportRoot) -> str:
     <h1>Test Report</h1>
     <div class="meta">
         Generated at {report.run_meta.end_time} | Duration: {format_duration(report.run_meta.duration)} |
-        Schema v{report.schema_version}
+        Schema v{report.schema_version}<br>
+        <strong>Plugin:</strong> v{report.run_meta.plugin_version}
+        {f"({report.run_meta.plugin_git_sha})" if report.run_meta.plugin_git_sha else ""}
+        {"[dirty]" if report.run_meta.plugin_git_dirty else ""}<br>
+        <strong>Repo:</strong> v{report.run_meta.repo_version or "unknown"}
+        {f"({report.run_meta.repo_git_sha})" if report.run_meta.repo_git_sha else ""}
+        {"[dirty]" if report.run_meta.repo_git_dirty else ""}
     </div>
     <div class="summary">
         <div class="summary-item"><div class="count">{summary.total}</div>Total</div>

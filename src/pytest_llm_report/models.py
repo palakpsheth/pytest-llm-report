@@ -322,8 +322,13 @@ class RunMeta:
     plugin_version: str = ""
     python_version: str = ""
     platform: str = ""
-    git_sha: str | None = None
-    git_dirty: bool | None = None
+    git_sha: str | None = None  # Deprecated in favor of repo_git_sha
+    git_dirty: bool | None = None  # Deprecated in favor of repo_git_dirty
+    repo_version: str | None = None
+    repo_git_sha: str | None = None
+    repo_git_dirty: bool | None = None
+    plugin_git_sha: str | None = None
+    plugin_git_dirty: bool | None = None
     config_hash: str | None = None
     pytest_invocation: list[str] | None = None
     pytest_config_summary: dict[str, str] | None = None
@@ -364,6 +369,14 @@ class RunMeta:
         if self.git_sha:
             result["git_sha"] = self.git_sha
             result["git_dirty"] = self.git_dirty
+        if self.repo_version:
+            result["repo_version"] = self.repo_version
+        if self.repo_git_sha:
+            result["repo_git_sha"] = self.repo_git_sha
+            result["repo_git_dirty"] = self.repo_git_dirty
+        if self.plugin_git_sha:
+            result["plugin_git_sha"] = self.plugin_git_sha
+            result["plugin_git_dirty"] = self.plugin_git_dirty
         if self.config_hash:
             result["config_hash"] = self.config_hash
         if self.pytest_invocation is not None:

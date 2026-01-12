@@ -21,6 +21,9 @@ class FakeProvider:
     def is_available(self) -> bool:
         return True
 
+    def is_local(self) -> bool:
+        return False
+
     def annotate(self, test, *_args, **_kwargs):  # noqa: ANN001 - test helper
         self.calls.append(test.nodeid)
         return self.annotation

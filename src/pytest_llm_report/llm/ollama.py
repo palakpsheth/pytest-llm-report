@@ -100,6 +100,14 @@ class OllamaProvider(LlmProvider):
 
         return self._available
 
+    def is_local(self) -> bool:
+        """Ollama runs locally - no rate limiting needed.
+
+        Returns:
+            True, as Ollama is a local provider.
+        """
+        return True
+
     def _build_prompt(
         self,
         test: TestCaseResult,

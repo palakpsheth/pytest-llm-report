@@ -31,6 +31,17 @@ llm_report_provider = "none"
 llm_report_model = "llama3.2"
 llm_report_context_mode = "minimal"
 llm_report_requests_per_minute = 5
+
+# Limit number of tests to annotate (0 = no limit, default)
+# Set this to limit costs/time when running with many tests
+llm_max_tests = 50
+
+# Max number of concurrent LLM requests (default: 4)
+# Lower this if experiencing timeouts or system instability with local LLM
+llm_max_concurrency = 4
+
+# Tip: Local providers (like "ollama") skip rate limiting automatically
+# so you can increase concurrency to speed up annotations.
 ```
 
 ## LLM Provider Settings
@@ -100,6 +111,24 @@ def test_requirement():
 | `minimal` | Test code only, no additional context |
 | `balanced` | Test code + covered files (limited) |
 | `complete` | Test code + all covered files up to limits |
+
+## Hardware Optimization Tips
+
+### Local CPU-Only Setup (e.g., Intel i7/i9, no GPU)
+
+Running LLMs locally on CPU is computationally intensive. To maximize performance and avoid system instability:
+
+1.  **Set Concurrency to 1**:
+    ```toml
+    llm_max_concurrency = 1
+    ```
+    Parallel requests on CPU often lead to resource contention (thrashing), making total execution *slower* than sequential processing.
+
+2.  **Skip Rate Limits**:
+    Ensure the provider is detected as local (the plugin does this automatically for `ollama`) to avoid artificial delays.
+
+3.  **Model Selection**:
+    Use smaller, quantized models like `llama3.2` (3B) or `qwen2.5:1.5b` for faster inference times.
 
 ## Environment Variables
 

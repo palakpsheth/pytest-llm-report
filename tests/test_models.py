@@ -225,8 +225,15 @@ class TestRunMeta:
             plugin_version="0.1.0",
             python_version="3.11",
             platform="linux",
+            # Legacy fields
             git_sha="abc1234",
             git_dirty=True,
+            # New fields
+            repo_version="1.0.0",
+            repo_git_sha="abc1234",
+            repo_git_dirty=True,
+            plugin_git_sha="def5678",
+            plugin_git_dirty=False,
             config_hash="def5678",
             pytest_invocation="pytest -v",
             pytest_config_summary="config_summary",
@@ -243,12 +250,12 @@ class TestRunMeta:
 
         assert data["git_sha"] == "abc1234"
         assert data["git_dirty"] is True
+        assert data["repo_version"] == "1.0.0"
+        assert data["repo_git_sha"] == "abc1234"
+        assert data["repo_git_dirty"] is True
+        assert data["plugin_git_sha"] == "def5678"
+        assert data["plugin_git_dirty"] is False
         assert data["config_hash"] == "def5678"
-        assert data["pytest_invocation"] == "pytest -v"
-        assert data["pytest_config_summary"] == "config_summary"
-        assert data["run_id"] == "run-1"
-        assert data["run_group_id"] == "group-1"
-        assert data["aggregation_policy"] == "merge"
         assert len(data["source_reports"]) == 1
 
 

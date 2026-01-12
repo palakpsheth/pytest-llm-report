@@ -55,8 +55,11 @@ def compute_sha256(content: bytes) -> str:
     return hashlib.sha256(content).hexdigest()
 
 
-def get_git_info() -> tuple[str | None, bool | None]:
-    """Get git commit SHA and dirty flag.
+def get_git_info(path: str | Path = ".") -> tuple[str | None, bool | None]:
+    """Get git commit SHA and dirty flag for a path.
+
+    Args:
+        path: Path to run git command in.
 
     Returns:
         Tuple of (sha, dirty) or (None, None) if git is unavailable.
@@ -64,21 +67,74 @@ def get_git_info() -> tuple[str | None, bool | None]:
     try:
         sha = subprocess.check_output(
             ["git", "rev-parse", "HEAD"],
+            cwd=str(path),
             stderr=subprocess.DEVNULL,
             text=True,
-            timeout=5,  # Prevent hanging on slow/network-mounted repos
+            timeout=5,
         ).strip()
 
-        # Check for uncommitted changes
         status = subprocess.check_output(
             ["git", "status", "--porcelain"],
+            cwd=str(path),
             stderr=subprocess.DEVNULL,
             text=True,
-            timeout=5,  # Prevent hanging
+            timeout=5,
         )
         dirty = bool(status.strip())
-
         return sha, dirty
+    except Exception:
+        return None, None
+
+
+def get_repo_version(root_path: Path) -> str | None:
+    """Get version of the analyzed repository from pyproject.toml.
+
+    Args:
+        root_path: Root directory of the repository.
+
+    Returns:
+        Version string or None.
+    """
+    toml_path = root_path / "pyproject.toml"
+    if not toml_path.exists():
+        return None
+
+    try:
+        # Simple parsing to avoid extra dependencies (tomli/tomllib)
+        # We look for `version = "x.y.z"` or `[project] ... version = "x.y.z"`
+        content = toml_path.read_text(encoding="utf-8")
+        for line in content.splitlines():
+            line = line.strip()
+            if line.startswith("version") and "=" in line:
+                # version = "1.0.0" -> 1.0.0
+                return line.split("=", 1)[1].strip().strip("\"'")
+    except Exception:
+        pass
+    return None
+
+
+def get_plugin_git_info() -> tuple[str | None, bool | None]:
+    """Get git info for the plugin itself.
+
+    Tries to:
+    1. Import _git_info (generated at build time).
+    2. Check git repo relative to this file (dev mode).
+
+    Returns:
+        Tuple of (sha, dirty).
+    """
+    # 1. Try build-time generated module
+    try:
+        from pytest_llm_report import _git_info
+
+        return _git_info.GIT_SHA, _git_info.GIT_DIRTY
+    except ImportError:
+        pass
+
+    # 2. Try git runtime (dev mode)
+    try:
+        here = Path(__file__).parent
+        return get_git_info(here)
     except Exception:
         return None, None
 
@@ -198,7 +254,12 @@ class ReportWriter:
         end = end_time or now
         duration = (end - start).total_seconds()
 
-        git_sha, git_dirty = get_git_info()
+        # repo_root should be set by plugin, but fallback to "." if not
+        root = self.config.repo_root or Path(".")
+        repo_sha, repo_dirty = get_git_info(root)
+        repo_version = get_repo_version(root)
+
+        plugin_sha, plugin_dirty = get_plugin_git_info()
 
         return RunMeta(
             start_time=start.isoformat(),
@@ -208,8 +269,15 @@ class ReportWriter:
             plugin_version=__version__,
             python_version=sys.version.split()[0],
             platform=platform.platform(),
-            git_sha=git_sha,
-            git_dirty=git_dirty,
+            # Legacy fields (mapped to repo info for compat)
+            git_sha=repo_sha,
+            git_dirty=repo_dirty,
+            # New distinct fields
+            repo_version=repo_version,
+            repo_git_sha=repo_sha,
+            repo_git_dirty=repo_dirty,
+            plugin_git_sha=plugin_sha,
+            plugin_git_dirty=plugin_dirty,
             exit_code=exit_code,
             collected_count=len(tests),
             selected_count=len(tests),

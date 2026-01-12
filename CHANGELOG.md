@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Dark mode support for HTML reports (auto-detects system preference via `prefers-color-scheme`)
 - CLI help text now includes usage examples for `--llm-report`, `--llm-report-json`, and `--llm-pdf`
+- Concurrent LLM annotation support via `llm_max_concurrency` (default: 4 for cloud, 2 for local recommended)
+- Performance optimization for local providers (e.g., Ollama) to skip artificial rate limits
+- `llm_max_tests` now defaults to 0 (no limit) instead of 100
 
 ### Changed
 

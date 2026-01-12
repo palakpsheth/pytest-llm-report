@@ -94,9 +94,9 @@ class TestConfigValidation:
         assert len(errors) == 1
         assert "llm_context_bytes" in errors[0]
 
-    def test_max_tests_too_small_produces_error(self):
-        """Max tests below 1 should produce error."""
-        config = Config(llm_max_tests=0)
+    def test_max_tests_negative_produces_error(self):
+        """Negative max tests should produce error (0 means no limit)."""
+        config = Config(llm_max_tests=-1)
         errors = config.validate()
         assert len(errors) == 1
         assert "llm_max_tests" in errors[0]

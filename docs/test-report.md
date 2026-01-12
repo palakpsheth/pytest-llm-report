@@ -50,7 +50,10 @@ The report header shows:
 - Total test count and breakdown by status
 - Overall test suite duration
 - Total coverage percentage (when available)
-- Run metadata (timestamp, Python version, etc.)
+- Run metadata (timestamp, Python version, configuration)
+- **Versioning Info**:
+  - Plugin version (with Git SHA and dirty status)
+  - Analyzed Repository version (from `pyproject.toml` + Git SHA and dirty status)
 
 ### Source Coverage Summary
 

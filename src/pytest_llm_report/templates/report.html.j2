@@ -21,7 +21,17 @@
                 <div class="meta">
                     Run ID: {{ report.run_meta.run_id or "N/A" }} &bull;
                     Generated: {{ report.run_meta.end_time[:19].replace('T', ' ') }} &bull;
-                    Duration: {{ report.run_meta.duration | duration }}
+                    Duration: {{ report.run_meta.duration | duration }}<br>
+                    <strong>Plugin:</strong> v{{ report.run_meta.plugin_version }}
+                    {% if report.run_meta.plugin_git_sha %}
+                        ({{ report.run_meta.plugin_git_sha }})
+                        {% if report.run_meta.plugin_git_dirty %}[dirty]{% endif %}
+                    {% endif %}<br>
+                    <strong>Repo:</strong> v{{ report.run_meta.repo_version or "unknown" }}
+                    {% if report.run_meta.repo_git_sha %}
+                        ({{ report.run_meta.repo_git_sha }})
+                        {% if report.run_meta.repo_git_dirty %}[dirty]{% endif %}
+                    {% endif %}
                 </div>
             </div>
             {% if report.summary.coverage_total_percent is not none %}
@@ -101,7 +111,7 @@
         <div class="test-list">
             {% for test in report.tests %}
             <div class="test-row {{ test.outcome | outcome_class }}" data-status="{{ test.outcome }}">
-                <details>
+                <details open>
                     <summary class="test-header">
                         <span class="status-badge status-{{ test.outcome }}">{{ test.outcome | upper }}</span>
                         <span class="test-name">{{ test.nodeid }}</span>

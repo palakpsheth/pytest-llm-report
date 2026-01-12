@@ -79,6 +79,17 @@ class LlmProvider(ABC):
         """
         return self.config.model or ""
 
+    def is_local(self) -> bool:
+        """Check if this is a local provider (no rate limiting needed).
+
+        Local providers like Ollama run on the user's machine and don't need
+        rate limiting to avoid API quotas.
+
+        Returns:
+            True if the provider runs locally.
+        """
+        return False
+
 
 @dataclass(frozen=True)
 class LlmRateLimits:
