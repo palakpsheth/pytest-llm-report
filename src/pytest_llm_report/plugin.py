@@ -371,7 +371,7 @@ def pytest_terminal_summary(
     if cfg.is_llm_enabled():
         from pytest_llm_report.llm.annotator import annotate_tests
 
-        annotate_tests(tests, cfg)
+        annotate_tests(tests, cfg, progress=terminalreporter.write_line)
 
     writer = ReportWriter(cfg)
     writer.write_report(

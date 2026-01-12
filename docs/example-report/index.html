@@ -574,6 +574,12 @@
                             <div class="llm-annotation">
                                 <p><strong>Scenario:</strong> Creating a new user returns an ID and persists the record.</p>
                                 <p><strong>Why Needed:</strong> Ensures the API workflow maintains data integrity during onboarding.</p>
+                                <p><strong>Key assertions:</strong></p>
+                                <ul>
+                                    <li>API response includes a non-null user ID.</li>
+                                    <li>Stored profile fields match the request payload.</li>
+                                    <li>Repository returns the newly created user on lookup.</li>
+                                </ul>
                             </div>
                         </div>
                         <div class="detail-section">
@@ -610,6 +616,19 @@
 E   assert 'unique constraint' in "duplicate key value violates unique constraint \"users_email_key\""</div>
                         </div>
                         <div class="detail-section">
+                            <div class="detail-title">AI Assessment</div>
+                            <div class="llm-annotation">
+                                <p><strong>Scenario:</strong> Creating a user with a duplicate email should fail with a uniqueness error.</p>
+                                <p><strong>Why Needed:</strong> Prevents data integrity issues and enforces account identity constraints.</p>
+                                <p><strong>Key assertions:</strong></p>
+                                <ul>
+                                    <li>Repository insert raises a constraint violation.</li>
+                                    <li>Error message references the email uniqueness key.</li>
+                                    <li>No duplicate record is persisted.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="detail-section">
                             <div class="detail-title">Coverage</div>
                             <div class="coverage-list">
                                 <div class="coverage-item" style="padding: 0.5rem 1rem;">
@@ -636,6 +655,19 @@ E   assert 'unique constraint' in "duplicate key value violates unique constrain
                             <div class="detail-title">Error</div>
                             <div class="error-message">Skipped: billing API not enabled in staging</div>
                         </div>
+                        <div class="detail-section">
+                            <div class="detail-title">AI Assessment</div>
+                            <div class="llm-annotation">
+                                <p><strong>Scenario:</strong> Invoice generation requires a feature flag before enabling billing flows.</p>
+                                <p><strong>Why Needed:</strong> Ensures billing code paths remain gated until rollout is complete.</p>
+                                <p><strong>Key assertions:</strong></p>
+                                <ul>
+                                    <li>Test is skipped when the billing flag is disabled.</li>
+                                    <li>Skip reason references the staging configuration.</li>
+                                    <li>No billing API calls are executed.</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </details>
             </div>
@@ -654,6 +686,19 @@ E   assert 'unique constraint' in "duplicate key value violates unique constrain
                         <div class="detail-section">
                             <div class="detail-title">Error</div>
                             <div class="error-message">XFailed: Known issue with headless chromium rendering in CI</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-title">AI Assessment</div>
+                            <div class="llm-annotation">
+                                <p><strong>Scenario:</strong> PDF exports should render a footer when using the report generator.</p>
+                                <p><strong>Why Needed:</strong> Keeps regression coverage on PDF layout even while CI rendering is flaky.</p>
+                                <p><strong>Key assertions:</strong></p>
+                                <ul>
+                                    <li>Rendered PDF contains the expected footer string.</li>
+                                    <li>Footer is positioned at the bottom of the page.</li>
+                                    <li>Failure is expected until CI rendering stabilizes.</li>
+                                </ul>
+                            </div>
                         </div>
                         <div class="detail-section">
                             <div class="detail-title">Coverage</div>
@@ -684,6 +729,19 @@ E   assert 'unique constraint' in "duplicate key value violates unique constrain
                     </summary>
                     <div class="test-details">
                         <div class="detail-section">
+                            <div class="detail-title">AI Assessment</div>
+                            <div class="llm-annotation">
+                                <p><strong>Scenario:</strong> Legacy refresh tokens still renew sessions despite format differences.</p>
+                                <p><strong>Why Needed:</strong> Protects compatibility for long-lived tokens during migration.</p>
+                                <p><strong>Key assertions:</strong></p>
+                                <ul>
+                                    <li>Legacy token parses without errors.</li>
+                                    <li>Refresh returns a valid access token.</li>
+                                    <li>Token expiry metadata is preserved.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="detail-section">
                             <div class="detail-title">Coverage</div>
                             <div class="coverage-list">
                                 <div class="coverage-item" style="padding: 0.5rem 1rem;">
@@ -710,6 +768,19 @@ E   assert 'unique constraint' in "duplicate key value violates unique constrain
                             <div class="detail-title">Error</div>
                             <div class="error-message">E   RuntimeError: SMTP credentials missing
 E   Aborting notification workflow</div>
+                        </div>
+                        <div class="detail-section">
+                            <div class="detail-title">AI Assessment</div>
+                            <div class="llm-annotation">
+                                <p><strong>Scenario:</strong> Digest email workflow requires SMTP credentials to send notifications.</p>
+                                <p><strong>Why Needed:</strong> Ensures missing credentials fail fast with a clear error.</p>
+                                <p><strong>Key assertions:</strong></p>
+                                <ul>
+                                    <li>Workflow checks for SMTP credentials at startup.</li>
+                                    <li>Missing credentials raise a runtime error.</li>
+                                    <li>No outbound email is attempted.</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </details>

@@ -41,8 +41,7 @@ jobs:
           if [ -n "${GEMINI_API_TOKEN}" ] && [ "${{ matrix.python-version }}" = "3.12" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
             llm_args+=(
               -o llm_report_provider=gemini
-              -o llm_report_model=gemma-3-27b-it
-              -o llm_report_requests_per_minute=29
+              -o llm_report_model=all
             )
           fi
           uv run pytest \
