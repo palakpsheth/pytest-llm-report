@@ -198,10 +198,10 @@ class TestReportWriterWithFiles:
         writer.write_report(tests)
 
         html = (tmp_path / "report.html").read_text()
-        assert "XFAILED" in html
-        assert "XFailed" in html
-        assert "XPASSED" in html
-        assert "XPassed" in html
+        assert '<div class="label">XFailed</div>' in html
+        assert '<div class="label">XPassed</div>' in html
+        assert '<span class="status-badge status-xfailed">XFAILED</span>' in html
+        assert '<span class="status-badge status-xpassed">XPASSED</span>' in html
 
     def test_creates_directory_if_missing(self, tmp_path):
         """Should create output directory if it doesn't exist."""
