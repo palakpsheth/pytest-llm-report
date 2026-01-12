@@ -13,7 +13,9 @@
             --text-secondary: #64748b;
             --border-color: #e2e8f0;
             --card-bg: #ffffff;
+            --surface-muted: #f1f5f9;
             --primary-color: #3b82f6;
+            color-scheme: light dark;
 
             /* Status Colors */
             --passed-bg: #dcfce7;
@@ -147,6 +149,12 @@
             border: 1px solid var(--border-color);
             border-radius: 0.375rem;
             font-size: 0.875rem;
+            background: var(--card-bg);
+            color: var(--text-primary);
+        }
+
+        .filter-input::placeholder {
+            color: var(--text-secondary);
         }
 
         /* Test List */
@@ -173,7 +181,7 @@
         }
 
         .test-header:hover {
-            background: #f8fafc;
+            background: var(--surface-muted);
         }
 
         .status-badge {
@@ -234,7 +242,7 @@
         .test-details {
             padding: 0 1rem 1rem 1rem;
             border-top: 1px solid var(--border-color);
-            background: #f8fafc;
+            background: var(--surface-muted);
         }
 
         .detail-section {
@@ -253,25 +261,25 @@
             font-family: monospace;
             font-size: 0.85rem;
             padding: 0.25rem 0;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
         }
 
         .llm-annotation {
-            background: white;
+            background: var(--card-bg);
             padding: 1rem;
             border-radius: 0.375rem;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border-color);
         }
 
         .error-message {
             font-family: monospace;
             color: var(--failed-text);
-            background: white;
+            background: var(--card-bg);
             padding: 1rem;
             border-radius: 0.375rem;
-            border: 1px solid #fee2e2;
+            border: 1px solid var(--failed-bg);
             white-space: pre-wrap;
             overflow-x: auto;
         }
@@ -294,6 +302,7 @@
                 --text-secondary: #94a3b8;
                 --border-color: #334155;
                 --card-bg: #1e293b;
+                --surface-muted: #0b1220;
                 --primary-color: #60a5fa;
 
                 /* Status Colors - Adjusted for dark mode */
@@ -307,40 +316,6 @@
                 --xfailed-text: #fdba74;
                 --error-bg: #7f1d1d;
                 --error-text: #fca5a5;
-            }
-
-            /* Override hardcoded white backgrounds */
-            .llm-annotation {
-                background: var(--card-bg);
-                border-color: var(--border-color);
-            }
-
-            .error-message {
-                background: var(--card-bg);
-                border-color: var(--failed-bg);
-            }
-
-            .test-details {
-                background: var(--bg-color);
-            }
-
-            .test-header:hover {
-                background: var(--card-bg);
-            }
-
-            .filter-input {
-                background: var(--card-bg);
-                color: var(--text-primary);
-                border-color: var(--border-color);
-            }
-
-            .filter-input::placeholder {
-                color: var(--text-secondary);
-            }
-
-            /* Coverage item borders in dark mode */
-            .coverage-item {
-                border-bottom-color: var(--border-color);
             }
 
             /* Adjust box shadows for dark mode */
