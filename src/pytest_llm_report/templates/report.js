@@ -8,7 +8,7 @@ function filterTests() {
     const query = document.getElementById('searchInput').value.toLowerCase();
     document.querySelectorAll('.test-row').forEach(row => {
         const nodeid = row.querySelector('.test-name').textContent.toLowerCase();
-        const statusMatch = Array.from(activeStatuses).some(status => row.classList.contains(status));
+        const statusMatch = row.dataset.status ? activeStatuses.has(row.dataset.status) : false;
         const matchesSearch = nodeid.includes(query);
         row.classList.toggle('hidden', !matchesSearch || !statusMatch);
     });
@@ -28,27 +28,6 @@ function toggleStatus(checkbox) {
 // Initialize interactive features after DOM is ready
 document.addEventListener('DOMContentLoaded', function () {
     'use strict';
-
-    // Filter by outcome (for button-based filtering if present)
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const filter = btn.dataset.filter;
-
-            // Update active state
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-
-            // Filter tests by outcome class
-            document.querySelectorAll('.test-row').forEach(test => {
-                if (filter === 'all') {
-                    test.classList.remove('hidden');
-                } else {
-                    const matchesFilter = test.classList.contains(filter);
-                    test.classList.toggle('hidden', !matchesFilter);
-                }
-            });
-        });
-    });
 
     // Toggle dark mode on preference
     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {

@@ -100,7 +100,7 @@
         <!-- Test List -->
         <div class="test-list">
             {% for test in report.tests %}
-            <div class="test-row {{ test.outcome | outcome_class }}">
+            <div class="test-row {{ test.outcome | outcome_class }}" data-status="{{ test.outcome }}">
                 <details>
                     <summary class="test-header">
                         <span class="status-badge status-{{ test.outcome }}">{{ test.outcome | upper }}</span>
@@ -134,7 +134,7 @@
                         {% if test.coverage %}
                         <div class="detail-section">
                             <div class="detail-title">Coverage</div>
-                            <div style="background: white; border-radius: 0.375rem; border: 1px solid #e2e8f0; overflow: hidden;">
+                            <div class="coverage-list">
                                 {% for cov in test.coverage %}
                                 <div class="coverage-item" style="padding: 0.5rem 1rem;">
                                     <span>{{ cov.file_path }}</span>
