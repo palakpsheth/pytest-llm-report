@@ -6,6 +6,9 @@ Welcome to pytest-llm-report, a pytest plugin for generating human-friendly test
     View the latest test report for this project:
 
     [🧪 Interactive Test Report](reports/index.html){ .md-button .md-button--primary }
+    [📄 Test Report Docs](test-report.md){ .md-button }
+
+Looking for more context? See the [Test Report](test-report.md) page for a live embed and a static example report.
 
 
 ## Quick Start
