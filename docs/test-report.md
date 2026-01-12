@@ -1,9 +1,9 @@
 # Test Report
 
-<iframe src="https://palakpsheth.github.io/pytest-llm-report/reports/index.html" style="width: 100%; height: 90vh; border: 1px solid #e2e8f0; border-radius: 0.5rem;" title="Interactive Test Report"></iframe>
+<iframe src="reports/index.html" style="width: 100%; height: 90vh; border: 1px solid #e2e8f0; border-radius: 0.5rem;" title="Interactive Test Report"></iframe>
 
 !!! info "Direct Links"
-    - [Open the latest CI-generated report](https://palakpsheth.github.io/pytest-llm-report/reports/index.html){ target="_blank" }
+    - [Open the latest CI-generated report](reports/index.html){ target="_blank" }
     - [Open the latest CI-generated PDF report](reports/latest.pdf){ target="_blank" }
     - [Open the static example report](example-report/index.html){ target="_blank" }
 
