@@ -277,3 +277,66 @@ progress {
 .hidden {
     display: none !important;
 }
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color: #0f172a;
+        --text-primary: #f1f5f9;
+        --text-secondary: #94a3b8;
+        --border-color: #334155;
+        --card-bg: #1e293b;
+        --primary-color: #60a5fa;
+
+        /* Status Colors - Adjusted for dark mode */
+        --passed-bg: #14532d;
+        --passed-text: #86efac;
+        --failed-bg: #7f1d1d;
+        --failed-text: #fca5a5;
+        --skipped-bg: #713f12;
+        --skipped-text: #fde047;
+        --xfailed-bg: #7c2d12;
+        --xfailed-text: #fdba74;
+        --error-bg: #7f1d1d;
+        --error-text: #fca5a5;
+    }
+
+    /* Override hardcoded white backgrounds */
+    .llm-annotation {
+        background: var(--card-bg);
+        border-color: var(--border-color);
+    }
+
+    .error-message {
+        background: var(--card-bg);
+        border-color: var(--failed-bg);
+    }
+
+    .test-details {
+        background: var(--bg-color);
+    }
+
+    .test-header:hover {
+        background: var(--card-bg);
+    }
+
+    .filter-input {
+        background: var(--card-bg);
+        color: var(--text-primary);
+        border-color: var(--border-color);
+    }
+
+    .filter-input::placeholder {
+        color: var(--text-secondary);
+    }
+
+    /* Coverage item borders in dark mode */
+    .coverage-item {
+        border-bottom-color: var(--border-color);
+    }
+
+    /* Adjust box shadows for dark mode */
+    .summary-card {
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+    }
+}

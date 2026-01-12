@@ -44,19 +44,19 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         "--llm-report",
         dest="llm_report_html",
         default=None,
-        help="Path for HTML report output",
+        help="Path for HTML report output. Example: --llm-report=reports/tests.html",
     )
     group.addoption(
         "--llm-report-json",
         dest="llm_report_json",
         default=None,
-        help="Path for JSON report output",
+        help="Path for JSON report output. Example: --llm-report-json=reports/tests.json",
     )
     group.addoption(
         "--llm-pdf",
         dest="llm_report_pdf",
         default=None,
-        help="Path for PDF report output (requires playwright)",
+        help="Path for PDF report (requires playwright). Example: --llm-pdf=reports/tests.pdf",
     )
     group.addoption(
         "--llm-evidence-bundle",

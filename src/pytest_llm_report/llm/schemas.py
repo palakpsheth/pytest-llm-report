@@ -1,13 +1,58 @@
 # SPDX-License-Identifier: MIT
 """LLM response schemas.
 
-Defines the expected JSON structure for LLM responses.
+Defines the expected JSON structure for LLM responses and utilities
+for extracting JSON from LLM outputs.
 """
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from typing import Any
+
+# Regex to match markdown code fences with optional language identifier
+# Matches ```json, ```JSON, or just ``` followed by content and closing ```
+_CODE_FENCE_PATTERN = re.compile(
+    r"```(?:json)?\s*(.*?)\s*```",
+    re.DOTALL | re.IGNORECASE,
+)
+
+
+def extract_json_from_response(response: str) -> str | None:
+    """Extract JSON from an LLM response, handling markdown code fences.
+
+    LLMs often wrap JSON responses in markdown code fences like:
+        ```json
+        {"key": "value"}
+        ```
+
+    This function handles that case and falls back to finding raw JSON braces.
+
+    Args:
+        response: Raw LLM response text.
+
+    Returns:
+        Extracted JSON string, or None if no JSON found.
+    """
+    if not response:
+        return None
+
+    # Try to find JSON inside code fences first
+    match = _CODE_FENCE_PATTERN.search(response)
+    if match:
+        content = match.group(1).strip()
+        # Validate it looks like JSON (starts with { or [)
+        if content.startswith("{") or content.startswith("["):
+            return content
+
+    # Fallback: find raw JSON braces
+    start = response.find("{")
+    end = response.rfind("}") + 1
+    if start >= 0 and end > start:
+        return response[start:end]
+
+    return None
 
 
 @dataclass
