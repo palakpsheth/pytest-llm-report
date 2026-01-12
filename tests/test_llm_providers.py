@@ -688,3 +688,58 @@ I hope this helps!"""
         assert annotation.scenario == "Verifies data"
         assert annotation.why_needed == "Catches bugs"
         assert annotation.key_assertions == ["a", "b"]
+
+    def test_annotate_fallbacks_on_context_length_error(
+        self, monkeypatch: pytest.MonkeyPatch
+    ):
+        """Ollama provider falls back to minimal context on 'context too long' error."""
+        monkeypatch.setattr("time.sleep", lambda s: None)
+
+        config = Config(provider="ollama")
+        provider = OllamaProvider(config)
+        test = CaseResult(nodeid="tests/test_sample.py::test_case", outcome="passed")
+        monkeypatch.setitem(__import__("sys").modules, "httpx", SimpleNamespace())
+
+        # Track calls to _build_prompt to verify context usage
+        original_build_prompt = provider._build_prompt
+        build_prompt_calls = []
+
+        def tracked_build_prompt(test, source, context):
+            build_prompt_calls.append(context)
+            return original_build_prompt(test, source, context)
+
+        monkeypatch.setattr(provider, "_build_prompt", tracked_build_prompt)
+
+        # Mock call_ollama to return error first, then success
+        call_count = 0
+
+        def fake_call(prompt: str) -> str:
+            nonlocal call_count
+            call_count += 1
+            if call_count == 1:
+                return "error"
+            return (
+                '{"scenario": "ok", "why_needed": "fix", "key_assertions": ["assert"]}'
+            )
+
+        monkeypatch.setattr(provider, "_call_ollama", fake_call)
+
+        # Mock parse_response to return the error object
+        original_parse = provider._parse_response
+
+        def fake_parse(response: str) -> LlmAnnotation:
+            if response == "error":
+                return LlmAnnotation(error="Context too long, please reduce it.")
+            return original_parse(response)
+
+        monkeypatch.setattr(provider, "_parse_response", fake_parse)
+
+        context_files = {"file1.py": "content"}
+        annotation = provider.annotate(test, "def test(): pass", context_files)
+
+        assert annotation.error is None
+        assert call_count == 2
+        # First call should have context, second should have None
+        assert len(build_prompt_calls) == 2
+        assert build_prompt_calls[0] == context_files
+        assert build_prompt_calls[1] is None

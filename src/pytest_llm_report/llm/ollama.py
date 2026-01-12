@@ -72,24 +72,29 @@ class OllamaProvider(LlmProvider):
 
         import time
 
-        # Build prompt
-        prompt = self._build_prompt(test, test_source, context_files)
-
+        current_context = context_files
         max_retries = 3
         last_error = None
 
         for attempt in range(max_retries):
+            # Build prompt with current context
+            prompt = self._build_prompt(test, test_source, current_context)
+
             try:
                 response = self._call_ollama(prompt)
                 annotation = self._parse_response(response)
 
-                # If we got a valid annotation (no error), return it
                 if not annotation.error:
                     return annotation
 
-                # Store the error and prepare to retry.
-                # Avoid retrying on permanent errors
+                # Handle "context too long" - retry with minimal context (first time only)
                 if "context too long" in annotation.error.lower():
+                    if current_context:
+                        # Drop context and retry implicitly in next iteration
+                        current_context = None
+                        last_error = annotation.error
+                        continue
+                    # Else, we are already minimal, so fail
                     return annotation
 
                 last_error = annotation.error
