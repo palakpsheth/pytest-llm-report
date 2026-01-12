@@ -492,14 +492,15 @@ class GeminiProvider(LlmProvider):
             if not self._models:
                 self._models = [self.config.model or "gemini-1.5-flash-latest"]
             preferred = self._parse_preferred_models()
-            ordered = []
-            for model in preferred:
-                if model in self._models:
-                    ordered.append(model)
-            for model in self._models:
-                if model not in ordered:
-                    ordered.append(model)
-            self._models = ordered
+            available_set = set(self._models)
+
+            # Start with preferred models that are available, in preferred order.
+            ordered_models = [m for m in preferred if m in available_set]
+
+            # Add other available models, preserving their original relative order.
+            seen_models = set(ordered_models)
+            ordered_models.extend([m for m in self._models if m not in seen_models])
+            self._models = ordered_models
 
         for model in self._models:
             self._ensure_rate_limits(api_token, model)
