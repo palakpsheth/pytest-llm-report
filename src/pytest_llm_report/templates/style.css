@@ -308,8 +308,9 @@ h1 {
     font-size: 0.85rem;
     padding: 0.25rem 0;
     border-bottom: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: minmax(200px, 2fr) minmax(120px, 1fr);
+    gap: 1rem;
 }
 
 .coverage-list {
@@ -379,6 +380,23 @@ h1 {
     border: 1px solid var(--border-color);
 }
 
+.llm-annotation p {
+    margin: 0 0 0.5rem 0;
+}
+
+.llm-annotation p:last-child {
+    margin-bottom: 0;
+}
+
+.llm-annotation ul {
+    margin: 0.5rem 0 0;
+    padding-left: 1.25rem;
+}
+
+.llm-annotation li {
+    margin-bottom: 0.25rem;
+}
+
 .error-message {
     font-family: monospace;
     color: var(--failed-text);
@@ -428,4 +446,59 @@ progress {
     .summary-card {
         box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
     }
+}
+
+@media print {
+    body {
+        background: #ffffff;
+        color: #0f172a;
+    }
+
+    .container {
+        max-width: none;
+        padding: 1rem 1.5rem;
+    }
+
+    header {
+        border-bottom: 2px solid var(--border-color);
+    }
+
+    .filters {
+        display: none;
+    }
+
+    .summary-card,
+    .test-row {
+        box-shadow: none;
+    }
+
+    .test-header {
+        background: #ffffff;
+    }
+
+    .test-row {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    .test-details {
+        background: #ffffff;
+    }
+
+    .llm-annotation {
+        background: var(--surface-muted);
+    }
+
+    progress {
+        width: 80px;
+    }
+}
+
+body.pdf-mode .filters {
+    display: none;
+}
+
+body.pdf-mode .test-row {
+    page-break-inside: avoid;
+    break-inside: avoid;
 }

@@ -1667,6 +1667,7 @@ all = [
 ]
 dev = [
     { name = "mypy" },
+    { name = "playwright" },
     { name = "pytest-xdist" },
     { name = "ruff" },
 ]
@@ -1699,6 +1700,7 @@ requires-dist = [
     { name = "jinja2", specifier = ">=3.0.0" },
     { name = "litellm", marker = "extra == 'litellm'", specifier = ">=1.0.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.0.0" },
+    { name = "playwright", marker = "extra == 'dev'", specifier = ">=1.40.0" },
     { name = "playwright", marker = "extra == 'pdf'", specifier = ">=1.40.0" },
     { name = "pytest", specifier = ">=7.0.0" },
     { name = "pytest-cov", specifier = ">=4.0.0" },

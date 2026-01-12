@@ -30,6 +30,9 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras
 
+      - name: Install Playwright browsers
+        run: uv run playwright install chromium
+
       - name: Run tests
         id: pytest
         continue-on-error: true
@@ -37,12 +40,13 @@ jobs:
           GEMINI_API_TOKEN: ${{ secrets.GEMINI_API_TOKEN }}
         run: |
           mkdir -p reports
+          json_report="reports/pytest_llm_report-py${{ matrix.python-version }}.json"
+          pdf_report="reports/pytest_llm_report-py${{ matrix.python-version }}.pdf"
           llm_args=()
           if [ -n "${GEMINI_API_TOKEN}" ] && [ "${{ matrix.python-version }}" = "3.12" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
             llm_args+=(
               -o llm_report_provider=gemini
-              -o llm_report_model=gemma-3-27b-it
-              -o llm_report_requests_per_minute=29
+              -o llm_report_model=all
             )
           fi
           uv run pytest \
@@ -51,7 +55,8 @@ jobs:
             --cov-report=xml \
             --cov-fail-under=90 \
             -o llm_report_context_mode=complete \
-            --llm-report-json=reports/pytest_llm_report.json \
+            --llm-report-json="${json_report}" \
+            --llm-pdf="${pdf_report}" \
             --llm-aggregate-run-id="${{ github.run_id }}-py${{ matrix.python-version }}" \
             "${llm_args[@]}"
           exit_code=$?
@@ -70,7 +75,9 @@ jobs:
         if: always()
         with:
           name: report-py${{ matrix.python-version }}
-          path: reports/pytest_llm_report.json
+          path: |
+            reports/pytest_llm_report-py${{ matrix.python-version }}.json
+            reports/pytest_llm_report-py${{ matrix.python-version }}.pdf
           retention-days: 7
 
       - name: Fail if tests failed
@@ -134,6 +141,13 @@ jobs:
             --llm-aggregate-policy=merge \
             --llm-report=site/reports/index.html \
             --llm-report-json=site/reports/latest.json
+
+      - name: Copy latest PDF report
+        run: |
+          mkdir -p site/reports
+          if [ -f "collected-reports/pytest_llm_report-py3.12.pdf" ]; then
+            cp "collected-reports/pytest_llm_report-py3.12.pdf" "site/reports/latest.pdf"
+          fi
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4

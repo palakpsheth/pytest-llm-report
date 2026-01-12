@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 import time
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from typing import TYPE_CHECKING
 
 from pytest_llm_report.cache import LlmCache, hash_source
@@ -16,7 +16,11 @@ if TYPE_CHECKING:
     from pytest_llm_report.options import Config
 
 
-def annotate_tests(tests: Iterable[TestCaseResult], config: Config) -> None:
+def annotate_tests(
+    tests: Iterable[TestCaseResult],
+    config: Config,
+    progress: Callable[[str], None] | None = None,
+) -> None:
     """Annotate test cases in-place when LLM is enabled.
 
     Args:
@@ -36,6 +40,9 @@ def annotate_tests(tests: Iterable[TestCaseResult], config: Config) -> None:
     cache = LlmCache(config)
     assembler = ContextAssembler(config)
 
+    eligible_tests = [test for test in tests if not test.llm_opt_out]
+    limited_tests = eligible_tests[: config.llm_max_tests]
+
     annotated = 0
     failures = 0
     first_error: str | None = None
@@ -47,18 +54,22 @@ def annotate_tests(tests: Iterable[TestCaseResult], config: Config) -> None:
         else config.llm_requests_per_minute
     )
     request_interval = 60.0 / requests_per_minute
-    for test in tests:
-        if annotated >= config.llm_max_tests:
-            break
-        if test.llm_opt_out:
-            continue
+    total = len(limited_tests)
+    if total and progress:
+        progress(f"pytest-llm-report: Starting LLM annotations for {total} test(s)")
 
+    for index, test in enumerate(limited_tests, start=1):
         test_source, context_files = assembler.assemble(test, config.repo_root)
         source_hash = hash_source(test_source)
         cached = cache.get(test.nodeid, source_hash)
         if cached:
             test.llm_annotation = cached
             annotated += 1
+            if progress:
+                progress(
+                    "pytest-llm-report: LLM annotation progress "
+                    f"{index}/{total} (cached): {test.nodeid}"
+                )
             continue
 
         if last_request_time is not None:
@@ -71,6 +82,11 @@ def annotate_tests(tests: Iterable[TestCaseResult], config: Config) -> None:
         test.llm_annotation = annotation
         cache.set(test.nodeid, source_hash, annotation)
         annotated += 1
+        if progress:
+            progress(
+                "pytest-llm-report: LLM annotation progress "
+                f"{index}/{total}: {test.nodeid}"
+            )
         if annotation.error:
             failures += 1
             if first_error is None:

@@ -1,8 +1,12 @@
 # SPDX-License-Identifier: MIT
 """Tests for pytest_llm_report.report_writer module."""
 
+import sys
 from datetime import UTC, datetime
+from pathlib import Path
+from types import ModuleType
 
+from pytest_llm_report.errors import WarningCode
 from pytest_llm_report.models import CoverageEntry, SourceCoverageEntry, TestCaseResult
 from pytest_llm_report.options import Config
 from pytest_llm_report.report_writer import ReportWriter, compute_sha256
@@ -279,3 +283,78 @@ class TestReportWriterWithFiles:
             sha, dirty = get_git_info()
             assert sha is None
             assert dirty is None
+
+    def test_write_pdf_creates_file(self, tmp_path, monkeypatch):
+        """Should create PDF file when Playwright is available."""
+        pdf_path = tmp_path / "report.pdf"
+        config = Config(report_pdf=str(pdf_path))
+        writer = ReportWriter(config)
+
+        output_path = pdf_path
+
+        class DummyPage:
+            def goto(self, url):
+                self.url = url
+
+            def wait_for_load_state(self, state):
+                self.state = state
+
+            def emulate_media(self, media):
+                self.media = media
+
+            def pdf(self, path, format, print_background):
+                Path(path).write_bytes(b"%PDF-1.4\n%fake")
+
+        class DummyBrowser:
+            def new_page(self):
+                return DummyPage()
+
+            def close(self):
+                return None
+
+        class DummyPlaywright:
+            def __init__(self):
+                self.chromium = self
+
+            def launch(self):
+                return DummyBrowser()
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, exc_type, exc, tb):
+                return False
+
+        def fake_find_spec(name):
+            if name == "playwright.sync_api":
+                return object()
+            return None
+
+        module = ModuleType("playwright.sync_api")
+        module.sync_playwright = lambda: DummyPlaywright()
+        monkeypatch.setattr("importlib.util.find_spec", fake_find_spec)
+        monkeypatch.setitem(sys.modules, "playwright", ModuleType("playwright"))
+        monkeypatch.setitem(sys.modules, "playwright.sync_api", module)
+
+        tests = [TestCaseResult(nodeid="test1", outcome="passed")]
+        writer.write_report(tests)
+
+        assert output_path.exists()
+        assert any(artifact.path == str(output_path) for artifact in writer.artifacts)
+
+    def test_write_pdf_missing_playwright_warns(self, tmp_path, monkeypatch):
+        """Should warn when Playwright is missing for PDF output."""
+        pdf_path = tmp_path / "report.pdf"
+        config = Config(report_pdf=str(pdf_path))
+        writer = ReportWriter(config)
+
+        monkeypatch.setattr("importlib.util.find_spec", lambda name: None)
+
+        tests = [TestCaseResult(nodeid="test1", outcome="passed")]
+        writer.write_report(tests)
+
+        assert not pdf_path.exists()
+        assert any(
+            w.code == WarningCode.W204_PDF_PLAYWRIGHT_MISSING.value
+            for w in writer.warnings
+        )
