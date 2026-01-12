@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Dark mode support for HTML reports (auto-detects system preference via `prefers-color-scheme`)
+- CLI help text now includes usage examples for `--llm-report`, `--llm-report-json`, and `--llm-pdf`
+
+### Changed
+
+- Improved LLM response parsing to handle JSON wrapped in markdown code fences (` ```json ... ``` `)
+
 ## [0.1.0] - 2026-01-07
 
 ### Added

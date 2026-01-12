@@ -57,6 +57,15 @@ pytest --cov=my_pkg --cov-context=test --llm-report=report.html
 2. Ensure directory exists
 3. Check for errors at end of pytest output
 
+## Dark mode not working
+
+**Problem**: Report doesn't switch to dark theme.
+
+**Solutions**:
+1. Check your OS/browser dark mode setting is enabled
+2. Ensure you're using a modern browser (Chrome 76+, Firefox 67+, Safari 12.1+)
+3. Some browsers require `about:config` flags for `prefers-color-scheme`
+
 ## Still stuck?
 
 [Open an issue on GitHub](https://github.com/palakpsheth/pytest-llm-report/issues/new) with:

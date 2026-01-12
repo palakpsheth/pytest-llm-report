@@ -63,8 +63,8 @@ The following modules are **excluded from coverage measurement** in `pyproject.t
 
 These modules require **external dependencies** that cannot be mocked effectively:
 
-- **Pytest hooks** (`collector`, `coverage_map`, `plugin`): These run during pytest's lifecycle and are tested via integration tests, not unit tests.
-- **LLM providers** (`ollama`, `litellm`): Require actual API connections or local servers.
+- **Pytest hooks** (`collector`, `coverage_map`, `plugin`): These run during pytest's lifecycle and are tested via `pytester` integration tests in `tests/test_smoke_pytester.py`.
+- **LLM providers** (`ollama`, `litellm`): Require actual API connections. Tested via provider contract tests in `tests/test_llm_providers.py`.
 - **Context assembly** (`prompts`): Heavy file I/O for reading source files.
 
 ### Adding Tests

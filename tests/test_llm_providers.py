@@ -204,3 +204,40 @@ class TestOllamaProvider:
         annotation = provider.annotate(test, "def test_case(): assert True")
 
         assert annotation.error == "boom"
+
+    def test_parse_response_json_in_code_fence(self):
+        """Ollama provider extracts JSON from markdown code fences."""
+        config = Config(provider="ollama")
+        provider = OllamaProvider(config)
+        response = """Here is the annotation:
+
+```json
+{
+  "scenario": "Tests the login flow",
+  "why_needed": "Prevents auth regressions",
+  "key_assertions": ["status 200", "token returned"]
+}
+```
+
+I hope this helps!"""
+
+        annotation = provider._parse_response(response)
+
+        assert annotation.scenario == "Tests the login flow"
+        assert annotation.why_needed == "Prevents auth regressions"
+        assert annotation.key_assertions == ["status 200", "token returned"]
+        assert annotation.confidence == 0.8
+
+    def test_parse_response_json_in_plain_fence(self):
+        """Ollama provider extracts JSON from plain markdown fences (no language)."""
+        config = Config(provider="ollama")
+        provider = OllamaProvider(config)
+        response = """```
+{"scenario": "Verifies data", "why_needed": "Catches bugs", "key_assertions": ["a", "b"]}
+```"""
+
+        annotation = provider._parse_response(response)
+
+        assert annotation.scenario == "Verifies data"
+        assert annotation.why_needed == "Catches bugs"
+        assert annotation.key_assertions == ["a", "b"]
