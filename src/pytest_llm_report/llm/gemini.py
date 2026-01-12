@@ -292,6 +292,8 @@ class GeminiProvider(LlmProvider):
                 delay = base_backoff * (2**attempt)
             time.sleep(delay)
 
+        if response is None:
+            raise RuntimeError("Failed to get a response from Gemini API after retries.")
         data = response.json()
         tokens_used = None
         usage_metadata = data.get("usageMetadata") or {}
