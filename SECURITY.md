@@ -10,8 +10,8 @@
 
 If you discover a security vulnerability in pytest-llm-report, please report it by:
 
-1. **Email**: Send details to security@example.com
-2. **Private disclosure**: Use GitHub's private vulnerability reporting feature
+1. **GitHub Security Advisories**: Use [GitHub's private vulnerability reporting](https://github.com/palakpsheth/pytest-llm-report/security/advisories/new)
+2. **Private disclosure**: Open a draft security advisory for confidential discussion
 
 ### What to include
 
