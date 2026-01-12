@@ -132,6 +132,11 @@ class _GeminiRateLimiter:
         return 0.0
 
 
+# Time windows for recovery logic
+_DAILY_LIMIT_WINDOW = 24 * 3600  # 24 hours for daily limit reset
+_MODEL_LIST_REFRESH_INTERVAL = 6 * 3600  # 6 hours for model list refresh
+
+
 class GeminiProvider(LlmProvider):
     """Gemini LLM provider."""
 
@@ -146,7 +151,9 @@ class GeminiProvider(LlmProvider):
         self._rate_limits: dict[str, _GeminiRateLimitConfig] = {}
         self._rate_limiters: dict[str, _GeminiRateLimiter] = {}
         self._models: list[str] | None = None
-        self._exhausted_models: set[str] = set()
+        self._models_fetched_at: float = 0.0
+        # Track when each model hit its daily limit (for recovery after 24h)
+        self._model_exhausted_at: dict[str, float] = {}
         self._cooldowns: dict[str, float] = {}
 
     def annotate(
@@ -187,15 +194,29 @@ class GeminiProvider(LlmProvider):
         while attempts < max_attempts:
             attempts += 1
             now = time.monotonic()
+            wall_now = time.time()
             candidates: list[tuple[float, str]] = []
             for model in models:
-                if model in self._exhausted_models:
-                    continue
+                # Check if model was exhausted but has since recovered (24h passed)
+                exhausted_at = self._model_exhausted_at.get(model)
+                if exhausted_at is not None:
+                    if wall_now - exhausted_at >= _DAILY_LIMIT_WINDOW:
+                        # Model's daily limit has reset - recover it
+                        del self._model_exhausted_at[model]
+                        if model in self._rate_limiters:
+                            # Reset rate limiter for fresh tracking
+                            limits = self._rate_limits.get(
+                                model, _GeminiRateLimitConfig()
+                            )
+                            self._rate_limiters[model] = _GeminiRateLimiter(limits)
+                    else:
+                        # Still exhausted, skip this model
+                        continue
                 limiter = self._get_rate_limiter(api_token, model)
                 wait_for = limiter.next_available_in(estimated_tokens)
                 if wait_for is None:
                     daily_limit_hit = True
-                    self._exhausted_models.add(model)
+                    self._model_exhausted_at[model] = wall_now
                     continue
                 cooldown_until = self._cooldowns.get(model, 0.0)
                 cooldown_wait = max(0.0, cooldown_until - now)
@@ -218,7 +239,7 @@ class GeminiProvider(LlmProvider):
             except _GeminiRateLimitExceeded as exc:
                 if exc.limit_type == "requests_per_day":
                     daily_limit_hit = True
-                    self._exhausted_models.add(model)
+                    self._model_exhausted_at[model] = time.time()
                     continue
                 if exc.limit_type in {"requests_per_minute", "tokens_per_minute"}:
                     retry_after = exc.retry_after or 60.0
@@ -487,8 +508,15 @@ class GeminiProvider(LlmProvider):
         return model
 
     def _ensure_models_and_limits(self, api_token: str) -> list[str]:
-        if self._models is None:
+        # Check if we should refresh the model list (every 6 hours for long sessions)
+        now = time.time()
+        should_refresh = self._models is None or (
+            now - self._models_fetched_at >= _MODEL_LIST_REFRESH_INTERVAL
+        )
+
+        if should_refresh:
             self._models = self._fetch_available_models(api_token)
+            self._models_fetched_at = now
             if not self._models:
                 self._models = [self.config.model or "gemini-1.5-flash-latest"]
             preferred = self._parse_preferred_models()

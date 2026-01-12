@@ -442,6 +442,141 @@ class TestGeminiProvider:
         assert "gemini-1.5-pro" in calls[0][0]
         assert "gemini-1.5-flash" in calls[1][0]
 
+    def test_exhausted_model_recovers_after_24h(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Gemini provider recovers exhausted models after 24 hours."""
+        calls = []
+        fake_time = [1000000.0]  # Start time
+
+        def fake_time_time():
+            return fake_time[0]
+
+        monkeypatch.setattr("pytest_llm_report.llm.gemini.time.time", fake_time_time)
+
+        def fake_post(url, **kwargs):
+            calls.append((url, kwargs))
+            response_data = {
+                "scenario": "Checks login",
+                "why_needed": "Stops regressions",
+                "key_assertions": ["status ok", "redirect"],
+            }
+            payload = {
+                "candidates": [
+                    {"content": {"parts": [{"text": json.dumps(response_data)}]}}
+                ]
+            }
+            return FakeGeminiResponse(payload)
+
+        def fake_get(url, **_kwargs):
+            if "models?" in url:
+                models_payload = {
+                    "models": [
+                        {
+                            "name": "models/gemini-1.5-pro",
+                            "supportedGenerationMethods": ["generateContent"],
+                        }
+                    ]
+                }
+                return FakeGeminiResponse(models_payload)
+            rate_limits_payload = {
+                "rateLimits": [{"name": "requestsPerDay", "value": 1}]
+            }
+            return FakeGeminiResponse(rate_limits_payload)
+
+        fake_httpx = SimpleNamespace(post=fake_post, get=fake_get)
+        monkeypatch.setitem(__import__("sys").modules, "httpx", fake_httpx)
+        monkeypatch.setenv("GEMINI_API_TOKEN", "test-token")
+
+        config = Config(provider="gemini", model="gemini-1.5-pro")
+        provider = GeminiProvider(config)
+        test = CaseResult(nodeid="tests/test_auth.py::test_login", outcome="passed")
+
+        # First call succeeds, uses daily limit
+        first = provider.annotate(test, "def test_login(): assert True")
+        assert first.error is None
+        assert len(calls) == 1
+
+        # Second call fails - daily limit exhausted
+        second = provider.annotate(test, "def test_login(): assert True")
+        assert (
+            second.error == "Gemini requests-per-day limit reached; skipping annotation"
+        )
+        assert len(calls) == 1  # No new API call
+
+        # Advance time by 24 hours + 1 second
+        fake_time[0] += 24 * 3600 + 1
+
+        # Third call should succeed - model has recovered
+        third = provider.annotate(test, "def test_login(): assert True")
+        assert third.error is None
+        assert len(calls) == 2  # New API call made
+
+    def test_model_list_refreshes_after_interval(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Gemini provider refreshes model list after 6 hours."""
+        model_fetches = []
+        fake_time = [1000000.0]
+
+        def fake_time_time():
+            return fake_time[0]
+
+        monkeypatch.setattr("pytest_llm_report.llm.gemini.time.time", fake_time_time)
+
+        def fake_post(url, **kwargs):
+            response_data = {
+                "scenario": "Checks login",
+                "why_needed": "Stops regressions",
+                "key_assertions": ["status ok"],
+            }
+            payload = {
+                "candidates": [
+                    {"content": {"parts": [{"text": json.dumps(response_data)}]}}
+                ]
+            }
+            return FakeGeminiResponse(payload)
+
+        def fake_get(url, **_kwargs):
+            if "models?" in url:
+                model_fetches.append(fake_time[0])
+                models_payload = {
+                    "models": [
+                        {
+                            "name": "models/gemini-1.5-pro",
+                            "supportedGenerationMethods": ["generateContent"],
+                        }
+                    ]
+                }
+                return FakeGeminiResponse(models_payload)
+            rate_limits_payload = {
+                "rateLimits": [{"name": "requestsPerMinute", "value": 60}]
+            }
+            return FakeGeminiResponse(rate_limits_payload)
+
+        fake_httpx = SimpleNamespace(post=fake_post, get=fake_get)
+        monkeypatch.setitem(__import__("sys").modules, "httpx", fake_httpx)
+        monkeypatch.setenv("GEMINI_API_TOKEN", "test-token")
+
+        config = Config(provider="gemini", model="gemini-1.5-pro")
+        provider = GeminiProvider(config)
+        test = CaseResult(nodeid="tests/test_auth.py::test_login", outcome="passed")
+
+        # First call fetches models
+        provider.annotate(test, "def test_login(): assert True")
+        assert len(model_fetches) == 1
+
+        # Second call (same time) should not re-fetch
+        provider.annotate(test, "def test_login(): assert True")
+        assert len(model_fetches) == 1
+
+        # Advance time by 6 hours + 1 second
+        fake_time[0] += 6 * 3600 + 1
+
+        # Third call should re-fetch models
+        provider.annotate(test, "def test_login(): assert True")
+        assert len(model_fetches) == 2
+
 
 class TestOllamaProvider:
     """Tests for the Ollama provider."""
