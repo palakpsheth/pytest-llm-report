@@ -2,13 +2,13 @@
   "run_meta": {
     "aggregation_policy": null,
     "collect_only": false,
-    "collected_count": 253,
+    "collected_count": 269,
     "deselected_count": 0,
-    "duration": 2.255216,
-    "end_time": "2026-01-12T03:44:51.294361+00:00",
+    "duration": 2.48291,
+    "end_time": "2026-01-12T05:51:34.310373+00:00",
     "exit_code": 0,
     "git_dirty": false,
-    "git_sha": "9b472d2d3b81be7e037101dbc0e368c4f4eae06e",
+    "git_sha": "4a90231d2f0d692c1e36fc810f5533762b025127",
     "interrupted": false,
     "is_aggregated": true,
     "platform": "Linux-6.11.0-1018-azure-x86_64-with-glibc2.39",
@@ -17,13 +17,13 @@
     "python_version": "3.13.11",
     "rerun_count": 0,
     "run_count": 1,
-    "run_id": "20907388107-py3.13",
-    "selected_count": 253,
+    "run_id": "20909418142-py3.13",
+    "selected_count": 269,
     "source_reports": [],
-    "start_time": "2026-01-12T03:44:49.039145+00:00"
+    "start_time": "2026-01-12T05:51:31.827463+00:00"
   },
   "schema_version": "1.0.0",
-  "sha256": "08e6337c3a0f547e54c277518dfbeb1c34c4dc0a6d863f62c4eab2da1b4e4bc7",
+  "sha256": "23e2eb99cc60b6d4306cd5918354879a56c8cbf424b5dc27146cde35d31dda20",
   "source_coverage": [
     {
       "coverage_percent": 0.0,
@@ -80,13 +80,22 @@
       "statements": 3
     },
     {
-      "coverage_percent": 95.0,
-      "covered": 19,
-      "covered_ranges": "13, 15-16, 23, 29, 35, 65, 74, 86, 88, 90-91, 93-94, 96, 98-99, 101, 103",
+      "coverage_percent": 96.36,
+      "covered": 53,
+      "covered_ranges": "4, 6-8, 10-13, 19, 26, 29-31, 35-37, 39-44, 49-53, 56-62, 64-67, 69-77, 79-81, 86-88",
+      "file_path": "src/pytest_llm_report/llm/annotator.py",
+      "missed": 2,
+      "missed_ranges": "27, 54",
+      "statements": 55
+    },
+    {
+      "coverage_percent": 96.77,
+      "covered": 30,
+      "covered_ranges": "13, 15-17, 24, 30, 36, 66, 72, 74, 83-84, 87-89, 92, 104, 106, 108-109, 111-112, 114, 116-117, 119, 121-122, 124, 126",
       "file_path": "src/pytest_llm_report/llm/base.py",
       "missed": 1,
-      "missed_ranges": "71",
-      "statements": 20
+      "missed_ranges": "80",
+      "statements": 31
     },
     {
       "coverage_percent": 100.0,
@@ -171,13 +180,13 @@
     }
   ],
   "summary": {
-    "coverage_total_percent": 96.45,
+    "coverage_total_percent": 96.5,
     "error": 0,
     "failed": 0,
-    "passed": 253,
+    "passed": 269,
     "skipped": 0,
-    "total": 253,
-    "total_duration": 1.172699061000067,
+    "total": 269,
+    "total_duration": 1.3080759459999456,
     "xfailed": 0,
     "xpassed": 0
   },
@@ -190,7 +199,7 @@
           "line_ranges": "52, 55-56, 59, 61-63, 73-74, 77-80, 83, 85-92, 101-102, 105-109, 111, 117, 119-120, 122-123, 126, 133, 138, 140-145, 147, 149-151, 162, 209, 211-215, 227"
         }
       ],
-      "duration": 0.0014529089999939515,
+      "duration": 0.0014973840000038763,
       "nodeid": "tests/test_aggregation.py::TestAggregator::test_aggregate_all_policy",
       "outcome": "passed",
       "phase": "call"
@@ -203,7 +212,7 @@
           "line_ranges": "52, 55-57, 101-103"
         }
       ],
-      "duration": 0.0016617789999955335,
+      "duration": 0.001731641999981548,
       "nodeid": "tests/test_aggregation.py::TestAggregator::test_aggregate_dir_not_exists",
       "outcome": "passed",
       "phase": "call"
@@ -216,7 +225,7 @@
           "line_ranges": "52, 55-56, 59, 64, 69, 73-74, 77-80, 83, 85-92, 101-102, 105-109, 111, 117, 119-120, 122-123, 126, 133, 138, 140-145, 147, 149-151, 162, 174, 176-180, 182-183, 186, 209, 211-215, 227"
         }
       ],
-      "duration": 0.0024063579999946683,
+      "duration": 0.0024714879999976347,
       "nodeid": "tests/test_aggregation.py::TestAggregator::test_aggregate_latest_policy",
       "outcome": "passed",
       "phase": "call"
@@ -229,7 +238,7 @@
           "line_ranges": "44, 52-53"
         }
       ],
-      "duration": 0.0003304869999993798,
+      "duration": 0.00035619700000211196,
       "nodeid": "tests/test_aggregation.py::TestAggregator::test_aggregate_no_dir_configured",
       "outcome": "passed",
       "phase": "call"
@@ -242,7 +251,7 @@
           "line_ranges": "52, 55-57, 101-102, 105-106, 162"
         }
       ],
-      "duration": 0.001329088999995065,
+      "duration": 0.0013876980000020467,
       "nodeid": "tests/test_aggregation.py::TestAggregator::test_aggregate_no_reports",
       "outcome": "passed",
       "phase": "call"
@@ -260,7 +269,7 @@
           "line_ranges": "40-43, 104-107, 109-111, 113, 115, 161-165, 167, 169, 171, 173, 176-180, 182, 184, 186, 188, 190"
         }
       ],
-      "duration": 0.0013783610000004387,
+      "duration": 0.0013908640000011019,
       "nodeid": "tests/test_aggregation.py::TestAggregator::test_aggregate_with_coverage_and_llm_annotations",
       "outcome": "passed",
       "phase": "call"
@@ -273,7 +282,7 @@
           "line_ranges": "52, 55-56, 59, 64, 69, 73-74, 77-80, 83, 85-92, 101-102, 105-109, 111, 117, 119-120, 140-147, 149-151, 162, 174, 176-178, 186, 209, 211-212, 227"
         }
       ],
-      "duration": 0.001223311000003946,
+      "duration": 0.0011793580000016846,
       "nodeid": "tests/test_aggregation.py::TestAggregator::test_aggregate_with_source_coverage",
       "outcome": "passed",
       "phase": "call"
@@ -286,7 +295,7 @@
           "line_ranges": "209, 211-225, 227"
         }
       ],
-      "duration": 0.0005917239999959634,
+      "duration": 0.000569906999999148,
       "nodeid": "tests/test_aggregation.py::TestAggregator::test_recalculate_summary",
       "outcome": "passed",
       "phase": "call"
@@ -299,7 +308,7 @@
           "line_ranges": "52, 55-56, 59, 64, 69, 73-74, 77-80, 83, 85-92, 101-102, 105-109, 111-112, 117, 119-120, 140-145, 147, 149-151, 154, 156-158, 160, 162, 174, 176-178, 186, 209, 211-212, 227"
         }
       ],
-      "duration": 0.0016767759999964937,
+      "duration": 0.0017155620000153249,
       "nodeid": "tests/test_aggregation.py::TestAggregator::test_skips_invalid_json",
       "outcome": "passed",
       "phase": "call"
@@ -312,7 +321,7 @@
           "line_ranges": "153"
         }
       ],
-      "duration": 0.0002291170000034981,
+      "duration": 0.00023465000001010594,
       "nodeid": "tests/test_cache.py::TestHashSource::test_consistent_hash",
       "outcome": "passed",
       "phase": "call"
@@ -325,7 +334,7 @@
           "line_ranges": "153"
         }
       ],
-      "duration": 0.00021990999999843552,
+      "duration": 0.000213709999997036,
       "nodeid": "tests/test_cache.py::TestHashSource::test_different_source_different_hash",
       "outcome": "passed",
       "phase": "call"
@@ -338,7 +347,7 @@
           "line_ranges": "153"
         }
       ],
-      "duration": 0.00021108299999639257,
+      "duration": 0.00021777800000677416,
       "nodeid": "tests/test_cache.py::TestHashSource::test_hash_length",
       "outcome": "passed",
       "phase": "call"
@@ -351,7 +360,7 @@
           "line_ranges": "39-41, 53, 55-56, 86, 90, 92, 94, 97-101, 103, 118-119, 121, 129, 132-136, 141"
         }
       ],
-      "duration": 0.00073039199999414,
+      "duration": 0.0007838870000114184,
       "nodeid": "tests/test_cache.py::TestLlmCache::test_clear",
       "outcome": "passed",
       "phase": "call"
@@ -364,7 +373,7 @@
           "line_ranges": "39-41, 53, 55-56, 86, 88, 118-119, 121"
         }
       ],
-      "duration": 0.0003260479999980248,
+      "duration": 0.00032306400001402835,
       "nodeid": "tests/test_cache.py::TestLlmCache::test_does_not_cache_errors",
       "outcome": "passed",
       "phase": "call"
@@ -377,7 +386,7 @@
           "line_ranges": "39-41, 53, 55-56, 118-119, 121"
         }
       ],
-      "duration": 0.0003165600000016866,
+      "duration": 0.00034092800001417345,
       "nodeid": "tests/test_cache.py::TestLlmCache::test_get_missing",
       "outcome": "passed",
       "phase": "call"
@@ -390,85 +399,85 @@
           "line_ranges": "39-41, 53, 55, 58, 60-62, 68-73, 86, 90, 92, 94, 97-101, 103, 118-119, 121"
         }
       ],
-      "duration": 0.0005483520000026942,
+      "duration": 0.0005333480000047075,
       "nodeid": "tests/test_cache.py::TestLlmCache::test_set_and_get",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020731699999743114,
+      "duration": 0.00020525499999735075,
       "nodeid": "tests/test_collector.py::TestCollectorCollectionErrors::test_collection_error_structure",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0002142089999992436,
+      "duration": 0.00021053400001846967,
       "nodeid": "tests/test_collector.py::TestCollectorCollectionErrors::test_get_collection_errors_initially_empty",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020800800000131403,
+      "duration": 0.0002038610000170138,
       "nodeid": "tests/test_collector.py::TestCollectorMarkerExtraction::test_llm_context_override_default_none",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020614400000340538,
+      "duration": 0.0002035509999984697,
       "nodeid": "tests/test_collector.py::TestCollectorMarkerExtraction::test_llm_opt_out_default_false",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00021161499999777789,
+      "duration": 0.00020649699999353288,
       "nodeid": "tests/test_collector.py::TestCollectorOutputCapture::test_capture_disabled_by_default",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0002056829999972365,
+      "duration": 0.0002068169999915881,
       "nodeid": "tests/test_collector.py::TestCollectorOutputCapture::test_capture_max_chars_default",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00023782299999908219,
+      "duration": 0.00023458900000150607,
       "nodeid": "tests/test_collector.py::TestCollectorXfailHandling::test_xfail_failed_is_xfailed",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0002283159999976192,
+      "duration": 0.00022774900000399612,
       "nodeid": "tests/test_collector.py::TestCollectorXfailHandling::test_xfail_passed_is_xpassed",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00023130200000309742,
+      "duration": 0.00023773500001311731,
       "nodeid": "tests/test_collector.py::TestTestCollector::test_create_collector",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00023338500000136264,
+      "duration": 0.00023311700002182079,
       "nodeid": "tests/test_collector.py::TestTestCollector::test_get_results_sorted",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00022427799999746867,
+      "duration": 0.00022541200002024198,
       "nodeid": "tests/test_collector.py::TestTestCollector::test_handle_collection_finish",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00021470099999731929,
+      "duration": 0.00021742899997434506,
       "nodeid": "tests/test_coverage_map.py::TestCoverageMapper::test_create_mapper",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00021766600000461267,
+      "duration": 0.0002216970000006313,
       "nodeid": "tests/test_coverage_map.py::TestCoverageMapper::test_get_warnings",
       "outcome": "passed",
       "phase": "call"
@@ -481,31 +490,31 @@
           "line_ranges": "70-72, 74, 76, 139-142"
         }
       ],
-      "duration": 0.000762201999997103,
+      "duration": 0.0008588569999972151,
       "nodeid": "tests/test_coverage_map.py::TestCoverageMapper::test_map_coverage_no_coverage_file",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00021792600000480888,
+      "duration": 0.0002249329999983729,
       "nodeid": "tests/test_coverage_map.py::TestCoverageMapperContextExtraction::test_extract_nodeid_all_phases",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020639500000640965,
+      "duration": 0.00021267999997576226,
       "nodeid": "tests/test_coverage_map.py::TestCoverageMapperContextExtraction::test_extract_nodeid_empty_context",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0002087789999976053,
+      "duration": 0.00021215900000015608,
       "nodeid": "tests/test_coverage_map.py::TestCoverageMapperContextExtraction::test_extract_nodeid_filters_setup",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00021242599999737877,
+      "duration": 0.00021932299998184135,
       "nodeid": "tests/test_coverage_map.py::TestCoverageMapperContextExtraction::test_extract_nodeid_with_run_phase",
       "outcome": "passed",
       "phase": "call"
@@ -518,7 +527,7 @@
           "line_ranges": "79"
         }
       ],
-      "duration": 0.000208017999995036,
+      "duration": 0.00021471499999847765,
       "nodeid": "tests/test_fs.py::TestIsPythonFile::test_non_python_file",
       "outcome": "passed",
       "phase": "call"
@@ -531,7 +540,7 @@
           "line_ranges": "79"
         }
       ],
-      "duration": 0.00021163400000290267,
+      "duration": 0.00020682900000679183,
       "nodeid": "tests/test_fs.py::TestIsPythonFile::test_python_file",
       "outcome": "passed",
       "phase": "call"
@@ -544,7 +553,7 @@
           "line_ranges": "30, 33, 36, 39, 42, 55, 58-60, 63-64"
         }
       ],
-      "duration": 0.00047818100000540653,
+      "duration": 0.0005065830000035021,
       "nodeid": "tests/test_fs.py::TestMakeRelative::test_makes_path_relative",
       "outcome": "passed",
       "phase": "call"
@@ -557,7 +566,7 @@
           "line_ranges": "30, 33, 36, 39, 42, 55-56"
         }
       ],
-      "duration": 0.00020537199999637323,
+      "duration": 0.00021115699999540993,
       "nodeid": "tests/test_fs.py::TestMakeRelative::test_returns_normalized_with_no_base",
       "outcome": "passed",
       "phase": "call"
@@ -570,7 +579,7 @@
           "line_ranges": "30, 33, 36, 39, 42"
         }
       ],
-      "duration": 0.00020098499999932073,
+      "duration": 0.00020626799999945433,
       "nodeid": "tests/test_fs.py::TestNormalizePath::test_already_normalized",
       "outcome": "passed",
       "phase": "call"
@@ -583,7 +592,7 @@
           "line_ranges": "30, 33, 36, 39, 42"
         }
       ],
-      "duration": 0.0002016259999990666,
+      "duration": 0.000209704000013744,
       "nodeid": "tests/test_fs.py::TestNormalizePath::test_forward_slashes",
       "outcome": "passed",
       "phase": "call"
@@ -596,7 +605,7 @@
           "line_ranges": "30, 33, 36, 39, 42"
         }
       ],
-      "duration": 0.0002276539999996885,
+      "duration": 0.0002355530000102135,
       "nodeid": "tests/test_fs.py::TestNormalizePath::test_strips_trailing_slash",
       "outcome": "passed",
       "phase": "call"
@@ -609,7 +618,7 @@
           "line_ranges": "30, 33, 36, 39, 42, 100, 103, 111-112, 116-117, 119-121, 123"
         }
       ],
-      "duration": 0.00034730800000204454,
+      "duration": 0.000412997000012183,
       "nodeid": "tests/test_fs.py::TestShouldSkipPath::test_custom_exclude_patterns",
       "outcome": "passed",
       "phase": "call"
@@ -622,7 +631,7 @@
           "line_ranges": "30, 33, 36, 39, 42, 100, 103, 111-112, 116, 123"
         }
       ],
-      "duration": 0.00022809500000420257,
+      "duration": 0.00020696999999358923,
       "nodeid": "tests/test_fs.py::TestShouldSkipPath::test_normal_path",
       "outcome": "passed",
       "phase": "call"
@@ -635,7 +644,7 @@
           "line_ranges": "30, 33, 36, 39, 42, 100, 103, 111-113"
         }
       ],
-      "duration": 0.00020416000000267331,
+      "duration": 0.0002328390000059244,
       "nodeid": "tests/test_fs.py::TestShouldSkipPath::test_skips_git",
       "outcome": "passed",
       "phase": "call"
@@ -648,7 +657,7 @@
           "line_ranges": "30, 33, 36, 39, 42, 100, 103, 111-113"
         }
       ],
-      "duration": 0.0002100519999999051,
+      "duration": 0.0002072099999850252,
       "nodeid": "tests/test_fs.py::TestShouldSkipPath::test_skips_pycache",
       "outcome": "passed",
       "phase": "call"
@@ -661,7 +670,7 @@
           "line_ranges": "30, 33, 36, 39, 42, 100, 103, 111-113"
         }
       ],
-      "duration": 0.00021630400000560712,
+      "duration": 0.0002206359999945562,
       "nodeid": "tests/test_fs.py::TestShouldSkipPath::test_skips_venv",
       "outcome": "passed",
       "phase": "call"
@@ -674,7 +683,7 @@
           "line_ranges": "96-101, 103-104"
         }
       ],
-      "duration": 0.00024664000000029773,
+      "duration": 0.0002579149999917263,
       "nodeid": "tests/test_hashing.py::TestComputeConfigHash::test_different_config",
       "outcome": "passed",
       "phase": "call"
@@ -687,7 +696,7 @@
           "line_ranges": "96-101, 103-104"
         }
       ],
-      "duration": 0.000220480999999495,
+      "duration": 0.00022973200000819816,
       "nodeid": "tests/test_hashing.py::TestComputeConfigHash::test_returns_short_hash",
       "outcome": "passed",
       "phase": "call"
@@ -700,7 +709,7 @@
           "line_ranges": "32, 44-48"
         }
       ],
-      "duration": 0.00033822099999980537,
+      "duration": 0.0003363829999898371,
       "nodeid": "tests/test_hashing.py::TestComputeFileSha256::test_consistent_with_bytes",
       "outcome": "passed",
       "phase": "call"
@@ -713,7 +722,7 @@
           "line_ranges": "44-48"
         }
       ],
-      "duration": 0.0003485000000011951,
+      "duration": 0.00035158200000751094,
       "nodeid": "tests/test_hashing.py::TestComputeFileSha256::test_hashes_file",
       "outcome": "passed",
       "phase": "call"
@@ -726,7 +735,7 @@
           "line_ranges": "61"
         }
       ],
-      "duration": 0.0002433539999984191,
+      "duration": 0.00022348100000613158,
       "nodeid": "tests/test_hashing.py::TestComputeHmac::test_different_key",
       "outcome": "passed",
       "phase": "call"
@@ -739,7 +748,7 @@
           "line_ranges": "61"
         }
       ],
-      "duration": 0.00024143000000265147,
+      "duration": 0.0002497199999993427,
       "nodeid": "tests/test_hashing.py::TestComputeHmac::test_with_key",
       "outcome": "passed",
       "phase": "call"
@@ -752,7 +761,7 @@
           "line_ranges": "32"
         }
       ],
-      "duration": 0.00024030800000218733,
+      "duration": 0.00021628799999007242,
       "nodeid": "tests/test_hashing.py::TestComputeSha256::test_consistent",
       "outcome": "passed",
       "phase": "call"
@@ -765,7 +774,7 @@
           "line_ranges": "32"
         }
       ],
-      "duration": 0.0002014359999975568,
+      "duration": 0.00023367000000007465,
       "nodeid": "tests/test_hashing.py::TestComputeSha256::test_length",
       "outcome": "passed",
       "phase": "call"
@@ -778,7 +787,7 @@
           "line_ranges": "113-114, 116-121"
         }
       ],
-      "duration": 0.07630894599999749,
+      "duration": 0.07620593000001463,
       "nodeid": "tests/test_hashing.py::TestGetDependencySnapshot::test_includes_pytest",
       "outcome": "passed",
       "phase": "call"
@@ -791,7 +800,7 @@
           "line_ranges": "113-114, 116-121"
         }
       ],
-      "duration": 0.10295512499999404,
+      "duration": 0.10373660600001244,
       "nodeid": "tests/test_hashing.py::TestGetDependencySnapshot::test_returns_dict",
       "outcome": "passed",
       "phase": "call"
@@ -804,7 +813,7 @@
           "line_ranges": "73, 76-77, 80-81"
         }
       ],
-      "duration": 0.000362395000003346,
+      "duration": 0.00037342299998499584,
       "nodeid": "tests/test_hashing.py::TestLoadHmacKey::test_loads_key",
       "outcome": "passed",
       "phase": "call"
@@ -817,7 +826,7 @@
           "line_ranges": "73, 76-78"
         }
       ],
-      "duration": 0.00027880000000379823,
+      "duration": 0.00030048600001464365,
       "nodeid": "tests/test_hashing.py::TestLoadHmacKey::test_missing_key_file",
       "outcome": "passed",
       "phase": "call"
@@ -830,49 +839,49 @@
           "line_ranges": "73-74"
         }
       ],
-      "duration": 0.00021295699999512863,
+      "duration": 0.00023440100000016173,
       "nodeid": "tests/test_hashing.py::TestLoadHmacKey::test_no_key_file",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020655499999833182,
+      "duration": 0.00023796799999331597,
       "nodeid": "tests/test_integration_gate.py::TestConfigDefaults::test_aggregation_defaults",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001984700000008388,
+      "duration": 0.0002335799999855226,
       "nodeid": "tests/test_integration_gate.py::TestConfigDefaults::test_capture_failed_output_default_false",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00021049300000441917,
+      "duration": 0.00021291000001610882,
       "nodeid": "tests/test_integration_gate.py::TestConfigDefaults::test_context_mode_default_minimal",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020582399999824474,
+      "duration": 0.00023295799999800693,
       "nodeid": "tests/test_integration_gate.py::TestConfigDefaults::test_llm_not_enabled_by_default",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.000201635999999894,
+      "duration": 0.0010498860000041077,
       "nodeid": "tests/test_integration_gate.py::TestConfigDefaults::test_omit_tests_default_true",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00024282300000066925,
+      "duration": 0.00024874900000781963,
       "nodeid": "tests/test_integration_gate.py::TestConfigDefaults::test_provider_default_none",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020979100000317885,
+      "duration": 0.00024500099999613667,
       "nodeid": "tests/test_integration_gate.py::TestConfigDefaults::test_secret_exclude_globs",
       "outcome": "passed",
       "phase": "call"
@@ -890,7 +899,7 @@
           "line_ranges": "53, 62-68, 71-75, 77, 79, 98-100, 127, 133, 136-137, 141, 150-157, 161-162, 165, 168, 188, 190-193, 195, 197-211, 223, 225-226, 228-229, 241, 251, 254-256, 259-260, 263-265, 268, 271-275, 316-317, 341, 343, 345-347, 349, 352"
         }
       ],
-      "duration": 0.004835726999999679,
+      "duration": 0.0054382950000047,
       "nodeid": "tests/test_integration_gate.py::TestFullPipeline::test_deterministic_output",
       "outcome": "passed",
       "phase": "call"
@@ -908,7 +917,7 @@
           "line_ranges": "53, 62-68, 71-75, 77, 79, 98-100, 127, 133, 136-137, 141-145, 150-157, 161-162, 165, 168, 188, 190-193, 195, 197-211, 223, 225, 241, 251, 254-256, 259-260, 263-265, 268, 271-275, 316-317, 341, 343, 345-347, 349, 352"
         }
       ],
-      "duration": 0.004722125999997218,
+      "duration": 0.004801896999993005,
       "nodeid": "tests/test_integration_gate.py::TestFullPipeline::test_empty_test_suite",
       "outcome": "passed",
       "phase": "call"
@@ -926,7 +935,7 @@
           "line_ranges": "53, 62-68, 71-75, 77, 79, 98-100, 127, 133, 136-137, 141, 150-157, 161, 165-166, 168, 188, 190-193, 195, 197-211, 223, 225-226, 228-229, 241, 287, 289-290, 293, 296, 299, 302-306, 316-317, 341, 343, 345-347, 349, 352"
         }
       ],
-      "duration": 0.02161284299999977,
+      "duration": 0.023694305000020677,
       "nodeid": "tests/test_integration_gate.py::TestFullPipeline::test_html_report_generation",
       "outcome": "passed",
       "phase": "call"
@@ -949,7 +958,7 @@
           "line_ranges": "53, 62-68, 71-75, 77, 79, 98-100, 127, 133, 136-137, 141, 150-157, 161-162, 165-166, 168, 188, 190-193, 195, 197-211, 223, 225-226, 228-233, 241, 251, 254-256, 259-260, 263-265, 268, 271-275, 287, 289-290, 293, 296, 299, 302-306, 316-317, 341, 343, 345-347, 349, 352"
         }
       ],
-      "duration": 0.03665210700000188,
+      "duration": 0.039080323999996835,
       "nodeid": "tests/test_integration_gate.py::TestFullPipeline::test_json_report_generation",
       "outcome": "passed",
       "phase": "call"
@@ -962,7 +971,7 @@
           "line_ranges": "346-362, 364, 367, 369, 371, 373, 375, 377, 380, 410-418, 420, 422, 461, 463-467, 469, 471, 473, 475, 477, 479, 481, 483"
         }
       ],
-      "duration": 0.0002812940000040953,
+      "duration": 0.00028203099998336256,
       "nodeid": "tests/test_integration_gate.py::TestSchemaCompatibility::test_report_root_has_required_fields",
       "outcome": "passed",
       "phase": "call"
@@ -975,7 +984,7 @@
           "line_ranges": "346-362, 364, 367, 369, 371, 373, 375, 377, 380"
         }
       ],
-      "duration": 0.000222193999995568,
+      "duration": 0.0002210960000184059,
       "nodeid": "tests/test_integration_gate.py::TestSchemaCompatibility::test_run_meta_has_aggregation_fields",
       "outcome": "passed",
       "phase": "call"
@@ -988,13 +997,13 @@
           "line_ranges": "346-362, 364, 367, 369, 371, 373, 375, 377, 380"
         }
       ],
-      "duration": 0.0002257710000037605,
+      "duration": 0.00024941899999930683,
       "nodeid": "tests/test_integration_gate.py::TestSchemaCompatibility::test_run_meta_has_status_fields",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020529300000049489,
+      "duration": 0.00022674699999924997,
       "nodeid": "tests/test_integration_gate.py::TestSchemaCompatibility::test_schema_version_defined",
       "outcome": "passed",
       "phase": "call"
@@ -1007,7 +1016,7 @@
           "line_ranges": "161-165, 167, 169, 171, 173, 176, 178, 180, 182, 184, 186, 188, 190"
         }
       ],
-      "duration": 0.00021782600000364027,
+      "duration": 0.00023057399999970585,
       "nodeid": "tests/test_integration_gate.py::TestSchemaCompatibility::test_test_case_has_required_fields",
       "outcome": "passed",
       "phase": "call"
@@ -1016,11 +1025,24 @@
       "coverage": [
         {
           "file_path": "src/pytest_llm_report/llm/base.py",
-          "line_count": 8,
-          "line_ranges": "35, 86, 88, 90, 93, 98-99, 101"
+          "line_count": 9,
+          "line_ranges": "36, 104, 106, 108, 111, 116, 121-122, 124"
         }
       ],
-      "duration": 0.0002647430000024542,
+      "duration": 0.00023925000002122943,
+      "nodeid": "tests/test_llm.py::TestGetProvider::test_gemini_returns_provider",
+      "outcome": "passed",
+      "phase": "call"
+    },
+    {
+      "coverage": [
+        {
+          "file_path": "src/pytest_llm_report/llm/base.py",
+          "line_count": 8,
+          "line_ranges": "36, 104, 106, 108, 111, 116-117, 119"
+        }
+      ],
+      "duration": 0.0002332690000059756,
       "nodeid": "tests/test_llm.py::TestGetProvider::test_litellm_returns_provider",
       "outcome": "passed",
       "phase": "call"
@@ -1030,7 +1052,7 @@
         {
           "file_path": "src/pytest_llm_report/llm/base.py",
           "line_count": 5,
-          "line_ranges": "35, 86, 88, 90-91"
+          "line_ranges": "36, 104, 106, 108-109"
         },
         {
           "file_path": "src/pytest_llm_report/llm/noop.py",
@@ -1038,7 +1060,7 @@
           "line_ranges": "32"
         }
       ],
-      "duration": 0.0002312720000006152,
+      "duration": 0.00025230500000361644,
       "nodeid": "tests/test_llm.py::TestGetProvider::test_none_returns_noop",
       "outcome": "passed",
       "phase": "call"
@@ -1048,10 +1070,10 @@
         {
           "file_path": "src/pytest_llm_report/llm/base.py",
           "line_count": 7,
-          "line_ranges": "35, 86, 88, 90, 93-94, 96"
+          "line_ranges": "36, 104, 106, 108, 111-112, 114"
         }
       ],
-      "duration": 0.00023276299999963612,
+      "duration": 0.00023265699999797107,
       "nodeid": "tests/test_llm.py::TestGetProvider::test_ollama_returns_provider",
       "outcome": "passed",
       "phase": "call"
@@ -1060,11 +1082,11 @@
       "coverage": [
         {
           "file_path": "src/pytest_llm_report/llm/base.py",
-          "line_count": 6,
-          "line_ranges": "86, 88, 90, 93, 98, 103"
+          "line_count": 7,
+          "line_ranges": "104, 106, 108, 111, 116, 121, 126"
         }
       ],
-      "duration": 0.0002930260000013618,
+      "duration": 0.00023018300001353964,
       "nodeid": "tests/test_llm.py::TestGetProvider::test_unknown_raises",
       "outcome": "passed",
       "phase": "call"
@@ -1074,7 +1096,7 @@
         {
           "file_path": "src/pytest_llm_report/llm/base.py",
           "line_count": 1,
-          "line_ranges": "35"
+          "line_ranges": "36"
         },
         {
           "file_path": "src/pytest_llm_report/llm/noop.py",
@@ -1082,7 +1104,7 @@
           "line_ranges": "32"
         }
       ],
-      "duration": 0.00022937800000022435,
+      "duration": 0.00023367000000007465,
       "nodeid": "tests/test_llm.py::TestLlmProviderContract::test_noop_implements_interface",
       "outcome": "passed",
       "phase": "call"
@@ -1092,7 +1114,7 @@
         {
           "file_path": "src/pytest_llm_report/llm/base.py",
           "line_count": 1,
-          "line_ranges": "35"
+          "line_ranges": "36"
         },
         {
           "file_path": "src/pytest_llm_report/llm/noop.py",
@@ -1100,7 +1122,7 @@
           "line_ranges": "32, 50"
         }
       ],
-      "duration": 0.0002440749999976788,
+      "duration": 0.00028613900002483206,
       "nodeid": "tests/test_llm.py::TestNoopProvider::test_annotate_returns_empty",
       "outcome": "passed",
       "phase": "call"
@@ -1110,7 +1132,7 @@
         {
           "file_path": "src/pytest_llm_report/llm/base.py",
           "line_count": 1,
-          "line_ranges": "35"
+          "line_ranges": "36"
         },
         {
           "file_path": "src/pytest_llm_report/llm/noop.py",
@@ -1118,7 +1140,7 @@
           "line_ranges": "32, 66"
         }
       ],
-      "duration": 0.00023372599999760268,
+      "duration": 0.00022541500001693748,
       "nodeid": "tests/test_llm.py::TestNoopProvider::test_get_model_name_empty",
       "outcome": "passed",
       "phase": "call"
@@ -1128,7 +1150,7 @@
         {
           "file_path": "src/pytest_llm_report/llm/base.py",
           "line_count": 1,
-          "line_ranges": "35"
+          "line_ranges": "36"
         },
         {
           "file_path": "src/pytest_llm_report/llm/noop.py",
@@ -1136,13 +1158,98 @@
           "line_ranges": "32, 58"
         }
       ],
-      "duration": 0.00023817400000325506,
+      "duration": 0.00023794800000587202,
       "nodeid": "tests/test_llm.py::TestNoopProvider::test_is_available",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00023020900000148004,
+      "coverage": [
+        {
+          "file_path": "src/pytest_llm_report/cache.py",
+          "line_count": 20,
+          "line_ranges": "39-41, 53, 55-56, 86, 90, 92, 94, 97-101, 103, 118-119, 121, 153"
+        },
+        {
+          "file_path": "src/pytest_llm_report/llm/annotator.py",
+          "line_count": 36,
+          "line_ranges": "26, 29-30, 36-37, 39-44, 46-47, 49-51, 53, 56-59, 64, 69-74, 79-84, 86, 88"
+        }
+      ],
+      "duration": 0.0005512270000167518,
+      "nodeid": "tests/test_llm_annotator.py::test_annotate_tests_emits_summary",
+      "outcome": "passed",
+      "phase": "call"
+    },
+    {
+      "coverage": [
+        {
+          "file_path": "src/pytest_llm_report/cache.py",
+          "line_count": 20,
+          "line_ranges": "39-41, 53, 55-56, 86, 90, 92, 94, 97-101, 103, 118-119, 121, 153"
+        },
+        {
+          "file_path": "src/pytest_llm_report/llm/annotator.py",
+          "line_count": 37,
+          "line_ranges": "26, 29-30, 36-37, 39-44, 46-47, 49-53, 56-59, 64, 69-74, 79-84, 86, 88"
+        }
+      ],
+      "duration": 0.0005406470000082209,
+      "nodeid": "tests/test_llm_annotator.py::test_annotate_tests_respects_opt_out_and_limit",
+      "outcome": "passed",
+      "phase": "call"
+    },
+    {
+      "coverage": [
+        {
+          "file_path": "src/pytest_llm_report/cache.py",
+          "line_count": 20,
+          "line_ranges": "39-41, 53, 55-56, 86, 90, 92, 94, 97-101, 103, 118-119, 121, 153"
+        },
+        {
+          "file_path": "src/pytest_llm_report/llm/annotator.py",
+          "line_count": 39,
+          "line_ranges": "26, 29-30, 36-37, 39-46, 49-51, 53, 56-59, 64-67, 69-74, 79-84, 86, 88"
+        }
+      ],
+      "duration": 0.0006836270000007971,
+      "nodeid": "tests/test_llm_annotator.py::test_annotate_tests_respects_rate_limit",
+      "outcome": "passed",
+      "phase": "call"
+    },
+    {
+      "coverage": [
+        {
+          "file_path": "src/pytest_llm_report/llm/annotator.py",
+          "line_count": 7,
+          "line_ranges": "26, 29-33, 35"
+        }
+      ],
+      "duration": 0.00032127500000456166,
+      "nodeid": "tests/test_llm_annotator.py::test_annotate_tests_skips_unavailable_provider",
+      "outcome": "passed",
+      "phase": "call"
+    },
+    {
+      "coverage": [
+        {
+          "file_path": "src/pytest_llm_report/cache.py",
+          "line_count": 30,
+          "line_ranges": "39-41, 53, 55-56, 58, 60-62, 68-73, 86, 90, 92, 94, 97-101, 103, 118-119, 121, 153"
+        },
+        {
+          "file_path": "src/pytest_llm_report/llm/annotator.py",
+          "line_count": 39,
+          "line_ranges": "26, 29-30, 36-37, 39-44, 46-47, 49-51, 53, 56-62, 64, 69-74, 79-84, 86, 88"
+        }
+      ],
+      "duration": 0.0008346110000161389,
+      "nodeid": "tests/test_llm_annotator.py::test_annotate_tests_uses_cache",
+      "outcome": "passed",
+      "phase": "call"
+    },
+    {
+      "duration": 0.00020622799999614472,
       "nodeid": "tests/test_llm_contract.py::TestAnnotationSchema::test_required_fields",
       "outcome": "passed",
       "phase": "call"
@@ -1155,7 +1262,7 @@
           "line_ranges": "77-81"
         }
       ],
-      "duration": 0.0002515199999990614,
+      "duration": 0.00023109500000373373,
       "nodeid": "tests/test_llm_contract.py::TestAnnotationSchema::test_schema_from_dict",
       "outcome": "passed",
       "phase": "call"
@@ -1168,7 +1275,7 @@
           "line_ranges": "77-81"
         }
       ],
-      "duration": 0.00021068299999882356,
+      "duration": 0.00021214899999222325,
       "nodeid": "tests/test_llm_contract.py::TestAnnotationSchema::test_schema_handles_empty",
       "outcome": "passed",
       "phase": "call"
@@ -1181,13 +1288,13 @@
           "line_ranges": "77-81"
         }
       ],
-      "duration": 0.00021728499999795758,
+      "duration": 0.0002374469999892881,
       "nodeid": "tests/test_llm_contract.py::TestAnnotationSchema::test_schema_handles_partial",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00024249200000525661,
+      "duration": 0.00021503499999653286,
       "nodeid": "tests/test_llm_contract.py::TestAnnotationSchema::test_schema_has_required_fields",
       "outcome": "passed",
       "phase": "call"
@@ -1200,7 +1307,7 @@
           "line_ranges": "90-92, 94-96, 98"
         }
       ],
-      "duration": 0.0002203909999991538,
+      "duration": 0.00022462300000825053,
       "nodeid": "tests/test_llm_contract.py::TestAnnotationSchema::test_schema_to_dict",
       "outcome": "passed",
       "phase": "call"
@@ -1210,7 +1317,7 @@
         {
           "file_path": "src/pytest_llm_report/llm/base.py",
           "line_count": 5,
-          "line_ranges": "35, 86, 88, 90-91"
+          "line_ranges": "36, 104, 106, 108-109"
         },
         {
           "file_path": "src/pytest_llm_report/llm/noop.py",
@@ -1218,7 +1325,7 @@
           "line_ranges": "32"
         }
       ],
-      "duration": 0.00022415800000175068,
+      "duration": 0.00023146499998460968,
       "nodeid": "tests/test_llm_contract.py::TestNoopProvider::test_noop_from_factory",
       "outcome": "passed",
       "phase": "call"
@@ -1228,7 +1335,7 @@
         {
           "file_path": "src/pytest_llm_report/llm/base.py",
           "line_count": 1,
-          "line_ranges": "35"
+          "line_ranges": "36"
         },
         {
           "file_path": "src/pytest_llm_report/llm/noop.py",
@@ -1236,7 +1343,7 @@
           "line_ranges": "32"
         }
       ],
-      "duration": 0.0002401879999993639,
+      "duration": 0.00022069499999588515,
       "nodeid": "tests/test_llm_contract.py::TestNoopProvider::test_noop_is_llm_provider",
       "outcome": "passed",
       "phase": "call"
@@ -1246,7 +1353,7 @@
         {
           "file_path": "src/pytest_llm_report/llm/base.py",
           "line_count": 1,
-          "line_ranges": "35"
+          "line_ranges": "36"
         },
         {
           "file_path": "src/pytest_llm_report/llm/noop.py",
@@ -1254,7 +1361,7 @@
           "line_ranges": "32, 50"
         }
       ],
-      "duration": 0.00023980799999634428,
+      "duration": 0.00023194699997475254,
       "nodeid": "tests/test_llm_contract.py::TestNoopProvider::test_noop_returns_empty_annotation",
       "outcome": "passed",
       "phase": "call"
@@ -1264,7 +1371,7 @@
         {
           "file_path": "src/pytest_llm_report/llm/base.py",
           "line_count": 1,
-          "line_ranges": "35"
+          "line_ranges": "36"
         },
         {
           "file_path": "src/pytest_llm_report/llm/noop.py",
@@ -1272,7 +1379,7 @@
           "line_ranges": "32, 50"
         }
       ],
-      "duration": 0.0002352990000034083,
+      "duration": 0.0002557310000099733,
       "nodeid": "tests/test_llm_contract.py::TestProviderContract::test_annotate_returns_annotation",
       "outcome": "passed",
       "phase": "call"
@@ -1282,7 +1389,7 @@
         {
           "file_path": "src/pytest_llm_report/llm/base.py",
           "line_count": 1,
-          "line_ranges": "35"
+          "line_ranges": "36"
         },
         {
           "file_path": "src/pytest_llm_report/llm/noop.py",
@@ -1290,7 +1397,7 @@
           "line_ranges": "32, 50"
         }
       ],
-      "duration": 0.0002279660000041872,
+      "duration": 0.00023320799999737574,
       "nodeid": "tests/test_llm_contract.py::TestProviderContract::test_provider_handles_empty_code",
       "outcome": "passed",
       "phase": "call"
@@ -1300,7 +1407,7 @@
         {
           "file_path": "src/pytest_llm_report/llm/base.py",
           "line_count": 1,
-          "line_ranges": "35"
+          "line_ranges": "36"
         },
         {
           "file_path": "src/pytest_llm_report/llm/noop.py",
@@ -1308,7 +1415,7 @@
           "line_ranges": "32, 50"
         }
       ],
-      "duration": 0.00027974200000357996,
+      "duration": 0.00024403899999470013,
       "nodeid": "tests/test_llm_contract.py::TestProviderContract::test_provider_handles_none_context",
       "outcome": "passed",
       "phase": "call"
@@ -1317,8 +1424,8 @@
       "coverage": [
         {
           "file_path": "src/pytest_llm_report/llm/base.py",
-          "line_count": 11,
-          "line_ranges": "35, 86, 88, 90-91, 93-94, 96, 98-99, 101"
+          "line_count": 14,
+          "line_ranges": "36, 104, 106, 108-109, 111-112, 114, 116-117, 119, 121-122, 124"
         },
         {
           "file_path": "src/pytest_llm_report/llm/noop.py",
@@ -1326,7 +1433,7 @@
           "line_ranges": "32"
         }
       ],
-      "duration": 0.0002557970000012233,
+      "duration": 0.00026482900000246445,
       "nodeid": "tests/test_llm_contract.py::TestProviderContract::test_provider_has_annotate_method",
       "outcome": "passed",
       "phase": "call"
@@ -1336,10 +1443,90 @@
         {
           "file_path": "src/pytest_llm_report/llm/base.py",
           "line_count": 1,
-          "line_ranges": "35"
+          "line_ranges": "36"
         }
       ],
-      "duration": 0.00023804399999960424,
+      "duration": 0.00023212700000385666,
+      "nodeid": "tests/test_llm_providers.py::TestGeminiProvider::test_annotate_missing_dependency",
+      "outcome": "passed",
+      "phase": "call"
+    },
+    {
+      "coverage": [
+        {
+          "file_path": "src/pytest_llm_report/llm/base.py",
+          "line_count": 1,
+          "line_ranges": "36"
+        }
+      ],
+      "duration": 0.00025845700000104443,
+      "nodeid": "tests/test_llm_providers.py::TestGeminiProvider::test_annotate_missing_token",
+      "outcome": "passed",
+      "phase": "call"
+    },
+    {
+      "coverage": [
+        {
+          "file_path": "src/pytest_llm_report/llm/base.py",
+          "line_count": 1,
+          "line_ranges": "36"
+        },
+        {
+          "file_path": "src/pytest_llm_report/llm/schemas.py",
+          "line_count": 7,
+          "line_ranges": "38, 42-43, 50-53"
+        }
+      ],
+      "duration": 0.0003745749999950476,
+      "nodeid": "tests/test_llm_providers.py::TestGeminiProvider::test_annotate_retries_on_rate_limit",
+      "outcome": "passed",
+      "phase": "call"
+    },
+    {
+      "coverage": [
+        {
+          "file_path": "src/pytest_llm_report/llm/base.py",
+          "line_count": 1,
+          "line_ranges": "36"
+        },
+        {
+          "file_path": "src/pytest_llm_report/llm/schemas.py",
+          "line_count": 7,
+          "line_ranges": "38, 42-43, 50-53"
+        }
+      ],
+      "duration": 0.0003563809999889145,
+      "nodeid": "tests/test_llm_providers.py::TestGeminiProvider::test_annotate_skips_on_daily_limit",
+      "outcome": "passed",
+      "phase": "call"
+    },
+    {
+      "coverage": [
+        {
+          "file_path": "src/pytest_llm_report/llm/base.py",
+          "line_count": 1,
+          "line_ranges": "36"
+        },
+        {
+          "file_path": "src/pytest_llm_report/llm/schemas.py",
+          "line_count": 7,
+          "line_ranges": "38, 42-43, 50-53"
+        }
+      ],
+      "duration": 0.00045420500001114306,
+      "nodeid": "tests/test_llm_providers.py::TestGeminiProvider::test_annotate_success_with_mock_response",
+      "outcome": "passed",
+      "phase": "call"
+    },
+    {
+      "coverage": [
+        {
+          "file_path": "src/pytest_llm_report/llm/base.py",
+          "line_count": 1,
+          "line_ranges": "36"
+        }
+      ],
+      "duration": 0.00023612499998648673,
       "nodeid": "tests/test_llm_providers.py::TestLiteLLMProvider::test_annotate_handles_completion_error",
       "outcome": "passed",
       "phase": "call"
@@ -1349,7 +1536,7 @@
         {
           "file_path": "src/pytest_llm_report/llm/base.py",
           "line_count": 1,
-          "line_ranges": "35"
+          "line_ranges": "36"
         },
         {
           "file_path": "src/pytest_llm_report/llm/schemas.py",
@@ -1357,7 +1544,7 @@
           "line_ranges": "38, 42-43, 50-53"
         }
       ],
-      "duration": 0.00026863100000440454,
+      "duration": 0.0002759490000130427,
       "nodeid": "tests/test_llm_providers.py::TestLiteLLMProvider::test_annotate_invalid_key_assertions",
       "outcome": "passed",
       "phase": "call"
@@ -1367,10 +1554,10 @@
         {
           "file_path": "src/pytest_llm_report/llm/base.py",
           "line_count": 1,
-          "line_ranges": "35"
+          "line_ranges": "36"
         }
       ],
-      "duration": 0.00024158100000448712,
+      "duration": 0.0002431179999859978,
       "nodeid": "tests/test_llm_providers.py::TestLiteLLMProvider::test_annotate_missing_dependency",
       "outcome": "passed",
       "phase": "call"
@@ -1380,7 +1567,7 @@
         {
           "file_path": "src/pytest_llm_report/llm/base.py",
           "line_count": 1,
-          "line_ranges": "35"
+          "line_ranges": "36"
         },
         {
           "file_path": "src/pytest_llm_report/llm/schemas.py",
@@ -1388,7 +1575,7 @@
           "line_ranges": "38, 42-43, 50-53"
         }
       ],
-      "duration": 0.0003565550000033113,
+      "duration": 0.00033056199998782176,
       "nodeid": "tests/test_llm_providers.py::TestLiteLLMProvider::test_annotate_success_with_mock_response",
       "outcome": "passed",
       "phase": "call"
@@ -1398,10 +1585,10 @@
         {
           "file_path": "src/pytest_llm_report/llm/base.py",
           "line_count": 1,
-          "line_ranges": "35"
+          "line_ranges": "36"
         }
       ],
-      "duration": 0.0002227459999986081,
+      "duration": 0.00024417899999207293,
       "nodeid": "tests/test_llm_providers.py::TestLiteLLMProvider::test_is_available_with_module",
       "outcome": "passed",
       "phase": "call"
@@ -1411,10 +1598,10 @@
         {
           "file_path": "src/pytest_llm_report/llm/base.py",
           "line_count": 1,
-          "line_ranges": "35"
+          "line_ranges": "36"
         }
       ],
-      "duration": 0.00027194700000165994,
+      "duration": 0.00024278699999058517,
       "nodeid": "tests/test_llm_providers.py::TestOllamaProvider::test_annotate_handles_call_error",
       "outcome": "passed",
       "phase": "call"
@@ -1424,10 +1611,10 @@
         {
           "file_path": "src/pytest_llm_report/llm/base.py",
           "line_count": 1,
-          "line_ranges": "35"
+          "line_ranges": "36"
         }
       ],
-      "duration": 0.00023720200000099112,
+      "duration": 0.00026310500001613946,
       "nodeid": "tests/test_llm_providers.py::TestOllamaProvider::test_annotate_missing_httpx",
       "outcome": "passed",
       "phase": "call"
@@ -1437,7 +1624,7 @@
         {
           "file_path": "src/pytest_llm_report/llm/base.py",
           "line_count": 1,
-          "line_ranges": "35"
+          "line_ranges": "36"
         },
         {
           "file_path": "src/pytest_llm_report/llm/schemas.py",
@@ -1445,7 +1632,7 @@
           "line_ranges": "38, 42-43, 50-52, 55"
         }
       ],
-      "duration": 0.00021610299999963445,
+      "duration": 0.0002524250000135453,
       "nodeid": "tests/test_llm_providers.py::TestOllamaProvider::test_parse_response_invalid_json",
       "outcome": "passed",
       "phase": "call"
@@ -1455,7 +1642,7 @@
         {
           "file_path": "src/pytest_llm_report/llm/base.py",
           "line_count": 1,
-          "line_ranges": "35"
+          "line_ranges": "36"
         },
         {
           "file_path": "src/pytest_llm_report/llm/schemas.py",
@@ -1463,7 +1650,7 @@
           "line_ranges": "38, 42-43, 50-53"
         }
       ],
-      "duration": 0.00025715900000022884,
+      "duration": 0.0002457219999882909,
       "nodeid": "tests/test_llm_providers.py::TestOllamaProvider::test_parse_response_invalid_key_assertions",
       "outcome": "passed",
       "phase": "call"
@@ -1473,7 +1660,7 @@
         {
           "file_path": "src/pytest_llm_report/llm/base.py",
           "line_count": 1,
-          "line_ranges": "35"
+          "line_ranges": "36"
         },
         {
           "file_path": "src/pytest_llm_report/llm/schemas.py",
@@ -1481,7 +1668,7 @@
           "line_ranges": "38, 42-44, 46-47"
         }
       ],
-      "duration": 0.0002497050000016543,
+      "duration": 0.00027467699999306205,
       "nodeid": "tests/test_llm_providers.py::TestOllamaProvider::test_parse_response_json_in_code_fence",
       "outcome": "passed",
       "phase": "call"
@@ -1491,7 +1678,7 @@
         {
           "file_path": "src/pytest_llm_report/llm/base.py",
           "line_count": 1,
-          "line_ranges": "35"
+          "line_ranges": "36"
         },
         {
           "file_path": "src/pytest_llm_report/llm/schemas.py",
@@ -1499,7 +1686,7 @@
           "line_ranges": "38, 42-44, 46-47"
         }
       ],
-      "duration": 0.0002371019999998225,
+      "duration": 0.0002797559999976329,
       "nodeid": "tests/test_llm_providers.py::TestOllamaProvider::test_parse_response_json_in_plain_fence",
       "outcome": "passed",
       "phase": "call"
@@ -1509,7 +1696,7 @@
         {
           "file_path": "src/pytest_llm_report/llm/base.py",
           "line_count": 1,
-          "line_ranges": "35"
+          "line_ranges": "36"
         },
         {
           "file_path": "src/pytest_llm_report/llm/schemas.py",
@@ -1517,7 +1704,7 @@
           "line_ranges": "38, 42-43, 50-53"
         }
       ],
-      "duration": 0.0002886090000018271,
+      "duration": 0.0002681150000114485,
       "nodeid": "tests/test_llm_providers.py::TestOllamaProvider::test_parse_response_success",
       "outcome": "passed",
       "phase": "call"
@@ -1530,7 +1717,7 @@
           "line_ranges": "254-257"
         }
       ],
-      "duration": 0.0002392260000050328,
+      "duration": 0.00022045499997602747,
       "nodeid": "tests/test_models.py::TestArtifactEntry::test_to_dict",
       "outcome": "passed",
       "phase": "call"
@@ -1543,7 +1730,7 @@
           "line_ranges": "207-209"
         }
       ],
-      "duration": 0.00020994100000137905,
+      "duration": 0.000210124999995287,
       "nodeid": "tests/test_models.py::TestCollectionError::test_to_dict",
       "outcome": "passed",
       "phase": "call"
@@ -1556,13 +1743,13 @@
           "line_ranges": "40-43"
         }
       ],
-      "duration": 0.000226513000001205,
+      "duration": 0.00023264800000788455,
       "nodeid": "tests/test_models.py::TestCoverageEntry::test_to_dict",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00021075299999750996,
+      "duration": 0.00021523500001308093,
       "nodeid": "tests/test_models.py::TestLlmAnnotation::test_empty_annotation",
       "outcome": "passed",
       "phase": "call"
@@ -1575,7 +1762,7 @@
           "line_ranges": "104-107, 109, 111, 113, 115"
         }
       ],
-      "duration": 0.0002058429999962641,
+      "duration": 0.00021088700000859717,
       "nodeid": "tests/test_models.py::TestLlmAnnotation::test_to_dict_minimal",
       "outcome": "passed",
       "phase": "call"
@@ -1588,7 +1775,7 @@
           "line_ranges": "104-107, 109-111, 113-115"
         }
       ],
-      "duration": 0.00023285400000361278,
+      "duration": 0.0002186709999989489,
       "nodeid": "tests/test_models.py::TestLlmAnnotation::test_to_dict_with_all_fields",
       "outcome": "passed",
       "phase": "call"
@@ -1601,7 +1788,7 @@
           "line_ranges": "346-362, 364, 367, 369, 371, 373, 375, 377, 380, 410-418, 420, 422, 461, 463-467, 469, 471, 473, 475, 477, 479, 481, 483"
         }
       ],
-      "duration": 0.0002395260000014332,
+      "duration": 0.00023803799999200237,
       "nodeid": "tests/test_models.py::TestReportRoot::test_default_report",
       "outcome": "passed",
       "phase": "call"
@@ -1614,7 +1801,7 @@
           "line_ranges": "207-209, 346-362, 364, 367, 369, 371, 373, 375, 377, 380, 410-418, 420, 422, 461, 463-467, 469-471, 473, 475, 477, 479, 481, 483"
         }
       ],
-      "duration": 0.00023396600000324952,
+      "duration": 0.000265901000005897,
       "nodeid": "tests/test_models.py::TestReportRoot::test_report_with_collection_errors",
       "outcome": "passed",
       "phase": "call"
@@ -1627,7 +1814,7 @@
           "line_ranges": "229-231, 233, 235, 346-362, 364, 367, 369, 371, 373, 375, 377, 380, 410-418, 420, 422, 461, 463-467, 469, 471-473, 475, 477, 479, 481, 483"
         }
       ],
-      "duration": 0.00024234199999995099,
+      "duration": 0.00024563200000216057,
       "nodeid": "tests/test_models.py::TestReportRoot::test_report_with_warnings",
       "outcome": "passed",
       "phase": "call"
@@ -1640,7 +1827,7 @@
           "line_ranges": "161-165, 167, 169, 171, 173, 176, 178, 180, 182, 184, 186, 188, 190, 346-362, 364, 367, 369, 371, 373, 375, 377, 380, 410-418, 420, 422, 461, 463-467, 469, 471, 473, 475, 477, 479, 481, 483"
         }
       ],
-      "duration": 0.0002509880000047815,
+      "duration": 0.00025027099999874736,
       "nodeid": "tests/test_models.py::TestReportRoot::test_tests_sorted_by_nodeid",
       "outcome": "passed",
       "phase": "call"
@@ -1653,7 +1840,7 @@
           "line_ranges": "229-231, 233-235"
         }
       ],
-      "duration": 0.00023568000000295797,
+      "duration": 0.0002105869999979859,
       "nodeid": "tests/test_models.py::TestReportWarning::test_to_dict_with_detail",
       "outcome": "passed",
       "phase": "call"
@@ -1666,7 +1853,7 @@
           "line_ranges": "229-231, 233, 235"
         }
       ],
-      "duration": 0.000217005000003212,
+      "duration": 0.00023753600001441555,
       "nodeid": "tests/test_models.py::TestReportWarning::test_to_dict_without_detail",
       "outcome": "passed",
       "phase": "call"
@@ -1679,7 +1866,7 @@
           "line_ranges": "277-279, 281-283, 346-362, 364, 367, 369, 371, 373-380"
         }
       ],
-      "duration": 0.0002451869999973155,
+      "duration": 0.0002564119999988179,
       "nodeid": "tests/test_models.py::TestRunMeta::test_aggregation_fields_present",
       "outcome": "passed",
       "phase": "call"
@@ -1692,7 +1879,7 @@
           "line_ranges": "346-362, 364, 367, 369, 371, 373, 375, 377, 380"
         }
       ],
-      "duration": 0.00023608000000052698,
+      "duration": 0.00021664799999143725,
       "nodeid": "tests/test_models.py::TestRunMeta::test_non_aggregated_excludes_source_reports",
       "outcome": "passed",
       "phase": "call"
@@ -1705,7 +1892,7 @@
           "line_ranges": "277-279, 281-283, 346-362, 364-380"
         }
       ],
-      "duration": 0.00026243900000366693,
+      "duration": 0.0002688159999877371,
       "nodeid": "tests/test_models.py::TestRunMeta::test_run_meta_to_dict_full",
       "outcome": "passed",
       "phase": "call"
@@ -1718,13 +1905,13 @@
           "line_ranges": "346-362, 364, 367, 369, 371, 373, 375, 377, 380"
         }
       ],
-      "duration": 0.0002226850000042191,
+      "duration": 0.0002278489999980593,
       "nodeid": "tests/test_models.py::TestRunMeta::test_run_status_fields",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0002136179999965293,
+      "duration": 0.0002411039999969944,
       "nodeid": "tests/test_models.py::TestSchemaVersion::test_schema_version_format",
       "outcome": "passed",
       "phase": "call"
@@ -1737,7 +1924,7 @@
           "line_ranges": "346-362, 364, 367, 369, 371, 373, 375, 377, 380, 410-418, 420, 422, 461, 463-467, 469, 471, 473, 475, 477, 479, 481, 483"
         }
       ],
-      "duration": 0.0002437850000021058,
+      "duration": 0.00024278699999058517,
       "nodeid": "tests/test_models.py::TestSchemaVersion::test_schema_version_in_report_root",
       "outcome": "passed",
       "phase": "call"
@@ -1750,7 +1937,7 @@
           "line_ranges": "71-78"
         }
       ],
-      "duration": 0.00022620200000034174,
+      "duration": 0.00022773899999606328,
       "nodeid": "tests/test_models.py::TestSourceCoverageEntry::test_to_dict",
       "outcome": "passed",
       "phase": "call"
@@ -1763,7 +1950,7 @@
           "line_ranges": "277-279, 281, 283"
         }
       ],
-      "duration": 0.0002107730000062702,
+      "duration": 0.00021882200002210084,
       "nodeid": "tests/test_models.py::TestSourceReport::test_to_dict_minimal",
       "outcome": "passed",
       "phase": "call"
@@ -1776,7 +1963,7 @@
           "line_ranges": "277-279, 281-283"
         }
       ],
-      "duration": 0.00020467200000240382,
+      "duration": 0.00021139800000469222,
       "nodeid": "tests/test_models.py::TestSourceReport::test_to_dict_with_run_id",
       "outcome": "passed",
       "phase": "call"
@@ -1789,7 +1976,7 @@
           "line_ranges": "410-418, 420, 422"
         }
       ],
-      "duration": 0.000239266000001237,
+      "duration": 0.00024028199999293065,
       "nodeid": "tests/test_models.py::TestSummary::test_to_dict",
       "outcome": "passed",
       "phase": "call"
@@ -1802,7 +1989,7 @@
           "line_ranges": "161-165, 167, 169, 171, 173, 176, 178, 180, 182, 184, 186, 188, 190"
         }
       ],
-      "duration": 0.00021369899999967856,
+      "duration": 0.00021945299999970302,
       "nodeid": "tests/test_models.py::TestTestCaseResult::test_minimal_result",
       "outcome": "passed",
       "phase": "call"
@@ -1815,7 +2002,7 @@
           "line_ranges": "40-43, 161-165, 167, 169, 171, 173, 176-178, 180, 182, 184, 186, 188, 190"
         }
       ],
-      "duration": 0.00021852700000124514,
+      "duration": 0.00022315999999023006,
       "nodeid": "tests/test_models.py::TestTestCaseResult::test_result_with_coverage",
       "outcome": "passed",
       "phase": "call"
@@ -1828,7 +2015,7 @@
           "line_ranges": "161-165, 167, 169, 171, 173, 176, 178, 180-182, 184, 186, 188, 190"
         }
       ],
-      "duration": 0.00023927699999859442,
+      "duration": 0.0002109369999914179,
       "nodeid": "tests/test_models.py::TestTestCaseResult::test_result_with_llm_opt_out",
       "outcome": "passed",
       "phase": "call"
@@ -1841,7 +2028,7 @@
           "line_ranges": "161-165, 167, 169, 171, 173-176, 178, 180, 182, 184, 186, 188, 190"
         }
       ],
-      "duration": 0.00020832799999936924,
+      "duration": 0.00021862099998770645,
       "nodeid": "tests/test_models.py::TestTestCaseResult::test_result_with_rerun",
       "outcome": "passed",
       "phase": "call"
@@ -1854,267 +2041,285 @@
           "line_ranges": "161-165, 167, 169, 171, 173, 176, 178, 180, 182, 184, 186, 188, 190"
         }
       ],
-      "duration": 0.00023214200000154506,
+      "duration": 0.00021025600000257327,
       "nodeid": "tests/test_models.py::TestTestCaseResult::test_result_without_rerun_excludes_fields",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001983499999980154,
+      "duration": 0.00020300200000633595,
       "nodeid": "tests/test_options.py::TestConfigAggregationFields::test_aggregate_dir_defaults_to_none",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020107499999966194,
+      "duration": 0.00020897400000308153,
       "nodeid": "tests/test_options.py::TestConfigAggregationFields::test_aggregate_group_id_defaults_to_none",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020795800000428244,
+      "duration": 0.00020135899998763307,
       "nodeid": "tests/test_options.py::TestConfigAggregationFields::test_aggregate_include_history_defaults_to_false",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.000201525999997898,
+      "duration": 0.00020021699998551412,
       "nodeid": "tests/test_options.py::TestConfigAggregationFields::test_aggregate_run_id_defaults_to_none",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020273799999870334,
+      "duration": 0.00020300200000633595,
       "nodeid": "tests/test_options.py::TestConfigDefaults::test_aggregate_policy_defaults_to_latest",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020139499999771715,
+      "duration": 0.00020794099998511228,
       "nodeid": "tests/test_options.py::TestConfigDefaults::test_capture_failed_output_defaults_to_false",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020549299999572668,
+      "duration": 0.0002090339999938351,
       "nodeid": "tests/test_options.py::TestConfigDefaults::test_context_mode_defaults_to_minimal",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00021162400000207526,
+      "duration": 0.00020986499998798536,
       "nodeid": "tests/test_options.py::TestConfigDefaults::test_default_exclude_globs_include_secrets",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0002030289999979118,
+      "duration": 0.000209664999999859,
       "nodeid": "tests/test_options.py::TestConfigDefaults::test_llm_include_param_values_defaults_to_false",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020585400000072696,
+      "duration": 0.00020215999998640655,
+      "nodeid": "tests/test_options.py::TestConfigDefaults::test_llm_requests_per_minute_defaults_to_five",
+      "outcome": "passed",
+      "phase": "call"
+    },
+    {
+      "duration": 0.00020644800000013674,
       "nodeid": "tests/test_options.py::TestConfigDefaults::test_omit_tests_from_coverage_defaults_to_true",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00021225599999752376,
+      "duration": 0.0002123700000140616,
       "nodeid": "tests/test_options.py::TestConfigDefaults::test_provider_defaults_to_none",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019863100000350187,
+      "duration": 0.00020352299998194212,
+      "nodeid": "tests/test_options.py::TestConfigIsLlmEnabled::test_gemini_provider_is_enabled",
+      "outcome": "passed",
+      "phase": "call"
+    },
+    {
+      "duration": 0.0002052670000125545,
       "nodeid": "tests/test_options.py::TestConfigIsLlmEnabled::test_litellm_provider_is_enabled",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019984300000430721,
+      "duration": 0.00020581699999411285,
       "nodeid": "tests/test_options.py::TestConfigIsLlmEnabled::test_none_provider_not_enabled",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019972200000495377,
+      "duration": 0.0002047859999834145,
       "nodeid": "tests/test_options.py::TestConfigIsLlmEnabled::test_ollama_provider_is_enabled",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020744700000108196,
+      "duration": 0.00021209900000940252,
       "nodeid": "tests/test_options.py::TestConfigValidation::test_context_bytes_too_small_produces_error",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00021377800000266234,
+      "duration": 0.000212440000012748,
       "nodeid": "tests/test_options.py::TestConfigValidation::test_invalid_aggregate_policy_produces_error",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00021762600000130305,
+      "duration": 0.0002148750000117161,
       "nodeid": "tests/test_options.py::TestConfigValidation::test_invalid_context_mode_produces_error",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00021135400000105165,
+      "duration": 0.0002609519999907661,
       "nodeid": "tests/test_options.py::TestConfigValidation::test_invalid_include_phase_produces_error",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00021192500000211112,
+      "duration": 0.00021520499998928244,
       "nodeid": "tests/test_options.py::TestConfigValidation::test_invalid_provider_produces_error",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00021229600000083337,
+      "duration": 0.0002202550000163228,
       "nodeid": "tests/test_options.py::TestConfigValidation::test_max_tests_too_small_produces_error",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0002069559999995363,
+      "duration": 0.00021235899998828245,
       "nodeid": "tests/test_options.py::TestConfigValidation::test_multiple_errors_reported",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0002054430000058005,
+      "duration": 0.00021500500000115608,
+      "nodeid": "tests/test_options.py::TestConfigValidation::test_requests_per_minute_too_small_produces_error",
+      "outcome": "passed",
+      "phase": "call"
+    },
+    {
+      "duration": 0.00021313099998110374,
       "nodeid": "tests/test_options.py::TestConfigValidation::test_timeout_too_small_produces_error",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020263800000464016,
+      "duration": 0.0002082610000115892,
       "nodeid": "tests/test_options.py::TestConfigValidation::test_valid_config_has_no_errors",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020205599999911783,
+      "duration": 0.0002078720000042722,
       "nodeid": "tests/test_options.py::TestGetDefaultConfig::test_returns_config_instance",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0002038699999999949,
+      "duration": 0.0002052670000125545,
       "nodeid": "tests/test_options.py::TestGetDefaultConfig::test_returns_defaults",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0002118549999963193,
+      "duration": 0.00021031599999332684,
       "nodeid": "tests/test_options_extended.py::TestConfigAnnotations::test_aggregation_settings",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0002147209999989741,
+      "duration": 0.00021319200001812533,
       "nodeid": "tests/test_options_extended.py::TestConfigAnnotations::test_all_output_paths",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00022444900000095913,
+      "duration": 0.0002028810000069825,
       "nodeid": "tests/test_options_extended.py::TestConfigAnnotations::test_capture_settings",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00021870799999845758,
+      "duration": 0.00020427399999789486,
       "nodeid": "tests/test_options_extended.py::TestConfigAnnotations::test_compliance_settings",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00022293600000011793,
+      "duration": 0.00021278099998767175,
       "nodeid": "tests/test_options_extended.py::TestConfigAnnotations::test_coverage_settings",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0002203809999983264,
+      "duration": 0.0002068889999975454,
       "nodeid": "tests/test_options_extended.py::TestConfigAnnotations::test_custom_exclude_globs",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00022595200000097293,
+      "duration": 0.00020845299999905365,
       "nodeid": "tests/test_options_extended.py::TestConfigAnnotations::test_include_globs",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00022165300000409616,
+      "duration": 0.00020054800000934847,
       "nodeid": "tests/test_options_extended.py::TestConfigAnnotations::test_invocation_settings",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00022680300000388343,
+      "duration": 0.00021161899999810885,
       "nodeid": "tests/test_options_extended.py::TestConfigAnnotations::test_llm_execution_settings",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00022492000000085,
+      "duration": 0.00020872300001428812,
       "nodeid": "tests/test_options_extended.py::TestConfigAnnotations::test_llm_param_settings",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0002125860000035118,
+      "duration": 0.00021055599998476282,
       "nodeid": "tests/test_options_extended.py::TestConfigAnnotations::test_llm_settings",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00023923599999875478,
+      "duration": 0.00023042399999440022,
       "nodeid": "tests/test_options_extended.py::TestConfigAnnotations::test_repo_root_path",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0002510280000009857,
+      "duration": 0.00023054399997590735,
       "nodeid": "tests/test_options_extended.py::TestConfigAnnotations::test_valid_phase_values",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00023016900000527585,
+      "duration": 0.0002292519999969045,
       "nodeid": "tests/test_plugin_integration.py::TestPluginConfigLoading::test_config_defaults",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019924200000076553,
+      "duration": 0.00020307200000502235,
       "nodeid": "tests/test_plugin_integration.py::TestPluginConfigLoading::test_markers_exist_in_config",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019004400000000032,
+      "duration": 0.00019614999999362226,
       "llm_context_override": "balanced",
       "nodeid": "tests/test_plugin_integration.py::TestPluginIntegration::test_llm_context_marker",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001911169999999629,
+      "duration": 0.00019659999998111743,
       "llm_opt_out": true,
       "nodeid": "tests/test_plugin_integration.py::TestPluginIntegration::test_llm_opt_out_marker",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020078499999698352,
+      "duration": 0.0002004180000199085,
       "nodeid": "tests/test_plugin_integration.py::TestPluginIntegration::test_requirement_marker",
       "outcome": "passed",
       "phase": "call",
@@ -2141,37 +2346,37 @@
           "line_ranges": "53, 62-68, 71-75, 77, 79, 98-100, 127, 133, 136-137, 141, 150-157, 161-162, 165-166, 168, 188, 190-193, 195, 197-211, 223, 225-226, 228-231, 241, 251, 254-256, 259-260, 263-265, 268, 271-275, 287, 289-290, 293, 296, 299, 302-306, 316-317, 341, 343, 345-347, 349, 352"
         }
       ],
-      "duration": 0.022395872000004147,
+      "duration": 0.024347594999994726,
       "nodeid": "tests/test_plugin_integration.py::TestReportGeneration::test_report_writer_integration",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0015543889999989347,
+      "duration": 0.0016006729999844538,
       "nodeid": "tests/test_prompts.py::TestContextAssembler::test_balanced_mode_includes_coverage",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0002726079999959552,
+      "duration": 0.0002790249999975458,
       "nodeid": "tests/test_prompts.py::TestContextAssembler::test_context_override_from_marker",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00023143100000311279,
+      "duration": 0.00022923099999161423,
       "nodeid": "tests/test_prompts.py::TestContextAssembler::test_create_assembler",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0004343900000023382,
+      "duration": 0.0003820590000032098,
       "nodeid": "tests/test_prompts.py::TestContextAssembler::test_minimal_mode_returns_empty_context",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0004154450000015686,
+      "duration": 0.0004397779999862905,
       "nodeid": "tests/test_prompts.py::TestContextAssemblerExcludes::test_excludes_secret_files",
       "outcome": "passed",
       "phase": "call"
@@ -2184,7 +2389,7 @@
           "line_ranges": "29, 33, 35-37, 39-40, 42, 50, 52, 65, 67"
         }
       ],
-      "duration": 0.0002383550000004675,
+      "duration": 0.00025916799998526585,
       "nodeid": "tests/test_ranges.py::TestCompressRanges::test_consecutive_lines",
       "outcome": "passed",
       "phase": "call"
@@ -2197,7 +2402,7 @@
           "line_ranges": "29, 33, 35-37, 39-40, 42, 50, 52, 65, 67"
         }
       ],
-      "duration": 0.00020678599999968128,
+      "duration": 0.00021070599999006845,
       "nodeid": "tests/test_ranges.py::TestCompressRanges::test_duplicates",
       "outcome": "passed",
       "phase": "call"
@@ -2210,7 +2415,7 @@
           "line_ranges": "29-30"
         }
       ],
-      "duration": 0.00021375899999753756,
+      "duration": 0.00022002399998655164,
       "nodeid": "tests/test_ranges.py::TestCompressRanges::test_empty_list",
       "outcome": "passed",
       "phase": "call"
@@ -2223,7 +2428,7 @@
           "line_ranges": "29, 33, 35-37, 39-40, 42, 45-47, 50, 52, 65-67"
         }
       ],
-      "duration": 0.00023723300000000336,
+      "duration": 0.00021678900000665635,
       "nodeid": "tests/test_ranges.py::TestCompressRanges::test_mixed_ranges",
       "outcome": "passed",
       "phase": "call"
@@ -2236,7 +2441,7 @@
           "line_ranges": "29, 33, 35-37, 39-40, 45-47, 50, 52, 65-66"
         }
       ],
-      "duration": 0.00021292699999975184,
+      "duration": 0.00021644700001388628,
       "nodeid": "tests/test_ranges.py::TestCompressRanges::test_non_consecutive_lines",
       "outcome": "passed",
       "phase": "call"
@@ -2249,7 +2454,7 @@
           "line_ranges": "29, 33, 35-37, 39, 50, 52, 65-66"
         }
       ],
-      "duration": 0.00021459999999962065,
+      "duration": 0.00021272099999691818,
       "nodeid": "tests/test_ranges.py::TestCompressRanges::test_single_line",
       "outcome": "passed",
       "phase": "call"
@@ -2262,7 +2467,7 @@
           "line_ranges": "29, 33, 35-37, 39-40, 42, 50, 52, 65, 67"
         }
       ],
-      "duration": 0.00022435900000061793,
+      "duration": 0.0002171890000113308,
       "nodeid": "tests/test_ranges.py::TestCompressRanges::test_two_consecutive",
       "outcome": "passed",
       "phase": "call"
@@ -2275,7 +2480,7 @@
           "line_ranges": "29, 33, 35-37, 39-40, 42, 45-47, 50, 52, 65-67"
         }
       ],
-      "duration": 0.00020898000000357797,
+      "duration": 0.00021689799999080606,
       "nodeid": "tests/test_ranges.py::TestCompressRanges::test_unsorted_input",
       "outcome": "passed",
       "phase": "call"
@@ -2288,7 +2493,7 @@
           "line_ranges": "81-82"
         }
       ],
-      "duration": 0.00020724600000221471,
+      "duration": 0.00020758000002274457,
       "nodeid": "tests/test_ranges.py::TestExpandRanges::test_empty_string",
       "outcome": "passed",
       "phase": "call"
@@ -2301,7 +2506,7 @@
           "line_ranges": "81, 84-91, 93, 95"
         }
       ],
-      "duration": 0.00020817800000116904,
+      "duration": 0.00021250000000350155,
       "nodeid": "tests/test_ranges.py::TestExpandRanges::test_mixed",
       "outcome": "passed",
       "phase": "call"
@@ -2314,7 +2519,7 @@
           "line_ranges": "81, 84-91, 95"
         }
       ],
-      "duration": 0.00020728700000205436,
+      "duration": 0.00021383300000366035,
       "nodeid": "tests/test_ranges.py::TestExpandRanges::test_range",
       "outcome": "passed",
       "phase": "call"
@@ -2327,7 +2532,7 @@
           "line_ranges": "29, 33, 35-37, 39-40, 42, 45-47, 50, 52, 65-67, 81, 84-91, 93, 95"
         }
       ],
-      "duration": 0.00024766199999959326,
+      "duration": 0.0002490090000151213,
       "nodeid": "tests/test_ranges.py::TestExpandRanges::test_roundtrip",
       "outcome": "passed",
       "phase": "call"
@@ -2340,7 +2545,7 @@
           "line_ranges": "81, 84-87, 93, 95"
         }
       ],
-      "duration": 0.00023192300000118848,
+      "duration": 0.0002066090000027998,
       "nodeid": "tests/test_ranges.py::TestExpandRanges::test_single_number",
       "outcome": "passed",
       "phase": "call"
@@ -2353,7 +2558,7 @@
           "line_ranges": "65, 67"
         }
       ],
-      "duration": 0.0002363100000053464,
+      "duration": 0.00024084399998969275,
       "nodeid": "tests/test_render.py::TestFormatDuration::test_milliseconds",
       "outcome": "passed",
       "phase": "call"
@@ -2366,7 +2571,7 @@
           "line_ranges": "65-66"
         }
       ],
-      "duration": 0.00021088300000116078,
+      "duration": 0.0002155759999880047,
       "nodeid": "tests/test_render.py::TestFormatDuration::test_seconds",
       "outcome": "passed",
       "phase": "call"
@@ -2379,7 +2584,7 @@
           "line_ranges": "79-85, 87"
         }
       ],
-      "duration": 0.00022408799999595885,
+      "duration": 0.0002291819999982181,
       "nodeid": "tests/test_render.py::TestOutcomeToCssClass::test_all_outcomes",
       "outcome": "passed",
       "phase": "call"
@@ -2392,7 +2597,7 @@
           "line_ranges": "79-85, 87"
         }
       ],
-      "duration": 0.00019647699999580936,
+      "duration": 0.0002073099999790884,
       "nodeid": "tests/test_render.py::TestOutcomeToCssClass::test_unknown_outcome",
       "outcome": "passed",
       "phase": "call"
@@ -2405,7 +2610,7 @@
           "line_ranges": "65-67, 79-85, 87, 121-124, 126-127, 131-132, 141-143, 145-153, 158-160, 196, 229-230, 233-239, 242-243"
         }
       ],
-      "duration": 0.0003241749999958188,
+      "duration": 0.0003130599999963124,
       "nodeid": "tests/test_render.py::TestRenderFallbackHtml::test_renders_basic_report",
       "outcome": "passed",
       "phase": "call"
@@ -2418,7 +2623,7 @@
           "line_ranges": "65, 67, 79-85, 87, 121-124, 126-129, 131-132, 141-142, 145-153, 158-160, 196, 229-230, 233-239, 242-243"
         }
       ],
-      "duration": 0.00024595899999724224,
+      "duration": 0.0002647679999938646,
       "nodeid": "tests/test_render.py::TestRenderFallbackHtml::test_renders_coverage",
       "outcome": "passed",
       "phase": "call"
@@ -2431,7 +2636,7 @@
           "line_ranges": "65, 67, 79-85, 87, 121-124, 126-127, 131-134, 136-137, 141-142, 145-153, 158-160, 196, 229-230, 233-239, 242-243"
         }
       ],
-      "duration": 0.00024176999999525606,
+      "duration": 0.00024745599998254875,
       "nodeid": "tests/test_render.py::TestRenderFallbackHtml::test_renders_llm_annotation",
       "outcome": "passed",
       "phase": "call"
@@ -2444,7 +2649,7 @@
           "line_ranges": "65, 67, 79-85, 87, 121-124, 126-127, 131-132, 141-142, 145-153, 158-164, 166-172, 177, 192, 196, 229-230, 233-239, 242-243"
         }
       ],
-      "duration": 0.000252189999997654,
+      "duration": 0.0002572049999969295,
       "nodeid": "tests/test_render.py::TestRenderFallbackHtml::test_renders_source_coverage",
       "outcome": "passed",
       "phase": "call"
@@ -2457,7 +2662,7 @@
           "line_ranges": "65, 67, 79-85, 87, 121-124, 126-127, 131-132, 141-142, 145-153, 158-160, 196, 229-230, 233-239, 242-243"
         }
       ],
-      "duration": 0.0002716469999981541,
+      "duration": 0.00025888799999052026,
       "nodeid": "tests/test_render.py::TestRenderFallbackHtml::test_renders_xpass_summary",
       "outcome": "passed",
       "phase": "call"
@@ -2470,7 +2675,7 @@
           "line_ranges": "53"
         }
       ],
-      "duration": 0.0002058329999954367,
+      "duration": 0.0002255649999938214,
       "nodeid": "tests/test_report_writer.py::TestComputeSha256::test_different_content",
       "outcome": "passed",
       "phase": "call"
@@ -2483,7 +2688,7 @@
           "line_ranges": "53"
         }
       ],
-      "duration": 0.00021853799999860257,
+      "duration": 0.00021682799999211966,
       "nodeid": "tests/test_report_writer.py::TestComputeSha256::test_empty_bytes",
       "outcome": "passed",
       "phase": "call"
@@ -2496,7 +2701,7 @@
           "line_ranges": "62-68, 71-75, 77, 79, 98-100, 188, 190-193, 195, 197-211"
         }
       ],
-      "duration": 0.004358177000000296,
+      "duration": 0.004277460999986715,
       "nodeid": "tests/test_report_writer.py::TestReportWriter::test_build_run_meta",
       "outcome": "passed",
       "phase": "call"
@@ -2509,7 +2714,7 @@
           "line_ranges": "98-100, 223, 225-226, 228-239, 241"
         }
       ],
-      "duration": 0.0002509989999950335,
+      "duration": 0.00027804300000866533,
       "nodeid": "tests/test_report_writer.py::TestReportWriter::test_build_summary_all_outcomes",
       "outcome": "passed",
       "phase": "call"
@@ -2522,7 +2727,7 @@
           "line_ranges": "98-100, 223, 225-226, 228-233, 241"
         }
       ],
-      "duration": 0.00023664100000075905,
+      "duration": 0.0002481380000176614,
       "nodeid": "tests/test_report_writer.py::TestReportWriter::test_build_summary_counts",
       "outcome": "passed",
       "phase": "call"
@@ -2535,7 +2740,7 @@
           "line_ranges": "98-100"
         }
       ],
-      "duration": 0.00024184000000104788,
+      "duration": 0.00022806899997362962,
       "nodeid": "tests/test_report_writer.py::TestReportWriter::test_create_writer",
       "outcome": "passed",
       "phase": "call"
@@ -2548,7 +2753,7 @@
           "line_ranges": "62-68, 71-75, 77, 79, 98-100, 127, 133, 136-137, 141, 150-157, 161, 165, 168, 188, 190-193, 195, 197-211, 223, 225-226, 228-231, 241"
         }
       ],
-      "duration": 0.004588804999997365,
+      "duration": 0.004284312999999429,
       "nodeid": "tests/test_report_writer.py::TestReportWriter::test_write_report_assembles_tests",
       "outcome": "passed",
       "phase": "call"
@@ -2561,7 +2766,7 @@
           "line_ranges": "62-68, 71-75, 77, 79, 98-100, 127, 133, 136-138, 141-145, 150-157, 161, 165, 168, 188, 190-193, 195, 197-211, 223, 225, 241"
         }
       ],
-      "duration": 0.004443004999998834,
+      "duration": 0.004695908000002191,
       "nodeid": "tests/test_report_writer.py::TestReportWriter::test_write_report_includes_coverage_percent",
       "outcome": "passed",
       "phase": "call"
@@ -2574,7 +2779,7 @@
           "line_ranges": "62-68, 71-75, 77, 79, 98-100, 127, 133, 136-137, 141-145, 150-157, 161, 165, 168, 188, 190-193, 195, 197-211, 223, 225, 241"
         }
       ],
-      "duration": 0.0045167429999963815,
+      "duration": 0.0043893900000000485,
       "nodeid": "tests/test_report_writer.py::TestReportWriter::test_write_report_includes_source_coverage",
       "outcome": "passed",
       "phase": "call"
@@ -2587,7 +2792,7 @@
           "line_ranges": "62-68, 71-75, 77, 79, 98-100, 127-130, 133, 136-137, 141, 150-157, 161, 165, 168, 188, 190-193, 195, 197-211, 223, 225-226, 228-229, 241"
         }
       ],
-      "duration": 0.0046612820000007105,
+      "duration": 0.004355918999976893,
       "nodeid": "tests/test_report_writer.py::TestReportWriter::test_write_report_merges_coverage",
       "outcome": "passed",
       "phase": "call"
@@ -2605,7 +2810,7 @@
           "line_ranges": "53, 62-68, 71-75, 77, 79, 98-100, 127, 133, 136-137, 141-145, 150-157, 161-162, 165, 168, 188, 190-193, 195, 197-211, 223, 225, 241, 251, 254-256, 259-260, 263-265, 268, 271-275, 316-317, 341, 343, 345-347, 349, 352-353, 355-358, 361-362"
         }
       ],
-      "duration": 0.005066296000002524,
+      "duration": 0.004860629000006611,
       "nodeid": "tests/test_report_writer.py::TestReportWriterWithFiles::test_atomic_write_fallback",
       "outcome": "passed",
       "phase": "call"
@@ -2623,7 +2828,7 @@
           "line_ranges": "53, 62-68, 71-75, 77, 79, 98-100, 127, 133, 136-137, 141, 150-157, 161-162, 165, 168, 188, 190-193, 195, 197-211, 223, 225-226, 228-229, 241, 251, 254-256, 259-260, 263-265, 268, 271-275, 316-323, 341, 343, 345-347, 349, 352"
         }
       ],
-      "duration": 0.0049511029999962375,
+      "duration": 0.004618593000003557,
       "nodeid": "tests/test_report_writer.py::TestReportWriterWithFiles::test_creates_directory_if_missing",
       "outcome": "passed",
       "phase": "call"
@@ -2636,7 +2841,7 @@
           "line_ranges": "98-100, 316-319, 326-330"
         }
       ],
-      "duration": 0.0008501459999976646,
+      "duration": 0.0008168079999961719,
       "nodeid": "tests/test_report_writer.py::TestReportWriterWithFiles::test_ensure_dir_failure",
       "outcome": "passed",
       "phase": "call"
@@ -2649,7 +2854,7 @@
           "line_ranges": "62-67, 80-81"
         }
       ],
-      "duration": 0.00047020699999933413,
+      "duration": 0.0004302700000096138,
       "nodeid": "tests/test_report_writer.py::TestReportWriterWithFiles::test_git_info_failure",
       "outcome": "passed",
       "phase": "call"
@@ -2667,7 +2872,7 @@
           "line_ranges": "53, 62-68, 71-75, 77, 79, 98-100, 127, 133, 136-137, 141, 150-157, 161, 165-166, 168, 188, 190-193, 195, 197-211, 223, 225-226, 228-231, 241, 287, 289-290, 293, 296, 299, 302-306, 316-317, 341, 343, 345-347, 349, 352"
         }
       ],
-      "duration": 0.022719928000000778,
+      "duration": 0.023595418999974527,
       "nodeid": "tests/test_report_writer.py::TestReportWriterWithFiles::test_write_html_creates_file",
       "outcome": "passed",
       "phase": "call"
@@ -2685,7 +2890,7 @@
           "line_ranges": "53, 62-68, 71-75, 77, 79, 98-100, 127, 133, 136-137, 141, 150-157, 161, 165-166, 168, 188, 190-193, 195, 197-211, 223, 225-226, 228, 230, 232, 234-237, 241, 287, 289-290, 293, 296, 299, 302-306, 316-317, 341, 343, 345-347, 349, 352"
         }
       ],
-      "duration": 0.02167715299999884,
+      "duration": 0.023436610999993945,
       "nodeid": "tests/test_report_writer.py::TestReportWriterWithFiles::test_write_html_includes_xfail_summary",
       "outcome": "passed",
       "phase": "call"
@@ -2703,7 +2908,7 @@
           "line_ranges": "53, 62-68, 71-75, 77, 79, 98-100, 127, 133, 136-137, 141, 150-157, 161-162, 165, 168, 188, 190-193, 195, 197-211, 223, 225-226, 228-229, 241, 251, 254-256, 259-260, 263-265, 268, 271-275, 316-317, 341, 343, 345-347, 349, 352"
         }
       ],
-      "duration": 0.004697448999998244,
+      "duration": 0.0047097839999992175,
       "nodeid": "tests/test_report_writer.py::TestReportWriterWithFiles::test_write_json_creates_file",
       "outcome": "passed",
       "phase": "call"
@@ -2716,7 +2921,7 @@
           "line_ranges": "77-81"
         }
       ],
-      "duration": 0.00023075099999658732,
+      "duration": 0.00025375799998528237,
       "nodeid": "tests/test_schemas.py::TestAnnotationSchema::test_from_dict_full",
       "outcome": "passed",
       "phase": "call"
@@ -2729,7 +2934,7 @@
           "line_ranges": "90-92, 94-98"
         }
       ],
-      "duration": 0.00022966800000290277,
+      "duration": 0.00022096600000054423,
       "nodeid": "tests/test_schemas.py::TestAnnotationSchema::test_to_dict_full",
       "outcome": "passed",
       "phase": "call"
@@ -2752,7 +2957,7 @@
           "line_ranges": "53, 62-67, 80-81, 98-100, 127, 133, 136-137, 141, 150-157, 161, 165-166, 168, 188, 190-193, 195, 197-211, 223, 225-226, 228-229, 241, 287, 289-290, 293, 296, 299, 302-306, 316-317, 341, 343, 345-347, 349, 352"
         }
       ],
-      "duration": 0.06781111999999467,
+      "duration": 0.08655432599999813,
       "nodeid": "tests/test_smoke_pytester.py::TestBasicReportGeneration::test_html_report_created",
       "outcome": "passed",
       "phase": "call"
@@ -2775,7 +2980,7 @@
           "line_ranges": "53, 62-67, 80-81, 98-100, 127, 133, 136-137, 141, 150-157, 161, 165-166, 168, 188, 190-193, 195, 197-211, 223, 225-226, 228-239, 241, 287, 289-290, 293, 296, 299, 302-306, 316-317, 341, 343, 345-347, 349, 352"
         }
       ],
-      "duration": 0.08248522399999558,
+      "duration": 0.086447794999998,
       "nodeid": "tests/test_smoke_pytester.py::TestBasicReportGeneration::test_html_summary_counts_all_statuses",
       "outcome": "passed",
       "phase": "call"
@@ -2798,8 +3003,89 @@
           "line_ranges": "53, 62-67, 80-81, 98-100, 127, 133, 136-137, 141, 150-157, 161-162, 165, 168, 188, 190-193, 195, 197-211, 223, 225-226, 228-231, 241, 251, 254-256, 259-260, 263-265, 268, 271-275, 316-317, 341, 343, 345-347, 349, 352"
         }
       ],
-      "duration": 0.05997281799999854,
+      "duration": 0.0588865720000058,
       "nodeid": "tests/test_smoke_pytester.py::TestBasicReportGeneration::test_json_report_created",
+      "outcome": "passed",
+      "phase": "call"
+    },
+    {
+      "coverage": [
+        {
+          "file_path": "src/pytest_llm_report/cache.py",
+          "line_count": 20,
+          "line_ranges": "39-41, 53, 55-56, 86, 90, 92, 94, 97-101, 103, 118-119, 121, 153"
+        },
+        {
+          "file_path": "src/pytest_llm_report/errors.py",
+          "line_count": 9,
+          "line_ranges": "70-72, 74, 76, 139-142"
+        },
+        {
+          "file_path": "src/pytest_llm_report/llm/annotator.py",
+          "line_count": 36,
+          "line_ranges": "26, 29-30, 36-37, 39-44, 46-47, 49-51, 53, 56-59, 64, 69-74, 79-84, 86, 88"
+        },
+        {
+          "file_path": "src/pytest_llm_report/llm/base.py",
+          "line_count": 9,
+          "line_ranges": "36, 72, 104, 106, 108, 111, 116-117, 119"
+        },
+        {
+          "file_path": "src/pytest_llm_report/llm/schemas.py",
+          "line_count": 7,
+          "line_ranges": "38, 42-43, 50-53"
+        },
+        {
+          "file_path": "src/pytest_llm_report/models.py",
+          "line_count": 77,
+          "line_ranges": "104-107, 109-111, 113, 115, 161-165, 167, 169, 171, 173, 176, 178-180, 182, 184, 186, 188, 190, 346-362, 364, 367, 369, 371, 373, 375, 377, 380, 410-418, 420, 422, 461, 463-467, 469, 471, 473, 475, 477, 479, 481, 483"
+        },
+        {
+          "file_path": "src/pytest_llm_report/report_writer.py",
+          "line_count": 80,
+          "line_ranges": "53, 62-67, 80-81, 98-100, 127, 133, 136-137, 141, 150-157, 161-162, 165, 168, 188, 190-193, 195, 197-211, 223, 225-226, 228-229, 241, 251, 254-256, 259-260, 263-265, 268, 271-275, 316-317, 341, 343, 345-347, 349, 352"
+        }
+      ],
+      "duration": 0.052442564000017455,
+      "nodeid": "tests/test_smoke_pytester.py::TestBasicReportGeneration::test_llm_annotations_in_report",
+      "outcome": "passed",
+      "phase": "call"
+    },
+    {
+      "coverage": [
+        {
+          "file_path": "src/pytest_llm_report/cache.py",
+          "line_count": 12,
+          "line_ranges": "39-41, 53, 55-56, 86, 88, 118-119, 121, 153"
+        },
+        {
+          "file_path": "src/pytest_llm_report/errors.py",
+          "line_count": 9,
+          "line_ranges": "70-72, 74, 76, 139-142"
+        },
+        {
+          "file_path": "src/pytest_llm_report/llm/annotator.py",
+          "line_count": 40,
+          "line_ranges": "26, 29-30, 36-37, 39-44, 46-47, 49-51, 53, 56-59, 64, 69-77, 79-84, 86-88"
+        },
+        {
+          "file_path": "src/pytest_llm_report/llm/base.py",
+          "line_count": 9,
+          "line_ranges": "36, 72, 104, 106, 108, 111, 116-117, 119"
+        },
+        {
+          "file_path": "src/pytest_llm_report/render.py",
+          "line_count": 25,
+          "line_ranges": "30-31, 40, 42-46, 50-51, 53, 65, 67, 79-85, 87, 99, 101-102, 107"
+        },
+        {
+          "file_path": "src/pytest_llm_report/report_writer.py",
+          "line_count": 76,
+          "line_ranges": "53, 62-67, 80-81, 98-100, 127, 133, 136-137, 141, 150-157, 161, 165-166, 168, 188, 190-193, 195, 197-211, 223, 225-226, 228-229, 241, 287, 289-290, 293, 296, 299, 302-306, 316-317, 341, 343, 345-347, 349, 352"
+        }
+      ],
+      "duration": 0.0742654370000082,
+      "nodeid": "tests/test_smoke_pytester.py::TestBasicReportGeneration::test_llm_error_is_reported",
       "outcome": "passed",
       "phase": "call"
     },
@@ -2821,7 +3107,7 @@
           "line_ranges": "53, 62-67, 80-81, 98-100, 127, 133, 136-137, 141, 150-157, 161-162, 165, 168, 188, 190-193, 195, 197-211, 223, 225-226, 228-229, 241, 251, 254-256, 259-260, 263-265, 268, 271-275, 316-317, 341, 343, 345-347, 349, 352"
         }
       ],
-      "duration": 0.050636213000004204,
+      "duration": 0.05418557400000168,
       "nodeid": "tests/test_smoke_pytester.py::TestMarkers::test_llm_opt_out_marker",
       "outcome": "passed",
       "phase": "call"
@@ -2844,7 +3130,7 @@
           "line_ranges": "53, 62-67, 80-81, 98-100, 127, 133, 136-137, 141, 150-157, 161-162, 165, 168, 188, 190-193, 195, 197-211, 223, 225-226, 228-229, 241, 251, 254-256, 259-260, 263-265, 268, 271-275, 316-317, 341, 343, 345-347, 349, 352"
         }
       ],
-      "duration": 0.05190112199999675,
+      "duration": 0.04893788800001175,
       "nodeid": "tests/test_smoke_pytester.py::TestMarkers::test_requirement_marker",
       "outcome": "passed",
       "phase": "call"
@@ -2867,7 +3153,7 @@
           "line_ranges": "53, 62-67, 80-81, 98-100, 127, 133, 136-137, 141, 150-157, 161-162, 165, 168, 188, 190-193, 195, 197-211, 223, 225-226, 228, 230, 232, 234-235, 241, 251, 254-256, 259-260, 263-265, 268, 271-275, 316-317, 341, 343, 345-347, 349, 352"
         }
       ],
-      "duration": 0.063825228000006,
+      "duration": 0.05559176099998808,
       "nodeid": "tests/test_smoke_pytester.py::TestOutcomes::test_multiple_xfail_outcomes",
       "outcome": "passed",
       "phase": "call"
@@ -2890,7 +3176,7 @@
           "line_ranges": "53, 62-67, 80-81, 98-100, 127, 133, 136-137, 141, 150-157, 161-162, 165, 168, 188, 190-193, 195, 197-211, 223, 225-226, 228, 230, 232-233, 241, 251, 254-256, 259-260, 263-265, 268, 271-275, 316-317, 341, 343, 345-347, 349, 352"
         }
       ],
-      "duration": 0.05165740700000043,
+      "duration": 0.05004236599998535,
       "nodeid": "tests/test_smoke_pytester.py::TestOutcomes::test_skip_outcome",
       "outcome": "passed",
       "phase": "call"
@@ -2913,7 +3199,7 @@
           "line_ranges": "53, 62-67, 80-81, 98-100, 127, 133, 136-137, 141, 150-157, 161-162, 165, 168, 188, 190-193, 195, 197-211, 223, 225-226, 228, 230, 232, 234-235, 241, 251, 254-256, 259-260, 263-265, 268, 271-275, 316-317, 341, 343, 345-347, 349, 352"
         }
       ],
-      "duration": 0.05410213599999736,
+      "duration": 0.05188827000000629,
       "nodeid": "tests/test_smoke_pytester.py::TestOutcomes::test_xfail_outcome",
       "outcome": "passed",
       "phase": "call"
@@ -2936,25 +3222,25 @@
           "line_ranges": "53, 62-67, 80-81, 98-100, 127, 133, 136-137, 141, 150-157, 161-162, 165, 168, 188, 190-193, 195, 197-211, 223, 225-226, 228-229, 241, 251, 254-256, 259-260, 263-265, 268, 271-275, 316-317, 341, 343, 345-347, 349, 352"
         }
       ],
-      "duration": 0.07587544800000501,
+      "duration": 0.05421005100001253,
       "nodeid": "tests/test_smoke_pytester.py::TestParametrization::test_parametrized_tests",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0433112550000061,
+      "duration": 0.04363555700001598,
       "nodeid": "tests/test_smoke_pytester.py::TestPluginRegistration::test_help_contains_examples",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.03677909299999982,
+      "duration": 0.03512989899999752,
       "nodeid": "tests/test_smoke_pytester.py::TestPluginRegistration::test_markers_registered",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.046483987000002,
+      "duration": 0.04662583599997561,
       "nodeid": "tests/test_smoke_pytester.py::TestPluginRegistration::test_plugin_registered",
       "outcome": "passed",
       "phase": "call"
@@ -2977,7 +3263,7 @@
           "line_ranges": "53, 62-67, 80-81, 98-100, 127, 133, 136-137, 141, 150-157, 161, 165-166, 168, 188, 190-193, 195, 197-211, 223, 225-226, 228-229, 241, 287, 289-290, 293, 296, 299, 302-306, 316-317, 341, 343, 345-347, 349, 352"
         }
       ],
-      "duration": 0.07148753500000282,
+      "duration": 0.07636567000000127,
       "nodeid": "tests/test_smoke_pytester.py::TestSpecialCharacters::test_special_chars_in_nodeid",
       "outcome": "passed",
       "phase": "call"
@@ -2990,7 +3276,7 @@
           "line_ranges": "39, 41, 43, 46-48"
         }
       ],
-      "duration": 0.00020807800000000043,
+      "duration": 0.0002086830000109785,
       "nodeid": "tests/test_time.py::TestFormatDuration::test_boundary_one_minute",
       "outcome": "passed",
       "phase": "call"
@@ -3003,7 +3289,7 @@
           "line_ranges": "39-40"
         }
       ],
-      "duration": 0.00021713499999975738,
+      "duration": 0.00021707799999148847,
       "nodeid": "tests/test_time.py::TestFormatDuration::test_microseconds_format",
       "outcome": "passed",
       "phase": "call"
@@ -3016,7 +3302,7 @@
           "line_ranges": "39, 41-42"
         }
       ],
-      "duration": 0.00022179300000146895,
+      "duration": 0.00021270999999956075,
       "nodeid": "tests/test_time.py::TestFormatDuration::test_milliseconds_format",
       "outcome": "passed",
       "phase": "call"
@@ -3029,7 +3315,7 @@
           "line_ranges": "39, 41, 43, 46-48"
         }
       ],
-      "duration": 0.0002261610000005021,
+      "duration": 0.0002434980000032283,
       "nodeid": "tests/test_time.py::TestFormatDuration::test_minutes_format",
       "outcome": "passed",
       "phase": "call"
@@ -3042,7 +3328,7 @@
           "line_ranges": "39, 41, 43, 46-48"
         }
       ],
-      "duration": 0.0002283059999967918,
+      "duration": 0.0002120599999955175,
       "nodeid": "tests/test_time.py::TestFormatDuration::test_multiple_minutes",
       "outcome": "passed",
       "phase": "call"
@@ -3055,7 +3341,7 @@
           "line_ranges": "39, 41, 43-44"
         }
       ],
-      "duration": 0.00020894000000026836,
+      "duration": 0.0002082620000010138,
       "nodeid": "tests/test_time.py::TestFormatDuration::test_one_second",
       "outcome": "passed",
       "phase": "call"
@@ -3068,7 +3354,7 @@
           "line_ranges": "39, 41, 43-44"
         }
       ],
-      "duration": 0.0002308600000020533,
+      "duration": 0.0002165570000158823,
       "nodeid": "tests/test_time.py::TestFormatDuration::test_seconds_format",
       "outcome": "passed",
       "phase": "call"
@@ -3081,7 +3367,7 @@
           "line_ranges": "39, 41-42"
         }
       ],
-      "duration": 0.00020775699999830977,
+      "duration": 0.0002239110000061828,
       "nodeid": "tests/test_time.py::TestFormatDuration::test_small_milliseconds",
       "outcome": "passed",
       "phase": "call"
@@ -3094,7 +3380,7 @@
           "line_ranges": "39-40"
         }
       ],
-      "duration": 0.00020605400000306417,
+      "duration": 0.00022550400001364324,
       "nodeid": "tests/test_time.py::TestFormatDuration::test_very_small_microseconds",
       "outcome": "passed",
       "phase": "call"
@@ -3107,7 +3393,7 @@
           "line_ranges": "27"
         }
       ],
-      "duration": 0.00026477400000146645,
+      "duration": 0.0002189519999831191,
       "nodeid": "tests/test_time.py::TestIsoFormat::test_formats_datetime_with_utc",
       "outcome": "passed",
       "phase": "call"
@@ -3120,7 +3406,7 @@
           "line_ranges": "27"
         }
       ],
-      "duration": 0.0002117249999997739,
+      "duration": 0.00025906799999120267,
       "nodeid": "tests/test_time.py::TestIsoFormat::test_formats_naive_datetime",
       "outcome": "passed",
       "phase": "call"
@@ -3133,7 +3419,7 @@
           "line_ranges": "27"
         }
       ],
-      "duration": 0.00023801399999712203,
+      "duration": 0.0002161769999986518,
       "nodeid": "tests/test_time.py::TestIsoFormat::test_formats_with_microseconds",
       "outcome": "passed",
       "phase": "call"
@@ -3146,7 +3432,7 @@
           "line_ranges": "15"
         }
       ],
-      "duration": 0.0002352690000009261,
+      "duration": 0.0002215470000237474,
       "nodeid": "tests/test_time.py::TestUtcNow::test_has_utc_timezone",
       "outcome": "passed",
       "phase": "call"
@@ -3159,7 +3445,7 @@
           "line_ranges": "15"
         }
       ],
-      "duration": 0.00021690399999840793,
+      "duration": 0.00022565500000837346,
       "nodeid": "tests/test_time.py::TestUtcNow::test_is_current_time",
       "outcome": "passed",
       "phase": "call"
@@ -3172,7 +3458,7 @@
           "line_ranges": "15"
         }
       ],
-      "duration": 0.0002371619999976815,
+      "duration": 0.00022455299998114242,
       "nodeid": "tests/test_time.py::TestUtcNow::test_returns_datetime",
       "outcome": "passed",
       "phase": "call"

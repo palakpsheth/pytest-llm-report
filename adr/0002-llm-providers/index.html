@@ -899,16 +899,18 @@
 <h2 id="context">Context</h2>
 <p>The plugin needs to support multiple LLM providers for test annotation while maintaining privacy and flexibility.</p>
 <h2 id="decision">Decision</h2>
-<p>Implement a provider abstraction with three providers:
+<p>Implement a provider abstraction with four providers:
 1. <code>none</code> - No LLM (default)
 2. <code>ollama</code> - Local LLM via Ollama
-3. <code>litellm</code> - Cloud LLMs via LiteLLM library</p>
+3. <code>litellm</code> - Cloud LLMs via LiteLLM library
+4. <code>gemini</code> - Cloud LLMs via Gemini API</p>
 <h2 id="consequences">Consequences</h2>
 <h3 id="positive">Positive</h3>
 <ul>
 <li>Privacy by default (provider=none)</li>
 <li>Local option for sensitive code (Ollama)</li>
 <li>Broad cloud support via LiteLLM (100+ models)</li>
+<li>Dedicated Gemini integration for teams standardizing on Google AI</li>
 <li>Clean abstraction for adding new providers</li>
 </ul>
 <h3 id="negative">Negative</h3>

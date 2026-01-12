@@ -737,6 +737,56 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#provider-gemini" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Provider: gemini
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Provider: gemini">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setup_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Setup
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#supported-models_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported models
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rate-limits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rate limits
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#caching" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1033,6 +1083,56 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#provider-gemini" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Provider: gemini
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Provider: gemini">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#setup_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Setup
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#supported-models_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported models
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rate-limits" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rate limits
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#caching" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1139,14 +1239,77 @@
 <li>Anthropic: <code>claude-3-haiku-20240307</code>, <code>claude-3-5-sonnet-20241022</code></li>
 <li>Many more via LiteLLM</li>
 </ul>
+<h2 id="provider-gemini">Provider: gemini</h2>
+<p>Cloud LLMs via the Gemini API.</p>
+<h3 id="setup_2">Setup</h3>
+<ol>
+<li>
+<p>Set API key:
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">GEMINI_API_TOKEN</span><span class="o">=</span><span class="s2">&quot;...&quot;</span>
+</code></pre></div></p>
+</li>
+<li>
+<p>Configure:
+   <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="k">[tool.pytest_llm_report]</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;gemini&quot;</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;gemini-1.5-flash-latest&quot;</span>
+</code></pre></div></p>
+</li>
+</ol>
+<h3 id="supported-models_1">Supported models</h3>
+<ul>
+<li><code>gemini-2.5-flash</code></li>
+<li><code>gemini-2.5-pro</code></li>
+<li><code>gemini-2.0-flash-exp</code></li>
+<li><code>gemini-2.0-flash</code></li>
+<li><code>gemini-2.0-flash-001</code></li>
+<li><code>gemini-2.0-flash-exp-image-generation</code></li>
+<li><code>gemini-2.0-flash-lite-001</code></li>
+<li><code>gemini-2.0-flash-lite</code></li>
+<li><code>gemini-2.0-flash-lite-preview-02-05</code></li>
+<li><code>gemini-2.0-flash-lite-preview</code></li>
+<li><code>gemini-exp-1206</code></li>
+<li><code>gemini-2.5-flash-preview-tts</code></li>
+<li><code>gemini-2.5-pro-preview-tts</code></li>
+<li><code>gemini-flash-latest</code></li>
+<li><code>gemini-flash-lite-latest</code></li>
+<li><code>gemini-pro-latest</code></li>
+<li><code>gemini-2.5-flash-lite</code></li>
+<li><code>gemini-2.5-flash-image-preview</code></li>
+<li><code>gemini-2.5-flash-image</code></li>
+<li><code>gemini-2.5-flash-preview-09-2025</code></li>
+<li><code>gemini-2.5-flash-lite-preview-09-2025</code></li>
+<li><code>gemini-3-pro-preview</code></li>
+<li><code>gemini-3-flash-preview</code></li>
+<li><code>gemini-3-pro-image-preview</code></li>
+<li><code>nano-banana-pro-preview</code></li>
+<li><code>gemini-robotics-er-1.5-preview</code></li>
+<li><code>gemini-2.5-computer-use-preview-10-2025</code></li>
+<li><code>deep-research-pro-preview-12-2025</code></li>
+<li><code>gemma-3-1b-it</code></li>
+<li><code>gemma-3-4b-it</code></li>
+<li><code>gemma-3-12b-it</code></li>
+<li><code>gemma-3-27b-it</code></li>
+<li><code>gemma-3n-e4b-it</code></li>
+<li><code>gemma-3n-e2b-it</code></li>
+</ul>
+<h3 id="rate-limits">Rate limits</h3>
+<p>When Gemini is enabled, pytest-llm-report queries the Gemini model metadata to
+retrieve the <strong>requests-per-minute (RPM)</strong>, <strong>tokens-per-minute (TPM)</strong>, and
+<strong>requests-per-day (RPD)</strong> limits for the selected model. The plugin applies
+those limits automatically:</p>
+<ul>
+<li><strong>RPM/TPM</strong>: waits until the next request is within the limit.</li>
+<li><strong>RPD</strong>: skips annotation once the daily cap is reached (no waiting).</li>
+</ul>
 <h2 id="caching">Caching</h2>
 <p>LLM responses are cached to reduce API calls:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">[tool.pytest_llm_report]</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">cache_dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;.pytest_llm_cache&quot;</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">llm_cache_ttl_seconds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">86400</span><span class="w">  </span><span class="c1"># 24 hours</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">[tool.pytest_llm_report]</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">cache_dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;.pytest_llm_cache&quot;</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">llm_cache_ttl_seconds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">86400</span><span class="w">  </span><span class="c1"># 24 hours</span>
 </code></pre></div>
 <p>Clear cache:
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>rm<span class="w"> </span>-rf<span class="w"> </span>.pytest_llm_cache
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>rm<span class="w"> </span>-rf<span class="w"> </span>.pytest_llm_cache
 </code></pre></div></p>
 
 
