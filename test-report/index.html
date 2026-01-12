@@ -612,6 +612,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#pdf-report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PDF Report
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#report-metadata" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -961,6 +972,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#pdf-report" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PDF Report
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#report-metadata" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1008,13 +1030,14 @@
 
 
 <h1 id="test-report">Test Report</h1>
-<iframe src="https://palakpsheth.github.io/pytest-llm-report/reports/index.html" style="width: 100%; height: 90vh; border: 1px solid #e2e8f0; border-radius: 0.5rem;" title="Interactive Test Report"></iframe>
+<iframe src="../reports/index.html" style="width: 100%; height: 90vh; border: 1px solid #e2e8f0; border-radius: 0.5rem;" title="Interactive Test Report"></iframe>
 
 <div class="admonition info">
 <p class="admonition-title">Direct Links</p>
 <ul>
-<li><a href="https://palakpsheth.github.io/pytest-llm-report/reports/index.html" target="_blank">Open the latest CI-generated report</a></li>
-<li><a href="../example-report/" target="_blank">Open the static example report</a></li>
+<li><a href="../reports/index.html" target="_blank">Open the latest CI-generated report</a></li>
+<li><a href="../reports/latest.pdf" target="_blank">Open the latest CI-generated PDF report</a></li>
+<li><a href="../example-report/index.html" target="_blank">Open the static example report</a></li>
 </ul>
 </div>
 <p>The embedded report above is the latest CI-generated run. The static example showcases a mix of passed, failed, skipped, xfailed, xpassed, and error results.</p>
@@ -1023,6 +1046,7 @@
 <ul>
 <li><strong>Test Results</strong>: Pass/fail status for all tests</li>
 <li><strong>Coverage Data</strong>: Per-test coverage information showing which files and lines each test exercises</li>
+<li><strong>LLM Annotations (optional)</strong>: Scenario, why needed, and key assertions when LLMs are enabled</li>
 <li><strong>Execution Time</strong>: Duration for each test</li>
 <li><strong>Error Messages</strong>: Full error details for failed tests</li>
 <li><strong>Source Coverage</strong>: Per-file covered/missed/percentage summary (similar to pytest-cov)</li>
@@ -1042,6 +1066,8 @@
 <li>Specific line ranges covered in each file</li>
 <li>Total line count per file</li>
 </ul>
+<h3 id="pdf-report">PDF Report</h3>
+<p>The PDF report mirrors the HTML view but is optimized for printing, with all test details expanded to show LLM annotations and line coverage context.</p>
 <h3 id="report-metadata">Report Metadata</h3>
 <p>The report header shows:</p>
 <ul>

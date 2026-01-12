@@ -647,6 +647,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="2. Generate a report">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#optional-pdf-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optional: PDF output
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -980,6 +997,23 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="2. Generate a report">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#optional-pdf-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optional: PDF output
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
         
           <li class="md-nav__item">
@@ -1063,6 +1097,12 @@
 </code></pre></div>
 <h3 id="2-generate-a-report">2. Generate a report</h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>pytest<span class="w"> </span>--llm-report<span class="o">=</span>report.html
+</code></pre></div>
+<h4 id="optional-pdf-output">Optional: PDF output</h4>
+<p>PDF output uses Playwright to render the HTML report.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>pip<span class="w"> </span>install<span class="w"> </span>playwright
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>playwright<span class="w"> </span>install<span class="w"> </span>chromium
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>pytest<span class="w"> </span>--llm-report<span class="o">=</span>report.html<span class="w"> </span>--llm-pdf<span class="o">=</span>report.pdf
 </code></pre></div>
 <h3 id="3-view-the-report">3. View the report</h3>
 <p>Open <code>report.html</code> in a browser to see:
