@@ -1062,7 +1062,8 @@
 1. Check provider is set: <code>provider = "ollama"</code>, <code>"litellm"</code>, or <code>"gemini"</code>
 2. Verify Ollama is running: <code>ollama serve</code>
 3. Check API key is set for cloud providers (LiteLLM or Gemini)
-4. Look for errors in pytest output</p>
+4. Confirm the provider dependency is installed (e.g., <code>pytest-llm-report[litellm]</code>)
+5. Look for errors in pytest output</p>
 <h2 id="ollama-connection-refused">Ollama connection refused</h2>
 <p><strong>Problem</strong>: Can't connect to Ollama.</p>
 <p><strong>Solutions</strong>:
