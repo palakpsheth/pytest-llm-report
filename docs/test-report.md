@@ -3,7 +3,7 @@
 <iframe src="example-report/index.html" style="width: 100%; height: 90vh; border: 1px solid #e2e8f0; border-radius: 0.5rem;" title="Interactive Test Report"></iframe>
 
 !!! info "Direct Links"
-    - [Open the latest CI-generated report](reports/index.html){ target="_blank" }
+    - [Open the latest CI-generated report](../reports/index.html){ target="_blank" }
     - [Open the static example report](example-report/index.html){ target="_blank" }
 
 This embedded report is a static example that showcases a mix of passed, failed, skipped, xfailed, xpassed, and error results.
