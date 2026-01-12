@@ -182,6 +182,8 @@ class TestReportWriterWithFiles:
         assert "test2" in html
         assert "PASSED" in html
         assert "FAILED" in html
+        assert "XFailed" in html
+        assert "XPassed" in html
 
     def test_write_html_includes_xfail_summary(self, tmp_path):
         """Should include xfail outcomes in the HTML summary."""

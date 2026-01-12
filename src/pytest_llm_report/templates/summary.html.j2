@@ -17,18 +17,14 @@
             <span class="count">{{ report.summary.skipped }}</span>
             <span class="label">Skipped</span>
         </div>
-        {% if report.summary.xfailed %}
         <div class="summary-item xfailed">
             <span class="count">{{ report.summary.xfailed }}</span>
             <span class="label">XFailed</span>
         </div>
-        {% endif %}
-        {% if report.summary.xpassed %}
         <div class="summary-item xpassed">
             <span class="count">{{ report.summary.xpassed }}</span>
             <span class="label">XPassed</span>
         </div>
-        {% endif %}
         {% if report.summary.error %}
         <div class="summary-item error">
             <span class="count">{{ report.summary.error }}</span>

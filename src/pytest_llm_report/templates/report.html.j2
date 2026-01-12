@@ -56,18 +56,14 @@
                 <div class="label">Skipped</div>
             </div>
             {% endif %}
-            {% if report.summary.xfailed %}
             <div class="summary-card xfailed">
                 <div class="count">{{ report.summary.xfailed }}</div>
                 <div class="label">XFailed</div>
             </div>
-            {% endif %}
-            {% if report.summary.xpassed %}
             <div class="summary-card xpassed">
                 <div class="count">{{ report.summary.xpassed }}</div>
                 <div class="label">XPassed</div>
             </div>
-            {% endif %}
             {% if report.summary.error %}
             <div class="summary-card failed">
                 <div class="count">{{ report.summary.error }}</div>
