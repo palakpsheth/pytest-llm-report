@@ -15,6 +15,8 @@ Complete configuration reference for pytest-llm-report.
 | `--llm-aggregate-run-id ID` | Unique run ID | Auto-generated |
 | `--llm-aggregate-group-id ID` | Group ID for related runs | None |
 
+> **Tip**: Run `pytest --help` to see usage examples for each option.
+
 ## pyproject.toml Options
 
 ```toml

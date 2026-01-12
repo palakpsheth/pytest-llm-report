@@ -25,6 +25,11 @@ class TestPluginRegistration:
         result.stdout.fnmatch_lines(["*llm_context*"])
         result.stdout.fnmatch_lines(["*requirement*"])
 
+    def test_help_contains_examples(self, pytester: pytest.Pytester):
+        """CLI help text includes usage examples."""
+        result = pytester.runpytest("--help")
+        result.stdout.fnmatch_lines(["*Example:*--llm-report*"])
+
 
 class TestBasicReportGeneration:
     """Tests for basic report generation."""

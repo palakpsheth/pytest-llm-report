@@ -11,6 +11,7 @@ Human-friendly pytest test reports with optional LLM annotations.
   - **Why needed**: What regression/bug it prevents
   - **Key assertions**: Critical checks performed
 - HTML and JSON output formats
+- Dark mode support (auto-detects system preference)
 - Optional PDF generation
 - Aggregation across multiple test runs (see [Aggregation](docs/aggregation.md))
 

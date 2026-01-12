@@ -54,6 +54,7 @@ Open `report.html` in a browser to see:
 - Test summary (passed/failed/skipped)
 - Per-test coverage (files and lines)
 - Filter and search functionality
+- Dark mode (automatic based on system preferences)
 
 ## Next Steps
 

@@ -142,38 +142,38 @@ class LiteLLMProvider(LlmProvider):
         Returns:
             Parsed LlmAnnotation.
         """
+        from pytest_llm_report.llm.schemas import extract_json_from_response
+
+        # Try to extract JSON from response (handles code fences)
+        json_str = extract_json_from_response(response)
+        if not json_str:
+            return LlmAnnotation(error="Failed to parse LLM response as JSON")
+
         try:
-            start = response.find("{")
-            end = response.rfind("}") + 1
-            if start >= 0 and end > start:
-                json_str = response[start:end]
-                data = json.loads(json_str)
+            data = json.loads(json_str)
 
-                # Validate response structure
-                scenario = data.get("scenario", "")
-                why_needed = data.get("why_needed", "")
-                key_assertions = data.get("key_assertions", [])
+            # Validate response structure
+            scenario = data.get("scenario", "")
+            why_needed = data.get("why_needed", "")
+            key_assertions = data.get("key_assertions", [])
 
-                # Ensure types are correct
-                if not isinstance(scenario, str):
-                    scenario = str(scenario) if scenario else ""
-                if not isinstance(why_needed, str):
-                    why_needed = str(why_needed) if why_needed else ""
-                if not isinstance(key_assertions, list):
-                    return LlmAnnotation(
-                        error="Invalid response: key_assertions must be a list"
-                    )
-                # Ensure all assertions are strings
-                key_assertions = [str(a) for a in key_assertions if a]
-
+            # Ensure types are correct
+            if not isinstance(scenario, str):
+                scenario = str(scenario) if scenario else ""
+            if not isinstance(why_needed, str):
+                why_needed = str(why_needed) if why_needed else ""
+            if not isinstance(key_assertions, list):
                 return LlmAnnotation(
-                    scenario=scenario,
-                    why_needed=why_needed,
-                    key_assertions=key_assertions,
-                    confidence=0.8,
+                    error="Invalid response: key_assertions must be a list"
                 )
-        except json.JSONDecodeError:
-            # Fall through to return error annotation below
-            pass
+            # Ensure all assertions are strings
+            key_assertions = [str(a) for a in key_assertions if a]
 
-        return LlmAnnotation(error="Failed to parse LLM response as JSON")
+            return LlmAnnotation(
+                scenario=scenario,
+                why_needed=why_needed,
+                key_assertions=key_assertions,
+                confidence=0.8,
+            )
+        except json.JSONDecodeError:
+            return LlmAnnotation(error="Failed to parse LLM response as JSON")
