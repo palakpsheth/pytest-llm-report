@@ -370,12 +370,13 @@ class ReportWriter:
         from pytest_llm_report.render import render_html
 
         html_content = render_html(report)
-        fd, temp_path = tempfile.mkstemp(suffix=".html")
-        try:
-            os.write(fd, html_content.encode("utf-8"))
-        finally:
-            os.close(fd)
-        return Path(temp_path), True
+        # Use a temporary file that we can write to and get the path of.
+        # It will be cleaned up by the `write_pdf` method.
+        with tempfile.NamedTemporaryFile(
+            "w", suffix=".html", delete=False, encoding="utf-8"
+        ) as f:
+            f.write(html_content)
+        return Path(f.name), True
 
     def _ensure_dir(self, path: str) -> None:
         """Ensure the directory for a path exists.
