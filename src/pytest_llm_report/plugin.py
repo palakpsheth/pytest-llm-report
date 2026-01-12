@@ -297,7 +297,6 @@ def pytest_terminal_summary(
     start_time = config.stash.get(_start_time_key, None) or datetime.now(UTC)
     end_time = datetime.now(UTC)
 
-    # Write report
     from pytest_llm_report.coverage_map import CoverageMapper
     from pytest_llm_report.report_writer import ReportWriter
 
@@ -344,6 +343,18 @@ def pytest_terminal_summary(
             )
     except Exception as e:
         warnings.warn(f"Failed to map coverage: {e}", stacklevel=2)
+
+    # Attach coverage to tests for downstream processing
+    if coverage:
+        for test in tests:
+            if test.nodeid in coverage:
+                test.coverage = coverage[test.nodeid]
+
+    # Apply LLM annotations
+    if cfg.is_llm_enabled():
+        from pytest_llm_report.llm.annotator import annotate_tests
+
+        annotate_tests(tests, cfg)
 
     writer = ReportWriter(cfg)
     writer.write_report(
