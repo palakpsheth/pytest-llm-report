@@ -10,6 +10,7 @@ Complete configuration reference for pytest-llm-report.
 | `--llm-report-json PATH` | JSON report output path | None |
 | `--llm-pdf PATH` | PDF report output (requires Playwright) | None |
 | `--llm-evidence-bundle PATH` | Evidence bundle zip output | None |
+| `--llm-requests-per-minute N` | LLM request rate limit (also used as a cap for Gemini auto limits) | 5 |
 | `--llm-aggregate-dir DIR` | Directory with reports to [aggregate](aggregation.md) | None |
 | `--llm-aggregate-policy POLICY` | Aggregation policy: latest, merge, all | latest |
 | `--llm-aggregate-run-id ID` | Unique run ID | Auto-generated |
@@ -25,10 +26,11 @@ Complete configuration reference for pytest-llm-report.
 llm_report_html = "reports/test-report.html"
 llm_report_json = "reports/test-report.json"
 
-# LLM provider (none, ollama, litellm)
+# LLM provider (none, ollama, litellm, gemini)
 llm_report_provider = "none"
 llm_report_model = "llama3.2"
 llm_report_context_mode = "minimal"
+llm_report_requests_per_minute = 5
 ```
 
 ## LLM Provider Settings
@@ -55,6 +57,20 @@ llm_report_model = "gpt-4o-mini"
 ```
 
 Environment variables depend on the model (e.g., `OPENAI_API_KEY`).
+
+### Provider: gemini
+
+```toml
+llm_report_provider = "gemini"
+llm_report_model = "gemini-1.5-flash-latest"
+```
+
+Environment variables:
+- `GEMINI_API_TOKEN`: Gemini API key
+
+Gemini automatically queries model metadata to apply RPM/TPM/RPD limits. The
+`llm_report_requests_per_minute` value is treated as an upper bound if it is
+lower than the model’s RPM limit.
 
 ## pytest Markers
 
@@ -92,3 +108,4 @@ def test_requirement():
 | `OLLAMA_HOST` | Ollama server URL |
 | `OPENAI_API_KEY` | OpenAI API key (for litellm) |
 | `ANTHROPIC_API_KEY` | Anthropic API key (for litellm) |
+| `GEMINI_API_TOKEN` | Gemini API key |

@@ -40,6 +40,10 @@ ollama = [
 litellm = [
     "litellm>=1.0.0",
 ]
+gemini = [
+    "httpx>=0.24.0",
+    "urllib3>=2.6.3",  # Fix CVE-2026-21441 (GHSA-38jv-5279-wg99)
+]
 pdf = [
     "playwright>=1.40.0",
 ]
@@ -49,7 +53,7 @@ dev = [
     "pytest-xdist>=3.0.0",
 ]
 all = [
-    "pytest-llm-report[ollama,litellm,pdf,dev]",
+    "pytest-llm-report[ollama,litellm,gemini,pdf,dev]",
 ]
 
 [project.urls]
@@ -104,6 +108,7 @@ omit = [
     # External service providers (require network/services for real tests)
     "*/llm/ollama.py",
     "*/llm/litellm_provider.py",
+    "*/llm/gemini.py",
     # Pytest hook integration (require full pytest run to test properly)
     "*/collector.py",
     "*/coverage_map.py",

@@ -100,7 +100,7 @@ class TestProviderContract:
 
     def test_provider_has_annotate_method(self):
         """All providers have annotate method."""
-        for provider_name in ["none", "ollama", "litellm"]:
+        for provider_name in ["none", "ollama", "litellm", "gemini"]:
             config = Config(provider=provider_name, model="test")
             provider = get_provider(config)
             assert hasattr(provider, "annotate")

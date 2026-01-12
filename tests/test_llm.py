@@ -67,6 +67,12 @@ class TestGetProvider:
         provider = get_provider(config)
         assert provider.__class__.__name__ == "LiteLLMProvider"
 
+    def test_gemini_returns_provider(self):
+        """provider='gemini' should return GeminiProvider."""
+        config = Config(provider="gemini", model="gemini-1.5-flash")
+        provider = get_provider(config)
+        assert provider.__class__.__name__ == "GeminiProvider"
+
 
 class TestLlmProviderContract:
     """Tests for LlmProvider contract."""

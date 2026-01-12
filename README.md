@@ -49,7 +49,7 @@ Configure via `pyproject.toml`:
 
 ```toml
 [tool.pytest_llm_report]
-provider = "none"  # "none", "ollama", or "litellm"
+provider = "none"  # "none", "ollama", "litellm", or "gemini"
 report_json = "reports/pytest_llm_report.json"
 ```
 
