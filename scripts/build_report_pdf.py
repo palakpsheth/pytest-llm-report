@@ -30,11 +30,14 @@ def main():
         browser = p.chromium.launch()
         page = browser.new_page()
 
-        # Load HTML file
-        page.goto(f"file://{input_html.absolute()}")
+        # Load HTML file with ?pdf=1 to trigger expanding all details
+        page.goto(f"file://{input_html.absolute()}?pdf=1")
 
         # Wait for content to load
         page.wait_for_load_state("networkidle")
+
+        # Emulate print media for proper PDF rendering
+        page.emulate_media(media="print")
 
         # Generate PDF
         page.pdf(path=str(output_pdf), format="A4", print_background=True)
