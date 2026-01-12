@@ -26,11 +26,14 @@ class FakeLiteLLMResponse:
 class FakeGeminiResponse:
     """Fake Gemini response payload."""
 
-    def __init__(self, data: dict) -> None:
+    def __init__(self, data: dict, status_code: int = 200) -> None:
         self._data = data
+        self.status_code = status_code
+        self.headers = {}
 
     def raise_for_status(self) -> None:
-        return None
+        if self.status_code >= 400:
+            raise RuntimeError(f"HTTP {self.status_code}")
 
     def json(self) -> dict:
         return self._data
@@ -221,6 +224,67 @@ class TestGeminiProvider:
         assert (
             annotation.error == "httpx not installed. Install with: pip install httpx"
         )
+
+    def test_annotate_retries_on_rate_limit(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Gemini provider retries when rate limited."""
+        calls = []
+
+        class FakeResponse:
+            def __init__(self, payload, status_code=200, headers=None):
+                self._payload = payload
+                self.status_code = status_code
+                self.headers = headers or {}
+
+            def raise_for_status(self):
+                if self.status_code >= 400:
+                    raise RuntimeError(f"HTTP {self.status_code}")
+
+            def json(self):
+                return self._payload
+
+        response_data = {
+            "scenario": "Checks login",
+            "why_needed": "Stops regressions",
+            "key_assertions": ["status ok", "redirect"],
+        }
+        success_payload = {
+            "candidates": [
+                {
+                    "content": {
+                        "parts": [{"text": json.dumps(response_data)}],
+                    }
+                }
+            ]
+        }
+        responses = iter(
+            [
+                FakeResponse({}, status_code=429, headers={"Retry-After": "0"}),
+                FakeResponse(success_payload),
+            ]
+        )
+
+        def fake_post(url, **kwargs):
+            calls.append((url, kwargs))
+            return next(responses)
+
+        fake_httpx = SimpleNamespace(post=fake_post)
+        sleep_calls = []
+        monkeypatch.setitem(__import__("sys").modules, "httpx", fake_httpx)
+        monkeypatch.setenv("GEMINI_API_TOKEN", "test-token")
+        monkeypatch.setattr(
+            "pytest_llm_report.llm.gemini.time.sleep", sleep_calls.append
+        )
+
+        config = Config(provider="gemini", model="gemini-1.5-pro")
+        provider = GeminiProvider(config)
+        test = CaseResult(nodeid="tests/test_auth.py::test_login", outcome="passed")
+        annotation = provider.annotate(test, "def test_login(): assert True")
+
+        assert annotation.scenario == "Checks login"
+        assert len(calls) == 2
+        assert sleep_calls == [0.0]
 
 
 class TestOllamaProvider:

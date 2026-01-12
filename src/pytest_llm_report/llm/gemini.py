@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import os
+import time
 from typing import TYPE_CHECKING
 
 from pytest_llm_report.llm.base import LlmProvider
@@ -148,12 +149,30 @@ class GeminiProvider(LlmProvider):
             "generation_config": {"temperature": 0.3},
         }
 
-        response = httpx.post(
-            url,
-            json=payload,
-            timeout=self.config.llm_timeout_seconds,
-        )
-        response.raise_for_status()
+        max_retries = 3
+        base_backoff = 1.0
+        response = None
+        for attempt in range(max_retries + 1):
+            response = httpx.post(
+                url,
+                json=payload,
+                timeout=self.config.llm_timeout_seconds,
+            )
+            if response.status_code != 429:
+                response.raise_for_status()
+                break
+            if attempt >= max_retries:
+                response.raise_for_status()
+            retry_after = response.headers.get("Retry-After")
+            if retry_after is not None:
+                try:
+                    delay = float(retry_after)
+                except ValueError:
+                    delay = base_backoff * (2**attempt)
+            else:
+                delay = base_backoff * (2**attempt)
+            time.sleep(delay)
+
         data = response.json()
         candidates = data.get("candidates", [])
         if not candidates:
