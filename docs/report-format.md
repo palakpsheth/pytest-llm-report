@@ -19,6 +19,7 @@ A JSON schema file is available at `schemas/report.schema.json`.
 | `collection_errors` | array | no | Collection errors |
 | `warnings` | array | no | Warnings during generation |
 | `artifacts` | array | no | Generated artifact files |
+| `source_coverage` | array | no | Per-file coverage summary |
 | `custom_metadata` | object | no | User-provided metadata |
 | `sha256` | string | no | SHA256 hash of this report |
 | `hmac_signature` | string | no | Optional HMAC signature |
@@ -97,6 +98,18 @@ Each test in the `tests` array has:
 | `file_path` | string | Repo-relative file path |
 | `line_ranges` | string | Compact ranges (e.g., "1-3, 5") |
 | `line_count` | integer | Total lines covered |
+
+## Source Coverage Entry
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `file_path` | string | Repo-relative file path |
+| `statements` | integer | Total statements |
+| `missed` | integer | Missed statements |
+| `covered` | integer | Covered statements |
+| `coverage_percent` | number | Coverage percentage for the file |
+| `covered_ranges` | string | Covered line ranges |
+| `missed_ranges` | string | Missed line ranges |
 
 ## LLM Annotation
 

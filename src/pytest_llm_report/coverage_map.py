@@ -17,12 +17,12 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 from pytest_llm_report.errors import WarningCode, make_warning
-from pytest_llm_report.models import CoverageEntry, ReportWarning
+from pytest_llm_report.models import CoverageEntry, ReportWarning, SourceCoverageEntry
 from pytest_llm_report.util.fs import make_relative, normalize_path, should_skip_path
 from pytest_llm_report.util.ranges import compress_ranges
 
 if TYPE_CHECKING:
-    from coverage import CoverageData
+    from coverage import Coverage, CoverageData
 
     from pytest_llm_report.options import Config
 
@@ -237,6 +237,60 @@ class CoverageMapper:
 
         # Context without phase delimiter
         return context
+
+    def map_source_coverage(self, cov: Coverage) -> list[SourceCoverageEntry]:
+        """Build per-file coverage summary from a Coverage instance."""
+        entries: list[SourceCoverageEntry] = []
+        repo_root = self.config.repo_root or Path.cwd()
+
+        measured_files = cov.get_data().measured_files()
+        for file_path in measured_files:
+            if not file_path.endswith(".py"):
+                continue
+            if should_skip_path(file_path):
+                continue
+            if self.config.omit_tests_from_coverage:
+                norm_path = normalize_path(file_path)
+                if "test" in norm_path and (
+                    norm_path.startswith("test") or "/test" in norm_path
+                ):
+                    continue
+
+            try:
+                _filename, statements, _excluded, missing, _missing_branches = (
+                    cov.analysis2(file_path)
+                )
+            except Exception:
+                continue
+
+            if not statements:
+                continue
+
+            statement_set = set(statements)
+            missing_set = set(missing)
+            covered_lines = sorted(statement_set - missing_set)
+            missed_lines = sorted(missing_set)
+
+            covered = len(covered_lines)
+            total = len(statements)
+            coverage_percent = round((covered / total) * 100, 2) if total else 0.0
+
+            entries.append(
+                SourceCoverageEntry(
+                    file_path=make_relative(file_path, repo_root),
+                    statements=total,
+                    missed=len(missed_lines),
+                    covered=covered,
+                    coverage_percent=coverage_percent,
+                    covered_ranges=compress_ranges(covered_lines)
+                    if covered_lines
+                    else "",
+                    missed_ranges=compress_ranges(missed_lines) if missed_lines else "",
+                )
+            )
+
+        entries.sort(key=lambda entry: entry.file_path)
+        return entries
 
     def get_warnings(self) -> list[ReportWarning]:
         """Get warnings generated during mapping.

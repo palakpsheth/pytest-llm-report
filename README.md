@@ -6,6 +6,7 @@ Human-friendly pytest test reports with optional LLM annotations.
 
 - Test inventory with status (pass/fail/skip/xfail) and duration
 - Per-test covered files and line ranges (using pytest-cov + coverage contexts)
+- Per-file source coverage summary (covered/missed/percentage)
 - Optional LLM-generated annotations:
   - **Scenario**: What the test verifies
   - **Why needed**: What regression/bug it prevents

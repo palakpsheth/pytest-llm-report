@@ -23,6 +23,7 @@ from pytest_llm_report.models import (
     LlmAnnotation,
     ReportRoot,
     RunMeta,
+    SourceCoverageEntry,
     Summary,
     TestCaseResult,
 )
@@ -85,6 +86,7 @@ class Aggregator:
             run_meta=meta,
             summary=summary,
             tests=aggregated_tests,
+            source_coverage=latest_report.source_coverage,
             collection_errors=[],  # We don't aggregate collection errors for now
             warnings=[],
             artifacts=[],
@@ -140,6 +142,10 @@ class Aggregator:
                             run_meta=meta,
                             summary=Summary(**data["summary"]),
                             tests=tests,
+                            source_coverage=[
+                                SourceCoverageEntry(**entry)
+                                for entry in data.get("source_coverage", [])
+                            ],
                             collection_errors=[],
                             warnings=[],
                             artifacts=[],

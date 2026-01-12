@@ -10,6 +10,7 @@ from pytest_llm_report.models import (
     ReportRoot,
     ReportWarning,
     RunMeta,
+    SourceCoverageEntry,
     SourceReport,
     Summary,
     TestCaseResult,
@@ -47,6 +48,30 @@ class TestCoverageEntry:
         assert d["file_path"] == "src/foo.py"
         assert d["line_ranges"] == "1-3, 5, 10-15"
         assert d["line_count"] == 10
+
+
+class TestSourceCoverageEntry:
+    """Tests for SourceCoverageEntry dataclass."""
+
+    def test_to_dict(self):
+        """SourceCoverageEntry should serialize correctly."""
+        entry = SourceCoverageEntry(
+            file_path="src/foo.py",
+            statements=12,
+            missed=3,
+            covered=9,
+            coverage_percent=75.0,
+            covered_ranges="1-5, 7-9",
+            missed_ranges="6, 10-11",
+        )
+        data = entry.to_dict()
+        assert data["file_path"] == "src/foo.py"
+        assert data["statements"] == 12
+        assert data["missed"] == 3
+        assert data["covered"] == 9
+        assert data["coverage_percent"] == 75.0
+        assert data["covered_ranges"] == "1-5, 7-9"
+        assert data["missed_ranges"] == "6, 10-11"
 
 
 class TestLlmAnnotation:

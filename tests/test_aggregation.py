@@ -9,6 +9,7 @@ from pytest_llm_report.aggregation import Aggregator
 from pytest_llm_report.models import (
     CoverageEntry,
     LlmAnnotation,
+    SourceCoverageEntry,
     Summary,
     TestCaseResult,
 )
@@ -271,3 +272,32 @@ class TestAggregator:
                 serialized["llm_annotation"]["scenario"]
                 == "Tests the feature works correctly"
             )
+
+    def test_aggregate_with_source_coverage(self, aggregator):
+        """Source coverage summary should be deserialized."""
+        t1 = "2024-01-01T10:00:00"
+        report1 = self.create_dummy_report("run1", t1, [])
+        report1["source_coverage"] = [
+            {
+                "file_path": "src/foo.py",
+                "statements": 12,
+                "missed": 2,
+                "covered": 10,
+                "coverage_percent": 83.33,
+                "covered_ranges": "1-5, 7-11",
+                "missed_ranges": "6, 12",
+            }
+        ]
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            aggregator.config.aggregate_dir = tmpdir
+
+            with open(Path(tmpdir) / "report_1.json", "w") as f:
+                json.dump(report1, f)
+
+            result = aggregator.aggregate()
+
+            assert result is not None
+            assert len(result.source_coverage) == 1
+            assert isinstance(result.source_coverage[0], SourceCoverageEntry)
+            assert result.source_coverage[0].file_path == "src/foo.py"

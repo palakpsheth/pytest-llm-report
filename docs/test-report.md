@@ -16,6 +16,7 @@ This report is automatically generated during CI/CD runs and includes:
 - **Coverage Data**: Per-test coverage information showing which files and lines each test exercises
 - **Execution Time**: Duration for each test
 - **Error Messages**: Full error details for failed tests
+- **Source Coverage**: Per-file covered/missed/percentage summary (similar to pytest-cov)
 
 The report uses the same pytest-llm-report plugin that this documentation describes.
 
@@ -43,6 +44,14 @@ The report header shows:
 - Overall test suite duration
 - Total coverage percentage (when available)
 - Run metadata (timestamp, Python version, etc.)
+
+### Source Coverage Summary
+
+At the bottom of the report you'll find a table of source files with:
+
+- Statements, missed, and covered counts
+- Coverage percentage per file
+- Covered and missed line ranges for quick inspection
 
 ---
 
