@@ -19,11 +19,13 @@
     </details>
     {% endif %}
 
-    {% if test.llm_annotation and test.llm_annotation.scenario %}
+    {% if test.llm_annotation and (test.llm_annotation.scenario or test.llm_annotation.error) %}
     <div class="llm-annotation">
+        {% if test.llm_annotation.scenario %}
         <div class="scenario">
             <strong>Scenario:</strong> {{ test.llm_annotation.scenario }}
         </div>
+        {% endif %}
         {% if test.llm_annotation.why_needed %}
         <div class="why-needed">
             <strong>Why needed:</strong> {{ test.llm_annotation.why_needed }}
@@ -37,6 +39,11 @@
                 <li>{{ assertion }}</li>
                 {% endfor %}
             </ul>
+        </div>
+        {% endif %}
+        {% if test.llm_annotation.error %}
+        <div class="llm-error">
+            <strong>LLM error:</strong> {{ test.llm_annotation.error }}
         </div>
         {% endif %}
     </div>

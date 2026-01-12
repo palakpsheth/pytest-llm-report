@@ -26,11 +26,18 @@ def annotate_tests(tests: Iterable[TestCaseResult], config: Config) -> None:
         return
 
     provider = get_provider(config)
+    if not provider.is_available():
+        print(
+            "pytest-llm-report: LLM provider "
+            f"'{config.provider}' is not available. Skipping annotations."
+        )
+        return
     cache = LlmCache(config)
     assembler = ContextAssembler(config)
 
     annotated = 0
     failures = 0
+    first_error: str | None = None
     for test in tests:
         if annotated >= config.llm_max_tests:
             break
@@ -51,11 +58,16 @@ def annotate_tests(tests: Iterable[TestCaseResult], config: Config) -> None:
         annotated += 1
         if annotation.error:
             failures += 1
+            if first_error is None:
+                first_error = annotation.error
 
     if annotated:
         provider_name = config.provider
-        print(
+        message = (
             "pytest-llm-report: Annotated "
             f"{annotated} test(s) via {provider_name} "
             f"({failures} error(s))."
         )
+        if first_error:
+            message = f"{message} First error: {first_error}"
+        print(message)

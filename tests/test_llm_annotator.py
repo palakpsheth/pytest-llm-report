@@ -15,6 +15,9 @@ class FakeProvider:
         self.annotation = annotation
         self.calls: list[str] = []
 
+    def is_available(self) -> bool:
+        return True
+
     def annotate(self, test, *_args, **_kwargs):  # noqa: ANN001 - test helper
         self.calls.append(test.nodeid)
         return self.annotation
@@ -63,6 +66,24 @@ def test_annotate_tests_emits_summary(monkeypatch, tmp_path, capsys):
     annotate_tests([test], config)
     captured = capsys.readouterr()
     assert "Annotated 1 test(s) via litellm" in captured.out
+
+
+def test_annotate_tests_skips_unavailable_provider(monkeypatch, tmp_path, capsys):
+    """Unavailable providers should skip annotation with a message."""
+    config = Config(provider="litellm", cache_dir=str(tmp_path))
+
+    class UnavailableProvider(FakeProvider):
+        def is_available(self) -> bool:
+            return False
+
+    provider = UnavailableProvider(LlmAnnotation(scenario="ok"))
+    monkeypatch.setattr(
+        "pytest_llm_report.llm.annotator.get_provider", lambda _cfg: provider
+    )
+
+    annotate_tests([], config)
+    captured = capsys.readouterr()
+    assert "is not available" in captured.out
 
 
 def test_annotate_tests_respects_opt_out_and_limit(monkeypatch, tmp_path):

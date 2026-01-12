@@ -94,6 +94,34 @@ class TestBasicReportGeneration:
         data = json.loads(report_path.read_text())
         assert data["tests"][0]["llm_annotation"]["scenario"] == "Checks the happy path"
 
+    def test_llm_error_is_reported(self, pytester: pytest.Pytester):
+        """LLM errors are surfaced in HTML output."""
+        pytester.makepyfile(
+            """
+            def test_pass():
+                assert True
+            """
+        )
+        pytester.makepyfile(
+            litellm="""
+            def completion(**_kwargs):
+                raise RuntimeError("boom")
+            """
+        )
+
+        report_path = pytester.path / "report.html"
+        pytester.runpytest(
+            "-o",
+            "llm_report_provider=litellm",
+            "-o",
+            "llm_report_model=gpt-4o-mini",
+            f"--llm-report={report_path}",
+        )
+
+        content = report_path.read_text()
+        assert "LLM error" in content
+        assert "boom" in content
+
     def test_html_report_created(self, pytester: pytest.Pytester):
         """HTML report is created."""
         pytester.makepyfile(
