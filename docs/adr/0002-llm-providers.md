@@ -9,10 +9,11 @@ The plugin needs to support multiple LLM providers for test annotation while mai
 
 ## Decision
 
-Implement a provider abstraction with three providers:
+Implement a provider abstraction with four providers:
 1. `none` - No LLM (default)
 2. `ollama` - Local LLM via Ollama
 3. `litellm` - Cloud LLMs via LiteLLM library
+4. `gemini` - Cloud LLMs via Gemini API
 
 ## Consequences
 
@@ -20,6 +21,7 @@ Implement a provider abstraction with three providers:
 - Privacy by default (provider=none)
 - Local option for sensitive code (Ollama)
 - Broad cloud support via LiteLLM (100+ models)
+- Dedicated Gemini integration for teams standardizing on Google AI
 - Clean abstraction for adding new providers
 
 ### Negative

@@ -39,7 +39,7 @@ When using LLM providers:
 - No network exposure
 - Full control over model
 
-### Cloud (LiteLLM)
+### Cloud (LiteLLM, Gemini)
 - Data sent to external provider
 - Review provider's security policies
 - Consider data residency requirements

@@ -121,12 +121,19 @@
                         </div>
                         {% endif %}
 
-                        {% if test.llm_annotation %}
+                        {% if test.llm_annotation and (test.llm_annotation.scenario or test.llm_annotation.error) %}
                         <div class="detail-section">
                             <div class="detail-title">AI Assessment</div>
                             <div class="llm-annotation">
+                                {% if test.llm_annotation.scenario %}
                                 <p><strong>Scenario:</strong> {{ test.llm_annotation.scenario }}</p>
+                                {% endif %}
+                                {% if test.llm_annotation.why_needed %}
                                 <p><strong>Why Needed:</strong> {{ test.llm_annotation.why_needed }}</p>
+                                {% endif %}
+                                {% if test.llm_annotation.error %}
+                                <p><strong>LLM error:</strong> {{ test.llm_annotation.error }}</p>
+                                {% endif %}
                             </div>
                         </div>
                         {% endif %}

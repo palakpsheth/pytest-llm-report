@@ -13,6 +13,7 @@ Component Contract:
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -62,6 +63,14 @@ class LlmProvider(ABC):
         """
         pass
 
+    def get_rate_limits(self) -> LlmRateLimits | None:
+        """Get rate limits for the provider/model, if available.
+
+        Returns:
+            LlmRateLimits when the provider can supply rate limits.
+        """
+        return None
+
     def get_model_name(self) -> str:
         """Get the model name being used.
 
@@ -69,6 +78,15 @@ class LlmProvider(ABC):
             Model name or empty string.
         """
         return self.config.model or ""
+
+
+@dataclass(frozen=True)
+class LlmRateLimits:
+    """Rate limit information for LLM providers."""
+
+    requests_per_minute: int | None = None
+    tokens_per_minute: int | None = None
+    requests_per_day: int | None = None
 
 
 def get_provider(config: Config) -> LlmProvider:
@@ -99,5 +117,10 @@ def get_provider(config: Config) -> LlmProvider:
         from pytest_llm_report.llm.litellm_provider import LiteLLMProvider
 
         return LiteLLMProvider(config)
+
+    if provider_name == "gemini":
+        from pytest_llm_report.llm.gemini import GeminiProvider
+
+        return GeminiProvider(config)
 
     raise ValueError(f"Unknown LLM provider: {provider_name}")

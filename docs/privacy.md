@@ -18,6 +18,7 @@ If you enable an LLM provider:
 | `none` | Nowhere (default) |
 | `ollama` | Your local Ollama server |
 | `litellm` | External cloud provider |
+| `gemini` | External cloud provider |
 
 ## What's Sent to LLM
 

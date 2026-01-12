@@ -17,6 +17,9 @@ pip install pytest-llm-report[ollama]
 
 # LiteLLM (cloud)
 pip install pytest-llm-report[litellm]
+
+# Gemini (cloud)
+pip install pytest-llm-report[gemini]
 ```
 
 ## Prerequisites

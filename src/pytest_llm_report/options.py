@@ -30,7 +30,7 @@ class Config:
         report_dependency_snapshot: Optional path for dependency snapshot.
 
         # LLM provider settings
-        provider: LLM provider name ("none", "ollama", "litellm").
+        provider: LLM provider name ("none", "ollama", "litellm", "gemini").
         model: Model name for LLM provider.
         ollama_host: Ollama server URL.
 
@@ -48,6 +48,7 @@ class Config:
         # LLM execution controls
         llm_max_tests: Maximum tests to annotate.
         llm_max_concurrency: Maximum concurrent LLM requests.
+        llm_requests_per_minute: Maximum LLM requests per minute.
         llm_timeout_seconds: Timeout for LLM requests.
         llm_cache_ttl_seconds: Cache TTL in seconds.
         cache_dir: Directory for LLM cache.
@@ -119,6 +120,7 @@ class Config:
     # LLM execution controls
     llm_max_tests: int = 100
     llm_max_concurrency: int = 4
+    llm_requests_per_minute: int = 5
     llm_timeout_seconds: int = 30
     llm_cache_ttl_seconds: int = 86400  # 24 hours
     cache_dir: str = ".pytest_llm_cache"
@@ -166,7 +168,7 @@ class Config:
         errors = []
 
         # Validate provider
-        valid_providers = ("none", "ollama", "litellm")
+        valid_providers = ("none", "ollama", "litellm", "gemini")
         if self.provider not in valid_providers:
             errors.append(
                 f"Invalid provider '{self.provider}'. Must be one of: {valid_providers}"
@@ -201,6 +203,8 @@ class Config:
             errors.append("llm_context_bytes must be at least 1000")
         if self.llm_max_tests < 1:
             errors.append("llm_max_tests must be at least 1")
+        if self.llm_requests_per_minute < 1:
+            errors.append("llm_requests_per_minute must be at least 1")
         if self.llm_timeout_seconds < 1:
             errors.append("llm_timeout_seconds must be at least 1")
 

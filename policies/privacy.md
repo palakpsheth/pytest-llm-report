@@ -32,6 +32,11 @@ Review their privacy policies:
 - [OpenAI Privacy](https://openai.com/policies/privacy-policy)
 - [Anthropic Privacy](https://www.anthropic.com/privacy)
 
+### Provider: gemini
+Data is sent to the Gemini API (Google).
+Review Google's privacy policy:
+- [Google Privacy](https://policies.google.com/privacy)
+
 ## User Controls
 
 - `provider = "none"` - Disable all LLM features

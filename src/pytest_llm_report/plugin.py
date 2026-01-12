@@ -70,6 +70,13 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         default=None,
         help="Path for dependency snapshot output",
     )
+    group.addoption(
+        "--llm-requests-per-minute",
+        dest="llm_requests_per_minute",
+        type=int,
+        default=None,
+        help="Maximum LLM requests per minute (default: 5)",
+    )
 
     # Aggregation options
     group.addoption(
@@ -101,7 +108,7 @@ def pytest_addoption(parser: pytest.Parser) -> None:
     parser.addini(
         "llm_report_provider",
         default="none",
-        help="LLM provider: none, ollama, or litellm",
+        help="LLM provider: none, ollama, litellm, or gemini",
     )
     parser.addini(
         "llm_report_model",
@@ -112,6 +119,12 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         "llm_report_context_mode",
         default="minimal",
         help="LLM context mode: minimal, balanced, or complete",
+    )
+    parser.addini(
+        "llm_report_requests_per_minute",
+        default=5,
+        type="int",
+        help="Maximum LLM requests per minute",
     )
     parser.addini(
         "llm_report_html",
@@ -146,6 +159,8 @@ def _load_config_from_pytest(config: pytest.Config) -> Config:
         cfg.model = config.getini("llm_report_model")
     if config.getini("llm_report_context_mode"):
         cfg.llm_context_mode = config.getini("llm_report_context_mode")
+    if config.getini("llm_report_requests_per_minute") is not None:
+        cfg.llm_requests_per_minute = config.getini("llm_report_requests_per_minute")
     if config.getini("llm_report_html"):
         cfg.report_html = config.getini("llm_report_html")
     if config.getini("llm_report_json"):
@@ -162,6 +177,8 @@ def _load_config_from_pytest(config: pytest.Config) -> Config:
         cfg.report_evidence_bundle = config.option.llm_evidence_bundle
     if config.option.llm_dependency_snapshot:
         cfg.report_dependency_snapshot = config.option.llm_dependency_snapshot
+    if config.option.llm_requests_per_minute is not None:
+        cfg.llm_requests_per_minute = config.option.llm_requests_per_minute
 
     # Aggregation options
     if config.option.llm_aggregate_dir:
@@ -297,7 +314,6 @@ def pytest_terminal_summary(
     start_time = config.stash.get(_start_time_key, None) or datetime.now(UTC)
     end_time = datetime.now(UTC)
 
-    # Write report
     from pytest_llm_report.coverage_map import CoverageMapper
     from pytest_llm_report.report_writer import ReportWriter
 
@@ -344,6 +360,18 @@ def pytest_terminal_summary(
             )
     except Exception as e:
         warnings.warn(f"Failed to map coverage: {e}", stacklevel=2)
+
+    # Attach coverage to tests for downstream processing
+    if coverage:
+        for test in tests:
+            if test.nodeid in coverage:
+                test.coverage = coverage[test.nodeid]
+
+    # Apply LLM annotations
+    if cfg.is_llm_enabled():
+        from pytest_llm_report.llm.annotator import annotate_tests
+
+        annotate_tests(tests, cfg)
 
     writer = ReportWriter(cfg)
     writer.write_report(

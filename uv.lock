@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 2
 requires-python = ">=3.11"
 resolution-markers = [
     "python_full_version >= '3.14'",
@@ -1670,6 +1670,10 @@ dev = [
     { name = "pytest-xdist" },
     { name = "ruff" },
 ]
+gemini = [
+    { name = "httpx" },
+    { name = "urllib3" },
+]
 litellm = [
     { name = "litellm" },
 ]
@@ -1690,6 +1694,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "coverage", specifier = ">=7.0.0" },
+    { name = "httpx", marker = "extra == 'gemini'", specifier = ">=0.24.0" },
     { name = "httpx", marker = "extra == 'ollama'", specifier = ">=0.24.0" },
     { name = "jinja2", specifier = ">=3.0.0" },
     { name = "litellm", marker = "extra == 'litellm'", specifier = ">=1.0.0" },
@@ -1697,12 +1702,13 @@ requires-dist = [
     { name = "playwright", marker = "extra == 'pdf'", specifier = ">=1.40.0" },
     { name = "pytest", specifier = ">=7.0.0" },
     { name = "pytest-cov", specifier = ">=4.0.0" },
-    { name = "pytest-llm-report", extras = ["ollama", "litellm", "pdf", "dev"], marker = "extra == 'all'" },
+    { name = "pytest-llm-report", extras = ["ollama", "litellm", "gemini", "pdf", "dev"], marker = "extra == 'all'" },
     { name = "pytest-xdist", marker = "extra == 'dev'", specifier = ">=3.0.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.1.0" },
+    { name = "urllib3", marker = "extra == 'gemini'", specifier = ">=2.6.3" },
     { name = "urllib3", marker = "extra == 'ollama'", specifier = ">=2.6.3" },
 ]
-provides-extras = ["ollama", "litellm", "pdf", "dev", "all"]
+provides-extras = ["ollama", "litellm", "gemini", "pdf", "dev", "all"]
 
 [package.metadata.requires-dev]
 dev = [
