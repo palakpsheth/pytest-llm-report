@@ -38,6 +38,7 @@ pytest --cov=my_pkg --cov-context=test --llm-report=report.html
 - [Configuration](configuration.md)
 - [LLM Providers](providers.md)
 - [Coverage Setup](coverage.md)
+- [Test Report](test-report.md)
 - [Report Format](report-format.md)
 - [Privacy](privacy.md)
 - [Security](security.md)
