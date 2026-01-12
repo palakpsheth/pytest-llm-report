@@ -1,11 +1,11 @@
 # Test Report
 
-<iframe src="reports/index.html" style="width: 100%; height: 90vh; border: 1px solid #e2e8f0; border-radius: 0.5rem;" title="Interactive Test Report"></iframe>
+<iframe src="../reports/index.html" style="width: 100%; height: 90vh; border: 1px solid #e2e8f0; border-radius: 0.5rem;" title="Interactive Test Report"></iframe>
 
 !!! info "Direct Links"
-    - [Open the latest CI-generated report](reports/index.html){ target="_blank" }
-    - [Open the latest CI-generated PDF report](reports/latest.pdf){ target="_blank" }
-    - [Open the static example report](example-report/index.html){ target="_blank" }
+    - [Open the latest CI-generated report](../reports/index.html){ target="_blank" }
+    - [Open the latest CI-generated PDF report](../reports/latest.pdf){ target="_blank" }
+    - [Open the static example report](../example-report/index.html){ target="_blank" }
 
 The embedded report above is the latest CI-generated run. The static example showcases a mix of passed, failed, skipped, xfailed, xpassed, and error results.
 
