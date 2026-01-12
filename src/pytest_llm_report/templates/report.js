@@ -33,4 +33,12 @@ document.addEventListener('DOMContentLoaded', function () {
     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
         document.documentElement.dataset.theme = 'dark';
     }
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('pdf') === '1') {
+        document.body.classList.add('pdf-mode');
+        document.querySelectorAll('details').forEach(details => {
+            details.setAttribute('open', '');
+        });
+    }
 });

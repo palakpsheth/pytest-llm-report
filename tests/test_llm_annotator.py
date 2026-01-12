@@ -146,3 +146,23 @@ def test_annotate_tests_respects_rate_limit(monkeypatch, tmp_path):
 
     assert provider.calls == ["tests/test_a.py::test_a", "tests/test_b.py::test_b"]
     assert sleep_calls == [2.0]
+
+
+def test_annotate_tests_reports_progress(monkeypatch, tmp_path):
+    """LLM annotation progress should be reported via callback."""
+    config = Config(provider="litellm", cache_dir=str(tmp_path))
+    test = TestCaseResult(nodeid="tests/test_progress.py::test_case", outcome="passed")
+    provider = FakeProvider(LlmAnnotation(scenario="ok"))
+    messages: list[str] = []
+
+    monkeypatch.setattr(
+        "pytest_llm_report.llm.annotator.get_provider", lambda _cfg: provider
+    )
+
+    annotate_tests([test], config, progress=messages.append)
+
+    assert messages[0] == "pytest-llm-report: Starting LLM annotations for 1 test(s)"
+    assert messages[1] == (
+        "pytest-llm-report: LLM annotation progress 1/1: "
+        "tests/test_progress.py::test_case"
+    )

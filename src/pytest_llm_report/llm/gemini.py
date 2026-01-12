@@ -43,9 +43,10 @@ class _GeminiRateLimitConfig:
 
 
 class _GeminiRateLimitExceeded(Exception):
-    def __init__(self, limit_type: str) -> None:
+    def __init__(self, limit_type: str, retry_after: float | None = None) -> None:
         super().__init__(limit_type)
         self.limit_type = limit_type
+        self.retry_after = retry_after
 
 
 class _GeminiRateLimiter:
@@ -55,22 +56,26 @@ class _GeminiRateLimiter:
         self._token_usage: deque[tuple[float, int]] = deque()
         self._daily_requests: deque[float] = deque()
 
-    def wait_for_slot(self, request_tokens: int) -> None:
+    def next_available_in(self, request_tokens: int) -> float | None:
         now = time.monotonic()
         self._prune(now)
 
         if self._limits.requests_per_day:
             if len(self._daily_requests) >= self._limits.requests_per_day:
-                raise _GeminiRateLimitExceeded("requests_per_day")
+                return None
 
-        sleep_for = max(
+        return max(
             self._seconds_until_rpm_available(now),
             self._seconds_until_tpm_available(now, request_tokens),
         )
-        if sleep_for > 0:
-            time.sleep(sleep_for)
 
-        self._record_request(time.monotonic())
+    def wait_for_slot(self, request_tokens: int) -> None:
+        wait_for = self.next_available_in(request_tokens)
+        if wait_for is None:
+            raise _GeminiRateLimitExceeded("requests_per_day")
+        if wait_for > 0:
+            time.sleep(wait_for)
+        self.record_request()
 
     def record_tokens(self, tokens_used: int) -> None:
         if tokens_used <= 0:
@@ -78,6 +83,9 @@ class _GeminiRateLimiter:
         now = time.monotonic()
         self._token_usage.append((now, tokens_used))
         self._prune(now)
+
+    def record_request(self) -> None:
+        self._record_request(time.monotonic())
 
     def _record_request(self, now: float) -> None:
         self._request_times.append(now)
@@ -135,8 +143,11 @@ class GeminiProvider(LlmProvider):
         """
         super().__init__(config)
         self._available: bool | None = None
-        self._rate_limits: _GeminiRateLimitConfig | None = None
-        self._rate_limiter: _GeminiRateLimiter | None = None
+        self._rate_limits: dict[str, _GeminiRateLimitConfig] = {}
+        self._rate_limiters: dict[str, _GeminiRateLimiter] = {}
+        self._models: list[str] | None = None
+        self._exhausted_models: set[str] = set()
+        self._cooldowns: dict[str, float] = {}
 
     def annotate(
         self,
@@ -166,24 +177,64 @@ class GeminiProvider(LlmProvider):
             return LlmAnnotation(error="GEMINI_API_TOKEN is not set")
 
         prompt = self._build_prompt(test, test_source, context_files)
+        estimated_tokens = self._estimate_tokens(prompt)
 
-        try:
-            limiter = self._get_rate_limiter(api_token)
-            estimated_tokens = self._estimate_tokens(prompt)
-            limiter.wait_for_slot(estimated_tokens)
+        models = self._ensure_models_and_limits(api_token)
 
-            response, tokens_used = self._call_gemini(prompt, api_token)
-            if tokens_used is not None:
-                limiter.record_tokens(tokens_used)
-            return self._parse_response(response)
-        except _GeminiRateLimitExceeded as exc:
-            if exc.limit_type == "requests_per_day":
-                return LlmAnnotation(
-                    error="Gemini requests-per-day limit reached; skipping annotation"
-                )
-            raise
-        except Exception as e:
-            return LlmAnnotation(error=str(e))
+        daily_limit_hit = False
+        attempts = 0
+        max_attempts = max(1, len(models) * 2)
+        while attempts < max_attempts:
+            attempts += 1
+            now = time.monotonic()
+            candidates: list[tuple[float, str]] = []
+            for model in models:
+                if model in self._exhausted_models:
+                    continue
+                limiter = self._get_rate_limiter(api_token, model)
+                wait_for = limiter.next_available_in(estimated_tokens)
+                if wait_for is None:
+                    daily_limit_hit = True
+                    self._exhausted_models.add(model)
+                    continue
+                cooldown_until = self._cooldowns.get(model, 0.0)
+                cooldown_wait = max(0.0, cooldown_until - now)
+                candidates.append((max(wait_for, cooldown_wait), model))
+
+            if not candidates:
+                break
+
+            wait_for, model = min(candidates, key=lambda item: item[0])
+            if wait_for > 0:
+                time.sleep(wait_for)
+
+            try:
+                limiter = self._get_rate_limiter(api_token, model)
+                limiter.record_request()
+                response, tokens_used = self._call_gemini(prompt, api_token, model)
+                if tokens_used is not None:
+                    limiter.record_tokens(tokens_used)
+                return self._parse_response(response)
+            except _GeminiRateLimitExceeded as exc:
+                if exc.limit_type == "requests_per_day":
+                    daily_limit_hit = True
+                    self._exhausted_models.add(model)
+                    continue
+                if exc.limit_type in {"requests_per_minute", "tokens_per_minute"}:
+                    retry_after = exc.retry_after or 60.0
+                    self._cooldowns[model] = time.monotonic() + retry_after
+                    continue
+                raise
+            except Exception as e:
+                return LlmAnnotation(error=str(e))
+
+        if daily_limit_hit:
+            return LlmAnnotation(
+                error="Gemini requests-per-day limit reached; skipping annotation"
+            )
+        return LlmAnnotation(
+            error="Gemini rate limits reached for all available models"
+        )
 
     def is_available(self) -> bool:
         """Check if Gemini provider is available.
@@ -208,7 +259,10 @@ class GeminiProvider(LlmProvider):
         api_token = os.getenv("GEMINI_API_TOKEN")
         if not api_token:
             return None
-        limits = self._ensure_rate_limits(api_token)
+        models = self._ensure_models_and_limits(api_token)
+        if not models:
+            return None
+        limits = self._rate_limits.get(models[0])
         if not limits:
             return None
         return LlmRateLimits(
@@ -245,7 +299,9 @@ class GeminiProvider(LlmProvider):
 
         return "\n".join(parts)
 
-    def _call_gemini(self, prompt: str, api_token: str) -> tuple[str, int | None]:
+    def _call_gemini(
+        self, prompt: str, api_token: str, model: str
+    ) -> tuple[str, int | None]:
         """Make a request to the Gemini API.
 
         Args:
@@ -257,7 +313,7 @@ class GeminiProvider(LlmProvider):
         """
         import httpx
 
-        model = self._get_model_name()
+        model = self._normalize_model_name(model)
         url = (
             "https://generativelanguage.googleapis.com/v1beta/models/"
             f"{model}:generateContent?key={api_token}"
@@ -271,6 +327,7 @@ class GeminiProvider(LlmProvider):
         max_retries = 3
         base_backoff = 1.0
         response = None
+        last_delay = None
         for attempt in range(max_retries + 1):
             response = httpx.post(
                 url,
@@ -281,7 +338,9 @@ class GeminiProvider(LlmProvider):
                 response.raise_for_status()
                 break
             if attempt >= max_retries:
-                response.raise_for_status()
+                raise _GeminiRateLimitExceeded(
+                    "requests_per_minute", retry_after=last_delay
+                )
             retry_after = response.headers.get("Retry-After")
             if retry_after is not None:
                 try:
@@ -290,6 +349,7 @@ class GeminiProvider(LlmProvider):
                     delay = base_backoff * (2**attempt)
             else:
                 delay = base_backoff * (2**attempt)
+            last_delay = delay
             time.sleep(delay)
 
         if response is None:
@@ -352,17 +412,17 @@ class GeminiProvider(LlmProvider):
         except json.JSONDecodeError:
             return LlmAnnotation(error="Failed to parse LLM response as JSON")
 
-    def _get_rate_limiter(self, api_token: str) -> _GeminiRateLimiter:
-        if self._rate_limiter is None:
-            limits = self._ensure_rate_limits(api_token)
-            self._rate_limiter = _GeminiRateLimiter(limits)
-        return self._rate_limiter
+    def _get_rate_limiter(self, api_token: str, model: str) -> _GeminiRateLimiter:
+        if model not in self._rate_limiters:
+            limits = self._ensure_rate_limits(api_token, model)
+            self._rate_limiters[model] = _GeminiRateLimiter(limits)
+        return self._rate_limiters[model]
 
-    def _ensure_rate_limits(self, api_token: str) -> _GeminiRateLimitConfig:
-        if self._rate_limits is not None:
-            return self._rate_limits
+    def _ensure_rate_limits(self, api_token: str, model: str) -> _GeminiRateLimitConfig:
+        if model in self._rate_limits:
+            return self._rate_limits[model]
         try:
-            limits = self._fetch_rate_limits(api_token)
+            limits = self._fetch_rate_limits(api_token, model)
         except Exception:
             limits = _GeminiRateLimitConfig()
         if limits.requests_per_minute is None:
@@ -379,16 +439,15 @@ class GeminiProvider(LlmProvider):
                 tokens_per_minute=limits.tokens_per_minute,
                 requests_per_day=limits.requests_per_day,
             )
-        self._rate_limits = limits
+        self._rate_limits[model] = limits
         return limits
 
-    def _fetch_rate_limits(self, api_token: str) -> _GeminiRateLimitConfig:
+    def _fetch_rate_limits(self, api_token: str, model: str) -> _GeminiRateLimitConfig:
         import httpx
 
-        model = self._get_model_name()
         url = (
             "https://generativelanguage.googleapis.com/v1beta/models/"
-            f"{model}?key={api_token}"
+            f"{self._normalize_model_name(model)}?key={api_token}"
         )
         response = httpx.get(url, timeout=self.config.llm_timeout_seconds)
         response.raise_for_status()
@@ -422,8 +481,60 @@ class GeminiProvider(LlmProvider):
         combined = f"{SYSTEM_PROMPT}\n{prompt}"
         return max(1, len(combined) // 4)
 
-    def _get_model_name(self) -> str:
-        model = self.config.model or "gemini-1.5-flash-latest"
+    def _normalize_model_name(self, model: str) -> str:
         if model.startswith("models/"):
             return model.split("/", 1)[1]
         return model
+
+    def _ensure_models_and_limits(self, api_token: str) -> list[str]:
+        if self._models is None:
+            self._models = self._fetch_available_models(api_token)
+            if not self._models:
+                self._models = [self.config.model or "gemini-1.5-flash-latest"]
+            preferred = self._parse_preferred_models()
+            available_set = set(self._models)
+
+            # Start with preferred models that are available, in preferred order.
+            ordered_models = [m for m in preferred if m in available_set]
+
+            # Add other available models, preserving their original relative order.
+            seen_models = set(ordered_models)
+            ordered_models.extend([m for m in self._models if m not in seen_models])
+            self._models = ordered_models
+
+        for model in self._models:
+            self._ensure_rate_limits(api_token, model)
+        return self._models
+
+    def _parse_preferred_models(self) -> list[str]:
+        if not self.config.model:
+            return []
+        if self.config.model.strip().lower() == "all":
+            return []
+        return [
+            self._normalize_model_name(part.strip())
+            for part in self.config.model.split(",")
+            if part.strip()
+        ]
+
+    def _fetch_available_models(self, api_token: str) -> list[str]:
+        import httpx
+
+        url = f"https://generativelanguage.googleapis.com/v1beta/models?key={api_token}"
+        try:
+            response = httpx.get(url, timeout=self.config.llm_timeout_seconds)
+            response.raise_for_status()
+            data = response.json()
+        except Exception:
+            return []
+        models = []
+        for model_info in data.get("models", []):
+            name = model_info.get("name")
+            if not isinstance(name, str):
+                continue
+            methods = model_info.get("supportedGenerationMethods", [])
+            if not isinstance(methods, list):
+                continue
+            if "generateContent" in methods:
+                models.append(self._normalize_model_name(name))
+        return models

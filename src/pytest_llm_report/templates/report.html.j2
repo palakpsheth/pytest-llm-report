@@ -131,6 +131,16 @@
                                 {% if test.llm_annotation.why_needed %}
                                 <p><strong>Why Needed:</strong> {{ test.llm_annotation.why_needed }}</p>
                                 {% endif %}
+                                {% if test.llm_annotation.key_assertions %}
+                                <div class="key-assertions">
+                                    <strong>Key Assertions:</strong>
+                                    <ul>
+                                        {% for assertion in test.llm_annotation.key_assertions %}
+                                        <li>{{ assertion }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                                {% endif %}
                                 {% if test.llm_annotation.error %}
                                 <p><strong>LLM error:</strong> {{ test.llm_annotation.error }}</p>
                                 {% endif %}
