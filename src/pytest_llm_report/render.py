@@ -195,6 +195,7 @@ def render_fallback_html(report: ReportRoot) -> str:
         <div class="summary-item" style="color:#ef4444"><div class="count">{summary.failed}</div>Failed</div>
         <div class="summary-item" style="color:#eab308"><div class="count">{summary.skipped}</div>Skipped</div>
         <div class="summary-item" style="color:#f97316"><div class="count">{summary.xfailed}</div>XFailed</div>
+        <div class="summary-item" style="color:#a855f7"><div class="count">{summary.xpassed}</div>XPassed</div>
         <div class="summary-item" style="color:#ef4444"><div class="count">{summary.error}</div>Error</div>
     </div>
     <h2>Tests</h2>
