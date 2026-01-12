@@ -38,7 +38,7 @@ jobs:
         run: |
           mkdir -p reports
           llm_args=()
-          if [ -n "${GEMINI_API_TOKEN}" ] && [ "${{ matrix.python-version }}" = "3.12" ]; then
+          if [ -n "${GEMINI_API_TOKEN}" ] && [ "${{ matrix.python-version }}" = "3.12" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
             llm_args+=(-o llm_report_provider=gemini -o llm_report_model=gemini-3-flash-preview)
           fi
           uv run pytest \
