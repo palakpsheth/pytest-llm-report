@@ -139,8 +139,8 @@
             border: 1px solid var(--border-color);
             margin-bottom: 1.5rem;
             display: flex;
-            gap: 1rem;
-            align-items: center;
+            flex-direction: column;
+            gap: 0.75rem;
         }
 
         .filter-input {
@@ -155,6 +155,60 @@
 
         .filter-input::placeholder {
             color: var(--text-secondary);
+        }
+
+        .filter-statuses {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .filter-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            border: 1px solid var(--border-color);
+            background: var(--surface-muted);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .filter-chip input {
+            margin: 0;
+        }
+
+        .filter-chip.passed {
+            background: var(--passed-bg);
+            color: var(--passed-text);
+        }
+
+        .filter-chip.failed {
+            background: var(--failed-bg);
+            color: var(--failed-text);
+        }
+
+        .filter-chip.skipped {
+            background: var(--skipped-bg);
+            color: var(--skipped-text);
+        }
+
+        .filter-chip.xfailed {
+            background: var(--xfailed-bg);
+            color: var(--xfailed-text);
+        }
+
+        .filter-chip.xpassed {
+            background: var(--xpassed-bg);
+            color: var(--xpassed-text);
+        }
+
+        .filter-chip.error {
+            background: var(--error-bg);
+            color: var(--error-text);
         }
 
         /* Test List */
@@ -328,23 +382,27 @@
         // pytest-llm-report interactive features
 
         // Global state for filters
-        let showPassed = true;
+        const activeStatuses = new Set(['passed', 'failed', 'skipped', 'xfailed', 'xpassed', 'error']);
 
         // Filter tests based on search input and outcome filters
         function filterTests() {
             const query = document.getElementById('searchInput').value.toLowerCase();
             document.querySelectorAll('.test-row').forEach(row => {
                 const nodeid = row.querySelector('.test-name').textContent.toLowerCase();
-                const isPassed = row.classList.contains('passed');
+                const statusMatch = Array.from(activeStatuses).some(status => row.classList.contains(status));
                 const matchesSearch = nodeid.includes(query);
-                const matchesFilter = showPassed || !isPassed;
-                row.classList.toggle('hidden', !matchesSearch || !matchesFilter);
+                row.classList.toggle('hidden', !matchesSearch || !statusMatch);
             });
         }
 
-        // Toggle visibility of passed tests
-        function togglePassed(checkbox) {
-            showPassed = checkbox.checked;
+        // Toggle visibility of status filters
+        function toggleStatus(checkbox) {
+            const status = checkbox.dataset.status;
+            if (checkbox.checked) {
+                activeStatuses.add(status);
+            } else {
+                activeStatuses.delete(status);
+            }
             filterTests();
         }
 
@@ -432,7 +490,32 @@
 
         <div class="filters">
             <input type="text" id="searchInput" class="filter-input" placeholder="Search tests..." onkeyup="filterTests()">
-            <label><input type="checkbox" onchange="togglePassed(this)" checked> Show Passed</label>
+            <div class="filter-statuses" aria-label="Filter by status">
+                <label class="filter-chip passed">
+                    <input type="checkbox" data-status="passed" checked onchange="toggleStatus(this)">
+                    Passed
+                </label>
+                <label class="filter-chip failed">
+                    <input type="checkbox" data-status="failed" checked onchange="toggleStatus(this)">
+                    Failed
+                </label>
+                <label class="filter-chip skipped">
+                    <input type="checkbox" data-status="skipped" checked onchange="toggleStatus(this)">
+                    Skipped
+                </label>
+                <label class="filter-chip xfailed">
+                    <input type="checkbox" data-status="xfailed" checked onchange="toggleStatus(this)">
+                    XFailed
+                </label>
+                <label class="filter-chip xpassed">
+                    <input type="checkbox" data-status="xpassed" checked onchange="toggleStatus(this)">
+                    XPassed
+                </label>
+                <label class="filter-chip error">
+                    <input type="checkbox" data-status="error" checked onchange="toggleStatus(this)">
+                    Error
+                </label>
+            </div>
         </div>
 
         <div class="test-list">
