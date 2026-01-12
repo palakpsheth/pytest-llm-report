@@ -37,7 +37,8 @@ pytest --cov=my_pkg --cov-context=test --llm-report=report.html
 1. Check provider is set: `provider = "ollama"`, `"litellm"`, or `"gemini"`
 2. Verify Ollama is running: `ollama serve`
 3. Check API key is set for cloud providers (LiteLLM or Gemini)
-4. Look for errors in pytest output
+4. Confirm the provider dependency is installed (e.g., `pytest-llm-report[litellm]`)
+5. Look for errors in pytest output
 
 ## Ollama connection refused
 

@@ -57,6 +57,43 @@ class TestBasicReportGeneration:
         assert data["summary"]["passed"] == 1
         assert data["summary"]["failed"] == 1
 
+    def test_llm_annotations_in_report(self, pytester: pytest.Pytester):
+        """LLM annotations are included when a provider is enabled."""
+        pytester.makepyfile(
+            """
+            def test_pass():
+                assert True
+            """
+        )
+        pytester.makepyfile(
+            litellm="""
+            import json
+            from types import SimpleNamespace
+
+            def completion(**_kwargs):
+                payload = {
+                    "scenario": "Checks the happy path",
+                    "why_needed": "Prevents regressions",
+                    "key_assertions": ["asserts True"],
+                }
+                return SimpleNamespace(
+                    choices=[SimpleNamespace(message=SimpleNamespace(content=json.dumps(payload)))]
+                )
+            """
+        )
+
+        report_path = pytester.path / "report.json"
+        pytester.runpytest(
+            "-o",
+            "llm_report_provider=litellm",
+            "-o",
+            "llm_report_model=gpt-4o-mini",
+            f"--llm-report-json={report_path}",
+        )
+
+        data = json.loads(report_path.read_text())
+        assert data["tests"][0]["llm_annotation"]["scenario"] == "Checks the happy path"
+
     def test_html_report_created(self, pytester: pytest.Pytester):
         """HTML report is created."""
         pytester.makepyfile(
