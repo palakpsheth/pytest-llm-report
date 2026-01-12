@@ -327,6 +327,59 @@
             overflow: hidden;
         }
 
+        .source-coverage {
+            margin-top: 2rem;
+        }
+
+        .source-coverage h2 {
+            margin: 0 0 1rem;
+            font-size: 1.5rem;
+        }
+
+        .source-coverage-table {
+            display: grid;
+            gap: 0.35rem;
+        }
+
+        .source-coverage-header,
+        .source-coverage-row {
+            display: grid;
+            grid-template-columns: minmax(200px, 2fr) repeat(4, minmax(60px, 0.5fr)) minmax(
+                    140px,
+                    1fr
+                ) minmax(140px, 1fr);
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+        }
+
+        .source-coverage-header {
+            background: var(--surface-muted);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-secondary);
+        }
+
+        .source-coverage-row {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            font-size: 0.85rem;
+        }
+
+        .source-path {
+            font-family: monospace;
+            word-break: break-word;
+        }
+
+        .source-lines {
+            font-family: monospace;
+            color: var(--text-secondary);
+            word-break: break-word;
+        }
+
         .llm-annotation {
             background: var(--card-bg);
             padding: 1rem;
@@ -662,6 +715,48 @@ E   Aborting notification workflow</div>
                 </details>
             </div>
         </div>
+
+        <section class="source-coverage">
+            <h2>Source Coverage</h2>
+            <div class="source-coverage-table">
+                <div class="source-coverage-header">
+                    <span>File</span>
+                    <span>Stmts</span>
+                    <span>Miss</span>
+                    <span>Cover</span>
+                    <span>%</span>
+                    <span>Covered Lines</span>
+                    <span>Missed Lines</span>
+                </div>
+                <div class="source-coverage-row">
+                    <span class="source-path">src/app/users/service.py</span>
+                    <span>58</span>
+                    <span>6</span>
+                    <span>52</span>
+                    <span>89.66%</span>
+                    <span class="source-lines">12-22, 30-41, 50-63</span>
+                    <span class="source-lines">23-25, 42-43</span>
+                </div>
+                <div class="source-coverage-row">
+                    <span class="source-path">src/app/users/repository.py</span>
+                    <span>40</span>
+                    <span>10</span>
+                    <span>30</span>
+                    <span>75.0%</span>
+                    <span class="source-lines">5-18, 22-32</span>
+                    <span class="source-lines">33-42</span>
+                </div>
+                <div class="source-coverage-row">
+                    <span class="source-path">src/app/reports/pdf.py</span>
+                    <span>28</span>
+                    <span>8</span>
+                    <span>20</span>
+                    <span>71.43%</span>
+                    <span class="source-lines">44-57, 60-65</span>
+                    <span class="source-lines">66-73</span>
+                </div>
+            </div>
+        </section>
     </div>
 </body>
 </html>

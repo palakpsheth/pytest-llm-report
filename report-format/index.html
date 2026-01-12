@@ -785,6 +785,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#source-coverage-entry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Source Coverage Entry
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#llm-annotation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1021,6 +1032,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#source-coverage-entry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Source Coverage Entry
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#llm-annotation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1108,6 +1130,12 @@
 <td>array</td>
 <td>no</td>
 <td>Generated artifact files</td>
+</tr>
+<tr>
+<td><code>source_coverage</code></td>
+<td>array</td>
+<td>no</td>
+<td>Per-file coverage summary</td>
 </tr>
 <tr>
 <td><code>custom_metadata</code></td>
@@ -1429,6 +1457,53 @@
 <td><code>line_count</code></td>
 <td>integer</td>
 <td>Total lines covered</td>
+</tr>
+</tbody>
+</table>
+<h2 id="source-coverage-entry">Source Coverage Entry</h2>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>file_path</code></td>
+<td>string</td>
+<td>Repo-relative file path</td>
+</tr>
+<tr>
+<td><code>statements</code></td>
+<td>integer</td>
+<td>Total statements</td>
+</tr>
+<tr>
+<td><code>missed</code></td>
+<td>integer</td>
+<td>Missed statements</td>
+</tr>
+<tr>
+<td><code>covered</code></td>
+<td>integer</td>
+<td>Covered statements</td>
+</tr>
+<tr>
+<td><code>coverage_percent</code></td>
+<td>number</td>
+<td>Coverage percentage for the file</td>
+</tr>
+<tr>
+<td><code>covered_ranges</code></td>
+<td>string</td>
+<td>Covered line ranges</td>
+</tr>
+<tr>
+<td><code>missed_ranges</code></td>
+<td>string</td>
+<td>Missed line ranges</td>
 </tr>
 </tbody>
 </table>

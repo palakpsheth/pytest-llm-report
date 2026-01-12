@@ -622,6 +622,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#source-coverage-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Source Coverage Summary
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -960,6 +971,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#source-coverage-summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Source Coverage Summary
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1003,6 +1025,7 @@
 <li><strong>Coverage Data</strong>: Per-test coverage information showing which files and lines each test exercises</li>
 <li><strong>Execution Time</strong>: Duration for each test</li>
 <li><strong>Error Messages</strong>: Full error details for failed tests</li>
+<li><strong>Source Coverage</strong>: Per-file covered/missed/percentage summary (similar to pytest-cov)</li>
 </ul>
 <p>The report uses the same pytest-llm-report plugin that this documentation describes.</p>
 <h2 id="report-features">Report Features</h2>
@@ -1026,6 +1049,13 @@
 <li>Overall test suite duration</li>
 <li>Total coverage percentage (when available)</li>
 <li>Run metadata (timestamp, Python version, etc.)</li>
+</ul>
+<h3 id="source-coverage-summary">Source Coverage Summary</h3>
+<p>At the bottom of the report you'll find a table of source files with:</p>
+<ul>
+<li>Statements, missed, and covered counts</li>
+<li>Coverage percentage per file</li>
+<li>Covered and missed line ranges for quick inspection</li>
 </ul>
 <hr />
 <p><a href="../">← Back to Documentation</a></p>
