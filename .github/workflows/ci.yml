@@ -46,6 +46,7 @@ jobs:
             --cov-context=test \
             --cov-report=xml \
             --cov-fail-under=90 \
+            -o llm_report_context_mode=complete \
             --llm-report-json=reports/pytest_llm_report.json \
             --llm-aggregate-run-id="${{ github.run_id }}-py${{ matrix.python-version }}" \
             "${llm_args[@]}"
