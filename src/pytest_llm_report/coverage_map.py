@@ -260,7 +260,14 @@ class CoverageMapper:
                 _filename, statements, _excluded, missing, _missing_branches = (
                     cov.analysis2(file_path)
                 )
-            except Exception:
+            except Exception as e:
+                self.warnings.append(
+                    ReportWarning(
+                        code="COVERAGE_ANALYSIS_FAILED",
+                        message=f"Failed to analyze coverage for {file_path}",
+                        detail=str(e),
+                    )
+                )
                 continue
 
             if not statements:
