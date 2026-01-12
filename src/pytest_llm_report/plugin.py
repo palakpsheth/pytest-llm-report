@@ -101,7 +101,7 @@ def pytest_addoption(parser: pytest.Parser) -> None:
     parser.addini(
         "llm_report_provider",
         default="none",
-        help="LLM provider: none, ollama, or litellm",
+        help="LLM provider: none, ollama, litellm, or gemini",
     )
     parser.addini(
         "llm_report_model",

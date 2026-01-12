@@ -8,6 +8,7 @@ from types import SimpleNamespace
 
 import pytest
 
+from pytest_llm_report.llm.gemini import GeminiProvider
 from pytest_llm_report.llm.litellm_provider import LiteLLMProvider
 from pytest_llm_report.llm.ollama import OllamaProvider
 from pytest_llm_report.models import LlmAnnotation
@@ -20,6 +21,19 @@ class FakeLiteLLMResponse:
 
     def __init__(self, content: str) -> None:
         self.choices = [SimpleNamespace(message=SimpleNamespace(content=content))]
+
+
+class FakeGeminiResponse:
+    """Fake Gemini response payload."""
+
+    def __init__(self, data: dict) -> None:
+        self._data = data
+
+    def raise_for_status(self) -> None:
+        return None
+
+    def json(self) -> dict:
+        return self._data
 
 
 @pytest.fixture
@@ -132,6 +146,81 @@ class TestLiteLLMProvider:
         provider = LiteLLMProvider(config)
 
         assert provider.is_available() is True
+
+
+class TestGeminiProvider:
+    """Tests for the Gemini provider."""
+
+    def test_annotate_success_with_mock_response(self, monkeypatch: pytest.MonkeyPatch):
+        """Gemini provider parses a valid response payload."""
+        captured = {}
+
+        def fake_post(url, **kwargs):
+            captured["url"] = url
+            captured["json"] = kwargs.get("json")
+            response_data = {
+                "scenario": "Checks login",
+                "why_needed": "Stops regressions",
+                "key_assertions": ["status ok", "redirect"],
+            }
+            payload = {
+                "candidates": [
+                    {
+                        "content": {
+                            "parts": [{"text": json.dumps(response_data)}],
+                        }
+                    }
+                ]
+            }
+            return FakeGeminiResponse(payload)
+
+        fake_httpx = SimpleNamespace(post=fake_post)
+        monkeypatch.setitem(__import__("sys").modules, "httpx", fake_httpx)
+        monkeypatch.setenv("GEMINI_API_TOKEN", "test-token")
+
+        config = Config(provider="gemini", model="gemini-1.5-pro")
+        provider = GeminiProvider(config)
+        test = CaseResult(nodeid="tests/test_auth.py::test_login", outcome="passed")
+        annotation = provider.annotate(test, "def test_login(): assert True")
+
+        assert isinstance(annotation, LlmAnnotation)
+        assert annotation.scenario == "Checks login"
+        assert annotation.why_needed == "Stops regressions"
+        assert annotation.key_assertions == ["status ok", "redirect"]
+        assert annotation.confidence == 0.8
+        assert "gemini-1.5-pro" in captured["url"]
+        assert "key=test-token" in captured["url"]
+        assert captured["json"]["system_instruction"]["parts"][0]["text"]
+        assert (
+            "tests/test_auth.py::test_login"
+            in captured["json"]["contents"][0]["parts"][0]["text"]
+        )
+        assert "def test_login()" in captured["json"]["contents"][0]["parts"][0]["text"]
+
+    def test_annotate_missing_token(self, monkeypatch: pytest.MonkeyPatch):
+        """Gemini provider requires an API token."""
+        monkeypatch.setitem(__import__("sys").modules, "httpx", SimpleNamespace())
+        monkeypatch.delenv("GEMINI_API_TOKEN", raising=False)
+
+        config = Config(provider="gemini")
+        provider = GeminiProvider(config)
+        test = CaseResult(nodeid="tests/test_sample.py::test_case", outcome="passed")
+        annotation = provider.annotate(test, "def test_case(): assert True")
+
+        assert annotation.error == "GEMINI_API_TOKEN is not set"
+
+    def test_annotate_missing_dependency(self, mock_import_error):
+        """Gemini provider reports missing httpx dependency."""
+        mock_import_error("httpx")
+
+        config = Config(provider="gemini")
+        provider = GeminiProvider(config)
+        test = CaseResult(nodeid="tests/test_sample.py::test_case", outcome="passed")
+        annotation = provider.annotate(test, "def test_case(): assert True")
+
+        assert (
+            annotation.error == "httpx not installed. Install with: pip install httpx"
+        )
 
 
 class TestOllamaProvider:

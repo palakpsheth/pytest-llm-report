@@ -100,4 +100,9 @@ def get_provider(config: Config) -> LlmProvider:
 
         return LiteLLMProvider(config)
 
+    if provider_name == "gemini":
+        from pytest_llm_report.llm.gemini import GeminiProvider
+
+        return GeminiProvider(config)
+
     raise ValueError(f"Unknown LLM provider: {provider_name}")

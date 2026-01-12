@@ -30,7 +30,7 @@ class Config:
         report_dependency_snapshot: Optional path for dependency snapshot.
 
         # LLM provider settings
-        provider: LLM provider name ("none", "ollama", "litellm").
+        provider: LLM provider name ("none", "ollama", "litellm", "gemini").
         model: Model name for LLM provider.
         ollama_host: Ollama server URL.
 
@@ -166,7 +166,7 @@ class Config:
         errors = []
 
         # Validate provider
-        valid_providers = ("none", "ollama", "litellm")
+        valid_providers = ("none", "ollama", "litellm", "gemini")
         if self.provider not in valid_providers:
             errors.append(
                 f"Invalid provider '{self.provider}'. Must be one of: {valid_providers}"

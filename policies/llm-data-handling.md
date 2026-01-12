@@ -61,3 +61,9 @@ Data is sent to external providers. Consider:
 - Provider data retention policies
 - API usage logging
 - Regional data residency
+
+### Gemini (Cloud)
+Data is sent to the Gemini API. Consider:
+- Provider data retention policies
+- API usage logging
+- Regional data residency

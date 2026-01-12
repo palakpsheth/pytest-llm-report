@@ -62,6 +62,29 @@ Cloud LLMs via [LiteLLM](https://github.com/BerriAI/litellm).
 - Anthropic: `claude-3-haiku-20240307`, `claude-3-5-sonnet-20241022`
 - Many more via LiteLLM
 
+## Provider: gemini
+
+Cloud LLMs via the Gemini API.
+
+### Setup
+
+1. Set API key:
+   ```bash
+   export GEMINI_API_TOKEN="..."
+   ```
+
+2. Configure:
+   ```toml
+   [tool.pytest_llm_report]
+   provider = "gemini"
+   model = "gemini-1.5-flash"
+   ```
+
+### Supported models
+
+- `gemini-1.5-flash`
+- `gemini-1.5-pro`
+
 ## Caching
 
 LLM responses are cached to reduce API calls:

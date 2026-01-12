@@ -33,15 +33,22 @@ jobs:
       - name: Run tests
         id: pytest
         continue-on-error: true
+        env:
+          GEMINI_API_TOKEN: ${{ secrets.GEMINI_API_TOKEN }}
         run: |
           mkdir -p reports
+          llm_args=()
+          if [ -n "${GEMINI_API_TOKEN}" ] && [ "${{ matrix.python-version }}" = "3.12" ]; then
+            llm_args+=(-o llm_report_provider=gemini -o llm_report_model=gemini-1.5-flash)
+          fi
           uv run pytest \
             --cov=pytest_llm_report \
             --cov-context=test \
             --cov-report=xml \
             --cov-fail-under=90 \
             --llm-report-json=reports/pytest_llm_report.json \
-            --llm-aggregate-run-id="${{ github.run_id }}-py${{ matrix.python-version }}"
+            --llm-aggregate-run-id="${{ github.run_id }}-py${{ matrix.python-version }}" \
+            "${llm_args[@]}"
           exit_code=$?
           echo "exit_code=${exit_code}" >> "${GITHUB_OUTPUT}"
           exit 0

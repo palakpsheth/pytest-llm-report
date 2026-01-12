@@ -34,9 +34,9 @@ pytest --cov=my_pkg --cov-context=test --llm-report=report.html
 **Problem**: Tests don't have LLM annotations.
 
 **Solutions**:
-1. Check provider is set: `provider = "ollama"` or `"litellm"`
+1. Check provider is set: `provider = "ollama"`, `"litellm"`, or `"gemini"`
 2. Verify Ollama is running: `ollama serve`
-3. Check API key is set for cloud providers
+3. Check API key is set for cloud providers (LiteLLM or Gemini)
 4. Look for errors in pytest output
 
 ## Ollama connection refused

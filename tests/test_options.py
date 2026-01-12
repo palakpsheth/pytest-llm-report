@@ -131,6 +131,11 @@ class TestConfigIsLlmEnabled:
         config = Config(provider="litellm")
         assert config.is_llm_enabled() is True
 
+    def test_gemini_provider_is_enabled(self):
+        """Provider 'gemini' should be enabled."""
+        config = Config(provider="gemini")
+        assert config.is_llm_enabled() is True
+
 
 class TestGetDefaultConfig:
     """Tests for get_default_config function."""

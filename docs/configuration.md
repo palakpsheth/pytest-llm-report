@@ -25,7 +25,7 @@ Complete configuration reference for pytest-llm-report.
 llm_report_html = "reports/test-report.html"
 llm_report_json = "reports/test-report.json"
 
-# LLM provider (none, ollama, litellm)
+# LLM provider (none, ollama, litellm, gemini)
 llm_report_provider = "none"
 llm_report_model = "llama3.2"
 llm_report_context_mode = "minimal"
@@ -55,6 +55,16 @@ llm_report_model = "gpt-4o-mini"
 ```
 
 Environment variables depend on the model (e.g., `OPENAI_API_KEY`).
+
+### Provider: gemini
+
+```toml
+llm_report_provider = "gemini"
+llm_report_model = "gemini-1.5-flash"
+```
+
+Environment variables:
+- `GEMINI_API_TOKEN`: Gemini API key
 
 ## pytest Markers
 
@@ -92,3 +102,4 @@ def test_requirement():
 | `OLLAMA_HOST` | Ollama server URL |
 | `OPENAI_API_KEY` | OpenAI API key (for litellm) |
 | `ANTHROPIC_API_KEY` | Anthropic API key (for litellm) |
+| `GEMINI_API_TOKEN` | Gemini API key |
