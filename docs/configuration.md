@@ -36,9 +36,9 @@ llm_report_requests_per_minute = 5
 # Set this to limit costs/time when running with many tests
 llm_max_tests = 50
 
-# Max number of concurrent LLM requests (default: 4)
+# Max number of concurrent LLM requests (default: 1)
 # Lower this if experiencing timeouts or system instability with local LLM
-llm_max_concurrency = 4
+llm_max_concurrency = 1
 
 # Tip: Local providers (like "ollama") skip rate limiting automatically
 # so you can increase concurrency to speed up annotations.

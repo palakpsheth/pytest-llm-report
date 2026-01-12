@@ -87,13 +87,12 @@ class OllamaProvider(LlmProvider):
                 if not annotation.error:
                     return annotation
 
-                # If error is about JSON parsing, we can retry
+                # Store the error and prepare to retry.
+                # Avoid retrying on permanent errors
+                if "context too long" in annotation.error.lower():
+                    return annotation
+
                 last_error = annotation.error
-                if "Failed to parse LLM response as JSON" not in annotation.error:
-                    return annotation  # Don't retry other errors? Or maybe we should?
-                    # Actually, for transient LLM weirdness, retrying is good.
-                    # But if it's "context too long" or something, maybe not.
-                    # For now, let's retry mainly on JSON errors or network flakiness.
 
                 # If we are here, we have a JSON error, so we retry
 

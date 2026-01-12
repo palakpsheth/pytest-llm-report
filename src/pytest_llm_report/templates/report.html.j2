@@ -111,7 +111,7 @@
         <div class="test-list">
             {% for test in report.tests %}
             <div class="test-row {{ test.outcome | outcome_class }}" data-status="{{ test.outcome }}">
-                <details open>
+                <details>
                     <summary class="test-header">
                         <span class="status-badge status-{{ test.outcome }}">{{ test.outcome | upper }}</span>
                         <span class="test-name">{{ test.nodeid }}</span>
