@@ -50,6 +50,21 @@ def test_annotate_tests_uses_cache(monkeypatch, tmp_path):
     assert test.llm_annotation.scenario == "cached"
 
 
+def test_annotate_tests_emits_summary(monkeypatch, tmp_path, capsys):
+    """Annotation summary is printed when annotations run."""
+    config = Config(provider="litellm", cache_dir=str(tmp_path))
+    test = TestCaseResult(nodeid="tests/test_sample.py::test_case", outcome="passed")
+    provider = FakeProvider(LlmAnnotation(scenario="ok"))
+
+    monkeypatch.setattr(
+        "pytest_llm_report.llm.annotator.get_provider", lambda _cfg: provider
+    )
+
+    annotate_tests([test], config)
+    captured = capsys.readouterr()
+    assert "Annotated 1 test(s) via litellm" in captured.out
+
+
 def test_annotate_tests_respects_opt_out_and_limit(monkeypatch, tmp_path):
     """LLM annotations should skip opt-out tests and respect max tests."""
     config = Config(provider="litellm", cache_dir=str(tmp_path), llm_max_tests=1)

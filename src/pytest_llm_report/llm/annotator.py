@@ -30,6 +30,7 @@ def annotate_tests(tests: Iterable[TestCaseResult], config: Config) -> None:
     assembler = ContextAssembler(config)
 
     annotated = 0
+    failures = 0
     for test in tests:
         if annotated >= config.llm_max_tests:
             break
@@ -48,3 +49,13 @@ def annotate_tests(tests: Iterable[TestCaseResult], config: Config) -> None:
         test.llm_annotation = annotation
         cache.set(test.nodeid, source_hash, annotation)
         annotated += 1
+        if annotation.error:
+            failures += 1
+
+    if annotated:
+        provider_name = config.provider
+        print(
+            "pytest-llm-report: Annotated "
+            f"{annotated} test(s) via {provider_name} "
+            f"({failures} error(s))."
+        )
