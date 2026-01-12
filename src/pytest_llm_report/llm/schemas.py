@@ -14,7 +14,7 @@ from typing import Any
 # Regex to match markdown code fences with optional language identifier
 # Matches ```json, ```JSON, or just ``` followed by content and closing ```
 _CODE_FENCE_PATTERN = re.compile(
-    r"```(?:json)?\s*\n(.*?)\n```",
+    r"```(?:json)?\s*(.*?)\s*```",
     re.DOTALL | re.IGNORECASE,
 )
 
