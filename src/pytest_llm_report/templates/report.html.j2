@@ -44,24 +44,26 @@
                 <div class="count">{{ report.summary.passed }}</div>
                 <div class="label">Passed</div>
             </div>
-            {% if report.summary.failed %}
             <div class="summary-card failed">
                 <div class="count">{{ report.summary.failed }}</div>
                 <div class="label">Failed</div>
             </div>
-            {% endif %}
-            {% if report.summary.skipped %}
             <div class="summary-card skipped">
                 <div class="count">{{ report.summary.skipped }}</div>
                 <div class="label">Skipped</div>
             </div>
-            {% endif %}
-            {% if report.summary.error %}
+            <div class="summary-card xfailed">
+                <div class="count">{{ report.summary.xfailed }}</div>
+                <div class="label">XFailed</div>
+            </div>
+            <div class="summary-card xpassed">
+                <div class="count">{{ report.summary.xpassed }}</div>
+                <div class="label">XPassed</div>
+            </div>
             <div class="summary-card failed">
                 <div class="count">{{ report.summary.error }}</div>
                 <div class="label">Errors</div>
             </div>
-            {% endif %}
         </div>
 
         <!-- Filters -->
