@@ -781,6 +781,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#model-rotation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Model rotation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#model-recovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Model recovery
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1127,6 +1149,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#model-rotation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Model rotation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#model-recovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Model recovery
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1302,14 +1346,31 @@ those limits automatically:</p>
 <li><strong>RPM/TPM</strong>: waits until the next request is within the limit.</li>
 <li><strong>RPD</strong>: skips annotation once the daily cap is reached (no waiting).</li>
 </ul>
+<h3 id="model-rotation">Model rotation</h3>
+<p>If you specify <code>model = "all"</code> or a comma-separated list of models, the plugin
+will automatically rotate between available models to maximize request throughput:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">[tool.pytest_llm_report]</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;gemini&quot;</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;gemini-2.5-flash,gemini-2.0-flash,gemini-1.5-flash&quot;</span>
+</code></pre></div>
+<p>When a model reaches its rate limit, the plugin switches to the next available
+model. This is especially useful for exceeding free-tier daily limits by
+distributing requests across multiple models.</p>
+<h3 id="model-recovery">Model recovery</h3>
+<p>For long-running test sessions (e.g., CI jobs spanning multiple days), models
+that hit their daily request limits will <strong>automatically recover</strong> after 24
+hours. The plugin tracks when each model was exhausted and clears that state
+once the daily limit window has passed.</p>
+<p>Additionally, the available model list is <strong>refreshed every 6 hours</strong> to pick
+up any new models that may have become available via the Gemini API.</p>
 <h2 id="caching">Caching</h2>
 <p>LLM responses are cached to reduce API calls:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">[tool.pytest_llm_report]</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">cache_dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;.pytest_llm_cache&quot;</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">llm_cache_ttl_seconds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">86400</span><span class="w">  </span><span class="c1"># 24 hours</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">[tool.pytest_llm_report]</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">cache_dir</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;.pytest_llm_cache&quot;</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">llm_cache_ttl_seconds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">86400</span><span class="w">  </span><span class="c1"># 24 hours</span>
 </code></pre></div>
 <p>Clear cache:
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>rm<span class="w"> </span>-rf<span class="w"> </span>.pytest_llm_cache
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>rm<span class="w"> </span>-rf<span class="w"> </span>.pytest_llm_cache
 </code></pre></div></p>
 
 
