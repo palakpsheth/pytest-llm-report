@@ -82,12 +82,14 @@ class TestConfigAnnotations:
         config = Config(
             llm_max_tests=50,
             llm_max_concurrency=8,
+            llm_requests_per_minute=12,
             llm_timeout_seconds=60,
             llm_cache_ttl_seconds=3600,
             cache_dir=".cache",
         )
         assert config.llm_max_tests == 50
         assert config.llm_max_concurrency == 8
+        assert config.llm_requests_per_minute == 12
 
     def test_coverage_settings(self):
         """Config with coverage settings."""

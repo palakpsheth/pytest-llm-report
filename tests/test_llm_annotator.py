@@ -108,3 +108,34 @@ def test_annotate_tests_respects_opt_out_and_limit(monkeypatch, tmp_path):
     assert tests[0].llm_annotation is not None
     assert tests[1].llm_annotation is None
     assert tests[2].llm_annotation is None
+
+
+def test_annotate_tests_respects_rate_limit(monkeypatch, tmp_path):
+    """LLM annotations should respect the requests-per-minute rate limit."""
+    config = Config(
+        provider="litellm",
+        cache_dir=str(tmp_path),
+        llm_requests_per_minute=30,
+    )
+    tests = [
+        TestCaseResult(nodeid="tests/test_a.py::test_a", outcome="passed"),
+        TestCaseResult(nodeid="tests/test_b.py::test_b", outcome="passed"),
+    ]
+    provider = FakeProvider(LlmAnnotation(scenario="ok"))
+    sleep_calls: list[float] = []
+    times = iter([0.0, 0.0, 2.0])
+
+    monkeypatch.setattr(
+        "pytest_llm_report.llm.annotator.get_provider", lambda _cfg: provider
+    )
+    monkeypatch.setattr(
+        "pytest_llm_report.llm.annotator.time.monotonic", lambda: next(times)
+    )
+    monkeypatch.setattr(
+        "pytest_llm_report.llm.annotator.time.sleep", sleep_calls.append
+    )
+
+    annotate_tests(tests, config)
+
+    assert provider.calls == ["tests/test_a.py::test_a", "tests/test_b.py::test_b"]
+    assert sleep_calls == [2.0]

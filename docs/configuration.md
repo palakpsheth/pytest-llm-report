@@ -10,6 +10,7 @@ Complete configuration reference for pytest-llm-report.
 | `--llm-report-json PATH` | JSON report output path | None |
 | `--llm-pdf PATH` | PDF report output (requires Playwright) | None |
 | `--llm-evidence-bundle PATH` | Evidence bundle zip output | None |
+| `--llm-requests-per-minute N` | LLM request rate limit | 5 |
 | `--llm-aggregate-dir DIR` | Directory with reports to [aggregate](aggregation.md) | None |
 | `--llm-aggregate-policy POLICY` | Aggregation policy: latest, merge, all | latest |
 | `--llm-aggregate-run-id ID` | Unique run ID | Auto-generated |
@@ -29,6 +30,7 @@ llm_report_json = "reports/test-report.json"
 llm_report_provider = "none"
 llm_report_model = "llama3.2"
 llm_report_context_mode = "minimal"
+llm_report_requests_per_minute = 5
 ```
 
 ## LLM Provider Settings

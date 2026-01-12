@@ -44,6 +44,11 @@ class TestConfigDefaults:
         config = Config()
         assert config.omit_tests_from_coverage is True
 
+    def test_llm_requests_per_minute_defaults_to_five(self):
+        """LLM requests per minute should default to 5."""
+        config = Config()
+        assert config.llm_requests_per_minute == 5
+
 
 class TestConfigValidation:
     """Tests for Config validation."""
@@ -102,6 +107,13 @@ class TestConfigValidation:
         errors = config.validate()
         assert len(errors) == 1
         assert "llm_timeout_seconds" in errors[0]
+
+    def test_requests_per_minute_too_small_produces_error(self):
+        """Requests per minute below 1 should produce error."""
+        config = Config(llm_requests_per_minute=0)
+        errors = config.validate()
+        assert len(errors) == 1
+        assert "llm_requests_per_minute" in errors[0]
 
     def test_multiple_errors_reported(self):
         """Multiple validation errors should all be reported."""
