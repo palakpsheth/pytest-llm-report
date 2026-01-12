@@ -6,6 +6,7 @@ from pytest_llm_report.models import (
     LlmAnnotation,
     ReportRoot,
     RunMeta,
+    SourceCoverageEntry,
     Summary,
     TestCaseResult,
 )
@@ -139,3 +140,28 @@ class TestRenderFallbackHtml:
 
         assert "XFailed" in html
         assert "XPassed" in html
+
+    def test_renders_source_coverage(self):
+        """Should include source coverage summary."""
+        report = ReportRoot(
+            run_meta=RunMeta(end_time="2024-01-01"),
+            summary=Summary(total=1, passed=1),
+            tests=[TestCaseResult(nodeid="test::foo", outcome="passed")],
+            source_coverage=[
+                SourceCoverageEntry(
+                    file_path="src/foo.py",
+                    statements=10,
+                    missed=2,
+                    covered=8,
+                    coverage_percent=80.0,
+                    covered_ranges="1-4, 6-8",
+                    missed_ranges="5, 9-10",
+                )
+            ],
+        )
+
+        html = render_fallback_html(report)
+
+        assert "Source Coverage" in html
+        assert "src/foo.py" in html
+        assert "80.0%" in html

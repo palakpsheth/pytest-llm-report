@@ -304,6 +304,7 @@ def pytest_terminal_summary(
     # Collect coverage data if available
     coverage = None
     coverage_percent = None
+    source_coverage = []
     try:
         mapper = CoverageMapper(cfg)
         # Load from disk (pytest-cov should have saved it by now)
@@ -326,6 +327,16 @@ def pytest_terminal_summary(
                 out = io.StringIO()
                 coverage_pct = cov.report(file=out)
                 coverage_percent = round(coverage_pct, 2)
+                source_coverage = mapper.map_source_coverage(cov)
+                if source_coverage:
+                    total_statements = sum(
+                        entry.statements for entry in source_coverage
+                    )
+                    total_covered = sum(entry.covered for entry in source_coverage)
+                    if total_statements:
+                        coverage_percent = round(
+                            (total_covered / total_statements) * 100, 2
+                        )
         except (ImportError, OSError, ValueError) as e:
             warnings.warn(
                 f"Failed to compute coverage percentage from .coverage file: {e}",
@@ -339,6 +350,7 @@ def pytest_terminal_summary(
         tests=tests,
         coverage=coverage,
         coverage_percent=coverage_percent,
+        source_coverage=source_coverage,
         collection_errors=collection_errors,
         exit_code=exitstatus,
         start_time=start_time,

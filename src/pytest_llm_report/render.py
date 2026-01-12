@@ -156,6 +156,43 @@ def render_fallback_html(report: ReportRoot) -> str:
         )
 
     summary = report.summary
+    source_coverage_html = ""
+    if report.source_coverage:
+        rows = []
+        for entry in report.source_coverage:
+            rows.append(
+                f"""
+                <tr>
+                    <td>{entry.file_path}</td>
+                    <td>{entry.statements}</td>
+                    <td>{entry.missed}</td>
+                    <td>{entry.covered}</td>
+                    <td>{entry.coverage_percent}%</td>
+                    <td>{entry.covered_ranges or "-"}</td>
+                    <td>{entry.missed_ranges or "-"}</td>
+                </tr>
+                """
+            )
+
+        source_coverage_html = f"""
+    <h2>Source Coverage</h2>
+    <table class="source-coverage">
+        <thead>
+            <tr>
+                <th>File</th>
+                <th>Stmts</th>
+                <th>Miss</th>
+                <th>Cover</th>
+                <th>%</th>
+                <th>Covered Lines</th>
+                <th>Missed Lines</th>
+            </tr>
+        </thead>
+        <tbody>
+            {"".join(rows)}
+        </tbody>
+    </table>
+"""
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -179,6 +216,9 @@ def render_fallback_html(report: ReportRoot) -> str:
         .duration {{ color: #666; margin-left: 10px; }}
         .error-message {{ color: #b91c1c; font-family: monospace; font-size: 0.9em; margin-top: 5px; }}
         .coverage {{ color: #059669; font-size: 0.85em; margin-top: 5px; }}
+        .source-coverage {{ width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 0.85em; }}
+        .source-coverage th, .source-coverage td {{ border: 1px solid #e5e7eb; padding: 8px; text-align: left; }}
+        .source-coverage th {{ background: #f5f5f5; text-transform: uppercase; font-size: 0.75em; letter-spacing: 0.05em; }}
         .llm-annotation {{ margin-top: 10px; padding: 10px; background: #f0f7ff; border-radius: 4px; font-size: 0.9em; }}
         .meta {{ color: #666; font-size: 0.9em; margin-bottom: 20px; }}
     </style>
@@ -200,6 +240,7 @@ def render_fallback_html(report: ReportRoot) -> str:
     </div>
     <h2>Tests</h2>
     {"".join(tests_html)}
+    {source_coverage_html}
 </body>
 </html>
 """

@@ -46,6 +46,12 @@
                 "$ref": "#/$defs/ArtifactEntry"
             }
         },
+        "source_coverage": {
+            "type": "array",
+            "items": {
+                "$ref": "#/$defs/SourceCoverageEntry"
+            }
+        },
         "custom_metadata": {
             "type": "object",
             "description": "User-provided custom metadata"
@@ -328,6 +334,41 @@
                 },
                 "line_count": {
                     "type": "integer"
+                }
+            }
+        },
+        "SourceCoverageEntry": {
+            "type": "object",
+            "required": [
+                "file_path",
+                "statements",
+                "missed",
+                "covered",
+                "coverage_percent",
+                "covered_ranges",
+                "missed_ranges"
+            ],
+            "properties": {
+                "file_path": {
+                    "type": "string"
+                },
+                "statements": {
+                    "type": "integer"
+                },
+                "missed": {
+                    "type": "integer"
+                },
+                "covered": {
+                    "type": "integer"
+                },
+                "coverage_percent": {
+                    "type": "number"
+                },
+                "covered_ranges": {
+                    "type": "string"
+                },
+                "missed_ranges": {
+                    "type": "string"
                 }
             }
         },

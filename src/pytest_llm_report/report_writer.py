@@ -33,7 +33,11 @@ from pytest_llm_report.models import (
 )
 
 if TYPE_CHECKING:
-    from pytest_llm_report.models import CollectionError, TestCaseResult
+    from pytest_llm_report.models import (
+        CollectionError,
+        SourceCoverageEntry,
+        TestCaseResult,
+    )
     from pytest_llm_report.options import Config
 
 
@@ -100,6 +104,7 @@ class ReportWriter:
         tests: list[TestCaseResult],
         coverage: dict[str, list] | None = None,
         coverage_percent: float | None = None,
+        source_coverage: list[SourceCoverageEntry] | None = None,
         collection_errors: list[CollectionError] | None = None,
         exit_code: int = 0,
         start_time: datetime | None = None,
@@ -149,6 +154,7 @@ class ReportWriter:
             collection_errors=collection_errors or [],
             warnings=self.warnings,
             artifacts=self.artifacts,
+            source_coverage=source_coverage or [],
         )
 
         # Write JSON

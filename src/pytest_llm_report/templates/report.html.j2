@@ -149,6 +149,34 @@
             </div>
             {% endfor %}
         </div>
+
+        {% if report.source_coverage %}
+        <section class="source-coverage">
+            <h2>Source Coverage</h2>
+            <div class="source-coverage-table">
+                <div class="source-coverage-header">
+                    <span>File</span>
+                    <span>Stmts</span>
+                    <span>Miss</span>
+                    <span>Cover</span>
+                    <span>%</span>
+                    <span>Covered Lines</span>
+                    <span>Missed Lines</span>
+                </div>
+                {% for entry in report.source_coverage %}
+                <div class="source-coverage-row">
+                    <span class="source-path">{{ entry.file_path }}</span>
+                    <span>{{ entry.statements }}</span>
+                    <span>{{ entry.missed }}</span>
+                    <span>{{ entry.covered }}</span>
+                    <span>{{ entry.coverage_percent }}%</span>
+                    <span class="source-lines">{{ entry.covered_ranges or "-" }}</span>
+                    <span class="source-lines">{{ entry.missed_ranges or "-" }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
     </div>
 </body>
 </html>

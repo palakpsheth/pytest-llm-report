@@ -319,6 +319,59 @@ h1 {
     overflow: hidden;
 }
 
+.source-coverage {
+    margin-top: 2rem;
+}
+
+.source-coverage h2 {
+    margin: 0 0 1rem;
+    font-size: 1.5rem;
+}
+
+.source-coverage-table {
+    display: grid;
+    gap: 0.35rem;
+}
+
+.source-coverage-header,
+.source-coverage-row {
+    display: grid;
+    grid-template-columns: minmax(200px, 2fr) repeat(4, minmax(60px, 0.5fr)) minmax(
+            140px,
+            1fr
+        ) minmax(140px, 1fr);
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+}
+
+.source-coverage-header {
+    background: var(--surface-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-secondary);
+}
+
+.source-coverage-row {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    font-size: 0.85rem;
+}
+
+.source-path {
+    font-family: monospace;
+    word-break: break-word;
+}
+
+.source-lines {
+    font-family: monospace;
+    color: var(--text-secondary);
+    word-break: break-word;
+}
+
 .llm-annotation {
     background: var(--card-bg);
     padding: 1rem;

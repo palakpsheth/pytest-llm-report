@@ -45,6 +45,41 @@ class CoverageEntry:
 
 
 @dataclass
+class SourceCoverageEntry:
+    """Coverage summary for a source file.
+
+    Attributes:
+        file_path: Repo-relative path to the covered file.
+        statements: Total number of statements.
+        missed: Number of missed statements.
+        covered: Number of covered statements.
+        coverage_percent: Coverage percentage for the file.
+        covered_ranges: Compact ranges of covered lines.
+        missed_ranges: Compact ranges of missed lines.
+    """
+
+    file_path: str
+    statements: int
+    missed: int
+    covered: int
+    coverage_percent: float
+    covered_ranges: str
+    missed_ranges: str
+
+    def to_dict(self) -> dict:
+        """Convert to dictionary for JSON serialization."""
+        return {
+            "file_path": self.file_path,
+            "statements": self.statements,
+            "missed": self.missed,
+            "covered": self.covered,
+            "coverage_percent": self.coverage_percent,
+            "covered_ranges": self.covered_ranges,
+            "missed_ranges": self.missed_ranges,
+        }
+
+
+@dataclass
 class LlmAnnotation:
     """LLM-generated annotation for a test.
 
@@ -399,6 +434,7 @@ class ReportRoot:
         collection_errors: List of collection errors.
         warnings: List of warnings.
         artifacts: List of generated artifact files.
+        source_coverage: Per-file coverage summary (if available).
         custom_metadata: Optional user-provided metadata.
         sha256: SHA256 hash of this report (computed after serialization).
         hmac_signature: Optional HMAC signature.
@@ -411,6 +447,7 @@ class ReportRoot:
     collection_errors: list[CollectionError] = field(default_factory=list)
     warnings: list[ReportWarning] = field(default_factory=list)
     artifacts: list[ArtifactEntry] = field(default_factory=list)
+    source_coverage: list[SourceCoverageEntry] = field(default_factory=list)
     custom_metadata: dict[str, Any] | None = None
     sha256: str | None = None
     hmac_signature: str | None = None
@@ -435,6 +472,8 @@ class ReportRoot:
             result["warnings"] = [w.to_dict() for w in self.warnings]
         if self.artifacts:
             result["artifacts"] = [a.to_dict() for a in self.artifacts]
+        if self.source_coverage:
+            result["source_coverage"] = [s.to_dict() for s in self.source_coverage]
         if self.custom_metadata:
             result["custom_metadata"] = self.custom_metadata
         if self.sha256:

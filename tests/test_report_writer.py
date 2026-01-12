@@ -3,7 +3,7 @@
 
 from datetime import UTC, datetime
 
-from pytest_llm_report.models import CoverageEntry, TestCaseResult
+from pytest_llm_report.models import CoverageEntry, SourceCoverageEntry, TestCaseResult
 from pytest_llm_report.options import Config
 from pytest_llm_report.report_writer import ReportWriter, compute_sha256
 
@@ -137,6 +137,28 @@ class TestReportWriter:
 
         assert len(report.tests[0].coverage) == 1
         assert report.tests[0].coverage[0].file_path == "src/foo.py"
+
+    def test_write_report_includes_source_coverage(self):
+        """Report should include source coverage summary."""
+        config = Config()
+        writer = ReportWriter(config)
+
+        source_coverage = [
+            SourceCoverageEntry(
+                file_path="src/foo.py",
+                statements=8,
+                missed=1,
+                covered=7,
+                coverage_percent=87.5,
+                covered_ranges="1-4, 6-7",
+                missed_ranges="5",
+            )
+        ]
+
+        report = writer.write_report([], source_coverage=source_coverage)
+
+        assert len(report.source_coverage) == 1
+        assert report.source_coverage[0].file_path == "src/foo.py"
 
 
 class TestReportWriterWithFiles:
