@@ -127,6 +127,31 @@ those limits automatically:
 - **RPM/TPM**: waits until the next request is within the limit.
 - **RPD**: skips annotation once the daily cap is reached (no waiting).
 
+### Model rotation
+
+If you specify `model = "all"` or a comma-separated list of models, the plugin
+will automatically rotate between available models to maximize request throughput:
+
+```toml
+[tool.pytest_llm_report]
+provider = "gemini"
+model = "gemini-2.5-flash,gemini-2.0-flash,gemini-1.5-flash"
+```
+
+When a model reaches its rate limit, the plugin switches to the next available
+model. This is especially useful for exceeding free-tier daily limits by
+distributing requests across multiple models.
+
+### Model recovery
+
+For long-running test sessions (e.g., CI jobs spanning multiple days), models
+that hit their daily request limits will **automatically recover** after 24
+hours. The plugin tracks when each model was exhausted and clears that state
+once the daily limit window has passed.
+
+Additionally, the available model list is **refreshed every 6 hours** to pick
+up any new models that may have become available via the Gemini API.
+
 ## Caching
 
 LLM responses are cached to reduce API calls:
