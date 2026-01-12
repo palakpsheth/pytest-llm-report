@@ -4,8 +4,8 @@
 [![Docs](https://github.com/palakpsheth/pytest-llm-report/actions/workflows/docs.yml/badge.svg)](https://github.com/palakpsheth/pytest-llm-report/actions/workflows/docs.yml)
 [![codecov](https://codecov.io/gh/palakpsheth/pytest-llm-report/branch/main/graph/badge.svg)](https://codecov.io/gh/palakpsheth/pytest-llm-report)
 [![PyPI](https://img.shields.io/pypi/v/pytest-llm-report)](https://pypi.org/project/pytest-llm-report/)
-[![Python Versions](https://img.shields.io/pypi/pyversions/pytest-llm-report)](https://pypi.org/project/pytest-llm-report/)
-[![License](https://img.shields.io/pypi/l/pytest-llm-report)](LICENSE)
+[![Python Versions](https://img.shields.io/badge/python-3.11%7C3.12%7C3.13-blue?logo=python&logoColor=white)](https://pypi.org/project/pytest-llm-report/)
+[![License](https://img.shields.io/github/license/palakpsheth/pytest-llm-report)](LICENSE)
 [![pytest plugin](https://img.shields.io/badge/pytest-plugin-0A9EDC?logo=pytest&logoColor=white)](https://docs.pytest.org/)
 
 Human-friendly pytest test reports with optional LLM annotations.
