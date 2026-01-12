@@ -77,12 +77,12 @@ Cloud LLMs via the Gemini API.
    ```toml
    [tool.pytest_llm_report]
    provider = "gemini"
-   model = "gemini-1.5-flash"
+   model = "gemini-1.5-flash-latest"
    ```
 
 ### Supported models
 
-- `gemini-1.5-flash`
+- `gemini-1.5-flash-latest`
 - `gemini-1.5-pro`
 
 ## Caching

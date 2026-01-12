@@ -60,7 +60,7 @@ Environment variables depend on the model (e.g., `OPENAI_API_KEY`).
 
 ```toml
 llm_report_provider = "gemini"
-llm_report_model = "gemini-1.5-flash"
+llm_report_model = "gemini-1.5-flash-latest"
 ```
 
 Environment variables:

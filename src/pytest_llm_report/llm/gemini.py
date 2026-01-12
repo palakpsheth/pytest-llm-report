@@ -137,7 +137,7 @@ class GeminiProvider(LlmProvider):
         """
         import httpx
 
-        model = self.config.model or "gemini-1.5-flash"
+        model = self.config.model or "gemini-1.5-flash-latest"
         url = (
             "https://generativelanguage.googleapis.com/v1beta/models/"
             f"{model}:generateContent?key={api_token}"
