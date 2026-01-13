@@ -22,6 +22,7 @@ Human-friendly pytest test reports with optional LLM annotations.
 - HTML and JSON output formats
 - Dark mode support (auto-detects system preference)
 - Optional PDF generation
+- **Detailed Versioning**: Reports include exact plugin and repository versions (plus Git SHA/dirty status) for reproducibility
 - Aggregation across multiple test runs (see [Aggregation](docs/aggregation.md))
 
 ## Installation
@@ -35,12 +36,38 @@ Or with uv:
 uv add pytest-llm-report
 ```
 
+### Optional Dependencies
+
+Install additional features as needed:
+
+```bash
+# Ollama provider
+pip install pytest-llm-report[ollama]
+
+# Gemini provider
+pip install pytest-llm-report[gemini]
+
+# LiteLLM provider (supports OpenAI, Anthropic, etc.)
+pip install pytest-llm-report[litellm]
+
+# PDF generation
+pip install pytest-llm-report[pdf]
+
+# All features
+pip install pytest-llm-report[all]
+```
+
+With uv:
+```bash
+uv add "pytest-llm-report[ollama]"  # or gemini, litellm, pdf, all
+```
+
 ## Quick Start
 
 Run pytest with coverage contexts enabled:
 
 ```bash
-pytest --cov=your_package --cov-context=test --llm-report=report.html
+pytest --cov=your_package --cov-branch --cov-context=test --llm-report=report.html
 ```
 
 ## Configuration

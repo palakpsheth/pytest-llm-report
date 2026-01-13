@@ -33,4 +33,5 @@ omit_tests_from_coverage = true
 include_phase = "run"
 
 [tool.coverage.run]
-branch = true
+source = ["pytest_llm_report"]
+branch = false

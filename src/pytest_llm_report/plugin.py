@@ -77,6 +77,13 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         default=None,
         help="Maximum LLM requests per minute (default: 5)",
     )
+    group.addoption(
+        "--llm-max-retries",
+        dest="llm_max_retries",
+        type=int,
+        default=None,
+        help="Maximum LLM retries for transient errors (default: 3)",
+    )
 
     # Aggregation options
     group.addoption(
@@ -102,6 +109,12 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         dest="llm_aggregate_group_id",
         default=None,
         help="Group ID for related runs",
+    )
+    group.addoption(
+        "--llm-coverage-source",
+        dest="llm_coverage_source",
+        default=None,
+        help="Path to .coverage file or directory for aggregation enhancement",
     )
 
     # Add ini-file options for pyproject.toml [tool.pytest_llm_report]
@@ -132,68 +145,16 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         help="Default path for HTML report output",
     )
     parser.addini(
+        "llm_report_max_retries",
+        default=3,
+        type="int",
+        help="Maximum LLM retries for transient errors",
+    )
+    parser.addini(
         "llm_report_json",
         default="",
         help="Default path for JSON report output",
     )
-
-
-def _load_config_from_pytest(config: pytest.Config) -> Config:
-    """Load Config from pytest options and ini file.
-
-    CLI options take precedence over ini file options.
-
-    Args:
-        config: pytest configuration object.
-
-    Returns:
-        Populated Config instance.
-    """
-    # Start with defaults
-    cfg = Config()
-
-    # Load from ini (pyproject.toml [tool.pytest.ini_options])
-    if config.getini("llm_report_provider"):
-        cfg.provider = config.getini("llm_report_provider")
-    if config.getini("llm_report_model"):
-        cfg.model = config.getini("llm_report_model")
-    if config.getini("llm_report_context_mode"):
-        cfg.llm_context_mode = config.getini("llm_report_context_mode")
-    if config.getini("llm_report_requests_per_minute") is not None:
-        cfg.llm_requests_per_minute = config.getini("llm_report_requests_per_minute")
-    if config.getini("llm_report_html"):
-        cfg.report_html = config.getini("llm_report_html")
-    if config.getini("llm_report_json"):
-        cfg.report_json = config.getini("llm_report_json")
-
-    # Override with CLI options
-    if config.option.llm_report_html:
-        cfg.report_html = config.option.llm_report_html
-    if config.option.llm_report_json:
-        cfg.report_json = config.option.llm_report_json
-    if config.option.llm_report_pdf:
-        cfg.report_pdf = config.option.llm_report_pdf
-    if config.option.llm_evidence_bundle:
-        cfg.report_evidence_bundle = config.option.llm_evidence_bundle
-    if config.option.llm_dependency_snapshot:
-        cfg.report_dependency_snapshot = config.option.llm_dependency_snapshot
-    if config.option.llm_requests_per_minute is not None:
-        cfg.llm_requests_per_minute = config.option.llm_requests_per_minute
-
-    # Aggregation options
-    if config.option.llm_aggregate_dir:
-        cfg.aggregate_dir = config.option.llm_aggregate_dir
-    if config.option.llm_aggregate_policy:
-        cfg.aggregate_policy = config.option.llm_aggregate_policy
-    if config.option.llm_aggregate_run_id:
-        cfg.aggregate_run_id = config.option.llm_aggregate_run_id
-    if config.option.llm_aggregate_group_id:
-        cfg.aggregate_group_id = config.option.llm_aggregate_group_id
-
-    # Set repo root
-    cfg.repo_root = config.rootpath
-
-    return cfg
 
 
 def pytest_configure(config: pytest.Config) -> None:
@@ -223,7 +184,12 @@ def pytest_configure(config: pytest.Config) -> None:
         return
 
     # Load configuration
-    cfg = _load_config_from_pytest(config)
+    cfg = Config.load(config) if hasattr(Config, "load") else None
+    if not cfg:
+        # Fallback if I messed up the import in my thought process, but better to import explicitly
+        from pytest_llm_report.options import load_config
+
+        cfg = load_config(config)
 
     # Validate configuration
     errors = cfg.validate()
@@ -368,10 +334,33 @@ def pytest_terminal_summary(
                 test.coverage = coverage[test.nodeid]
 
     # Apply LLM annotations
+    llm_info = None
     if cfg.is_llm_enabled():
         from pytest_llm_report.llm.annotator import annotate_tests
+        from pytest_llm_report.llm.base import get_provider
+
+        # Get provider to capture model info
+        provider = get_provider(cfg)
 
         annotate_tests(tests, cfg, progress=terminalreporter.write_line)
+
+        # Count annotations and errors
+        annotations_count = 0
+        annotations_errors = 0
+        for test in tests:
+            if test.llm_annotation:
+                if test.llm_annotation.error:
+                    annotations_errors += 1
+                else:
+                    annotations_count += 1
+
+        llm_info = {
+            "provider": cfg.provider,
+            "model": provider.get_model_name(),
+            "context_mode": cfg.llm_context_mode,
+            "annotations_count": annotations_count,
+            "annotations_errors": annotations_errors,
+        }
 
     writer = ReportWriter(cfg)
     writer.write_report(
@@ -383,6 +372,7 @@ def pytest_terminal_summary(
         exit_code=exitstatus,
         start_time=start_time,
         end_time=end_time,
+        llm_info=llm_info,
     )
 
 

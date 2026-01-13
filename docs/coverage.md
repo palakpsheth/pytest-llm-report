@@ -28,6 +28,11 @@ addopts = [
     "--cov-context=test",       # Required for per-test coverage mapping
     "--cov-report=",            # Suppress default coverage report (optional)
 ]
+
+[tool.coverage.report]
+fail_under = 90                 # Enforce 90% coverage
+show_missing = true
+
 ```
 
 ### Option 2: pytest.ini
@@ -65,50 +70,58 @@ pytest --cov=your_package --cov-context=test --llm-report=report.html
 | `--cov-report=` | Suppress default report (set empty) |
 | `--cov-append` | Append to existing coverage data |
 
-## Example: Multi-Package Project
+## Advanced: Accurate Module-Level Coverage
 
-```toml
-[tool.pytest.ini_options]
-addopts = [
-    "--cov=src/package_a",
-    "--cov=src/package_b",
-    "--cov-context=test",
-    "--llm-report=reports/test-report.html",
-    "--llm-report-json=reports/test-report.json",
-]
+By default, `pytest-cov` starts measuring coverage after pytest has already loaded many of your project's modules. This can lead to "missing" coverage for top-level code like class definitions, constants, and global variables in those files.
+
+If you need accurate coverage for these early imports (common for plugin development or critical library setup), use `coverage run -m pytest` instead:
+
+```bash
+# Erase old data
+coverage erase
+
+# Run with coverage wrapper
+coverage run -m pytest -o "addopts=" -p no:pytest-cov
+
+# View report
+coverage report
 ```
+
+The `-o "addopts=" -p no:pytest-cov` flags are recommended to prevent conflicts with your existing `pytest-cov` configuration.
 
 ## Parallel/Distributed Testing
 
-For `pytest-xdist` (parallel testing), coverage data is automatically combined:
+For `pytest-xdist` (parallel testing), coverage data is automatically combined when using `pytest-cov`:
 
 ```bash
 pytest -n auto --cov=your_package --cov-context=test --llm-report=report.html
 ```
 
-The plugin reads both `.coverage` and `.coverage.*` files.
+When using `coverage run` with `xdist`, make sure to use `coverage combine` if running manually:
+
+```bash
+coverage run -p -m pytest -n auto ...
+coverage combine
+coverage report
+```
+
+The plugin reads both `.coverage` and `.coverage.*` files to generate the final report.
 
 ## CI Integration
 
-Example GitHub Actions workflow:
+Recommended CI command for full accuracy:
 
 ```yaml
-- name: Run tests
+- name: Run tests and collect coverage
   run: |
-    pytest \
-      --cov=your_package \
-      --cov-context=test \
-      --cov-report=xml \
+    coverage run -m pytest \
+      -o "addopts=" \
+      -p no:pytest-cov \
       --llm-report=report.html \
       --llm-report-json=report.json
 
-- name: Upload report
-  uses: actions/upload-artifact@v4
-  with:
-    name: test-report
-    path: |
-      report.html
-      report.json
+- name: Generate coverage XML
+  run: coverage xml
 ```
 
 ## Troubleshooting
@@ -119,12 +132,8 @@ This means `--cov-context=test` was not set. Add it to your pytest configuration
 
 ### "No .coverage file found" warning
 
-Ensure you're running with `--cov=your_package`. The `.coverage` file must exist after the test run.
+Ensure you're running with `--cov=your_package` or `coverage run`. The `.coverage` file must exist after the test run.
 
 ### Coverage data seems stale
 
-Run `coverage erase` before your test run to clear old data:
-
-```bash
-coverage erase && pytest --cov=your_package --cov-context=test
-```
+Run `coverage erase` before your test run to clear old data, or use the `--cov-clear` flag if using `pytest-cov`.

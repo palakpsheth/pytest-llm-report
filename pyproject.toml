@@ -51,11 +51,16 @@ dev = [
     "ruff>=0.1.0",
     "mypy>=1.0.0",
     "pytest-xdist>=3.0.0",
+    # Include all LLM provider dependencies for testing
+    "httpx>=0.24.0",
+    "urllib3>=2.6.3",
+    "litellm>=1.0.0",
     "playwright>=1.40.0",
 ]
 all = [
     "pytest-llm-report[ollama,litellm,gemini,pdf,dev]",
 ]
+
 
 [project.urls]
 Homepage = "https://github.com/palakpsheth/pytest-llm-report"
@@ -79,6 +84,7 @@ include = [
     "CHANGELOG.md",
 ]
 
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = [
@@ -96,28 +102,26 @@ addopts = [
 ]
 pythonpath = ["src"]
 norecursedirs = ["tests/fixtures"]
+# LLM Report settings (read via parser.addini)
+llm_report_provider = "ollama"
+llm_report_model = "llama3.2:1b"
+llm_report_context_mode = "minimal"
 
 [tool.pytest_llm_report]
-provider = "none"
+provider = "ollama"
+model = "llama3.2:1b"
+ollama_host = "http://127.0.0.1:11434"
+llm_timeout_seconds = 120
+llm_max_tests = 10000
 omit_tests_from_coverage = true
 include_phase = "run"
 
 [tool.coverage.run]
 source = ["src/pytest_llm_report"]
-branch = true
+branch = false
 omit = [
-    # External service providers (require network/services for real tests)
-    "*/llm/ollama.py",
-    "*/llm/litellm_provider.py",
-    "*/llm/gemini.py",
-    # Pytest hook integration (require full pytest run to test properly)
-    "*/collector.py",
-    "*/coverage_map.py",
-    "*/plugin.py",
-    # Config dataclass (field access doesn't count as coverage)
-    "*/options.py",
-    # Context assembly (file I/O heavy, tested via integration)
-    "*/prompts.py",
+    "src/pytest_llm_report/__about__.py",
+    "src/pytest_llm_report/__init__.py",
 ]
 
 [tool.coverage.report]
@@ -139,6 +143,7 @@ exclude_also = [
     # Don't complain about defensive assertions
     "raise AssertionError",
 ]
+fail_under = 90
 
 [tool.ruff]
 line-length = 88
@@ -171,4 +176,10 @@ disallow_untyped_defs = true
 dev = [
     "pre-commit>=4.5.1",
     "ruff>=0.14.10",
+    "mypy>=1.0.0",
+    "pytest-xdist>=3.0.0",
+    "httpx>=0.24.0",
+    "urllib3>=2.6.3",
+    "litellm>=1.0.0",
+    "playwright>=1.40.0",
 ]

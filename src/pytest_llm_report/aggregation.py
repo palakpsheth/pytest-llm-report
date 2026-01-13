@@ -80,13 +80,21 @@ class Aggregator:
         meta.selected_count = len(aggregated_tests)
 
         # Recalculate summary
+        # Recalculate summary
         summary = self._recalculate_summary(aggregated_tests, latest_report.summary)
+
+        # Apply coverage override if configured
+        source_coverage = latest_report.source_coverage
+        cov_override = self._load_coverage_from_source()
+        if cov_override:
+            source_coverage, pct = cov_override
+            summary.coverage_total_percent = pct
 
         return ReportRoot(
             run_meta=meta,
             summary=summary,
             tests=aggregated_tests,
-            source_coverage=latest_report.source_coverage,
+            source_coverage=source_coverage,
             collection_errors=[],  # We don't aggregate collection errors for now
             warnings=[],
             artifacts=[],
@@ -225,3 +233,48 @@ class Aggregator:
                 summary.error += 1
 
         return summary
+
+    def _load_coverage_from_source(
+        self,
+    ) -> tuple[list[SourceCoverageEntry], float] | None:
+        """Load coverage from configured source file.
+
+        Returns:
+            Tuple of (source_entries, total_percent) or None.
+        """
+        if not self.config.llm_coverage_source:
+            return None
+
+        try:
+            from coverage import Coverage
+
+            from pytest_llm_report.coverage_map import CoverageMapper
+
+            cov_path = Path(self.config.llm_coverage_source)
+            if not cov_path.exists():
+                warnings.warn(
+                    f"Coverage source not found: {cov_path}",
+                    stacklevel=2,
+                )
+                return None
+
+            # Load coverage data
+            cov = Coverage(data_file=str(cov_path))
+            cov.load()
+
+            mapper = CoverageMapper(self.config)
+            entries = mapper.map_source_coverage(cov)
+
+            # Calculate total
+            total_stmt = sum(e.statements for e in entries)
+            total_cov = sum(e.covered for e in entries)
+            percent = round((total_cov / total_stmt * 100), 2) if total_stmt else 0.0
+
+            return entries, percent
+
+        except Exception as e:
+            warnings.warn(
+                f"Failed to load coverage override: {e}",
+                stacklevel=2,
+            )
+            return None

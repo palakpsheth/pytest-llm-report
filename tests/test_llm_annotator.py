@@ -21,6 +21,9 @@ class FakeProvider:
     def is_available(self) -> bool:
         return True
 
+    def is_local(self) -> bool:
+        return False
+
     def annotate(self, test, *_args, **_kwargs):  # noqa: ANN001 - test helper
         self.calls.append(test.nodeid)
         return self.annotation
@@ -163,6 +166,6 @@ def test_annotate_tests_reports_progress(monkeypatch, tmp_path):
 
     assert messages[0] == "pytest-llm-report: Starting LLM annotations for 1 test(s)"
     assert messages[1] == (
-        "pytest-llm-report: LLM annotation progress 1/1: "
+        "pytest-llm-report: LLM annotation 1/1 (litellm): "
         "tests/test_progress.py::test_case"
     )

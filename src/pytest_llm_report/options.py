@@ -12,6 +12,10 @@ Component Contract:
 
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import pytest
 
 
 @dataclass
@@ -50,6 +54,7 @@ class Config:
         llm_max_concurrency: Maximum concurrent LLM requests.
         llm_requests_per_minute: Maximum LLM requests per minute.
         llm_timeout_seconds: Timeout for LLM requests.
+        llm_max_retries: Maximum retries for LLM requests.
         llm_cache_ttl_seconds: Cache TTL in seconds.
         cache_dir: Directory for LLM cache.
 
@@ -118,16 +123,18 @@ class Config:
     llm_param_value_max_chars: int = 100
 
     # LLM execution controls
-    llm_max_tests: int = 100
-    llm_max_concurrency: int = 4
+    llm_max_tests: int = 0  # 0 = no limit (annotate all tests)
+    llm_max_concurrency: int = 1
     llm_requests_per_minute: int = 5
     llm_timeout_seconds: int = 30
+    llm_max_retries: int = 3
     llm_cache_ttl_seconds: int = 86400  # 24 hours
     cache_dir: str = ".pytest_llm_cache"
 
     # Coverage settings
     omit_tests_from_coverage: bool = True
     include_phase: str = "run"
+    llm_coverage_source: str | None = None
 
     # Report behavior
     report_collect_only: bool = True
@@ -201,12 +208,14 @@ class Config:
         # Validate numeric ranges
         if self.llm_context_bytes < 1000:
             errors.append("llm_context_bytes must be at least 1000")
-        if self.llm_max_tests < 1:
-            errors.append("llm_max_tests must be at least 1")
+        if self.llm_max_tests < 0:
+            errors.append("llm_max_tests must be 0 (no limit) or positive")
         if self.llm_requests_per_minute < 1:
             errors.append("llm_requests_per_minute must be at least 1")
         if self.llm_timeout_seconds < 1:
             errors.append("llm_timeout_seconds must be at least 1")
+        if self.llm_max_retries < 0:
+            errors.append("llm_max_retries must be 0 or positive")
 
         return errors
 
@@ -222,3 +231,70 @@ def get_default_config() -> Config:
         Config instance with default values.
     """
     return Config()
+
+
+def load_config(config: "pytest.Config") -> Config:
+    """Load Config from pytest options and ini file.
+
+    CLI options take precedence over ini file options.
+
+    Args:
+        config: pytest configuration object.
+
+    Returns:
+        Populated Config instance.
+    """
+    # Start with defaults
+    cfg = Config()
+
+    # Load from ini (pyproject.toml [tool.pytest.ini_options])
+    if config.getini("llm_report_provider"):
+        cfg.provider = config.getini("llm_report_provider")
+    if config.getini("llm_report_model"):
+        cfg.model = config.getini("llm_report_model")
+    if config.getini("llm_report_context_mode"):
+        cfg.llm_context_mode = config.getini("llm_report_context_mode")
+    if config.getini("llm_report_requests_per_minute") is not None:
+        cfg.llm_requests_per_minute = config.getini("llm_report_requests_per_minute")
+    if config.getini("llm_report_html"):
+        cfg.report_html = config.getini("llm_report_html")
+    if config.getini("llm_report_json"):
+        cfg.report_json = config.getini("llm_report_json")
+    if config.getini("llm_report_max_retries") is not None:
+        try:
+            cfg.llm_max_retries = int(config.getini("llm_report_max_retries"))
+        except (ValueError, TypeError):
+            pass
+
+    # Override with CLI options
+    if config.option.llm_report_html:
+        cfg.report_html = config.option.llm_report_html
+    if config.option.llm_report_json:
+        cfg.report_json = config.option.llm_report_json
+    if config.option.llm_report_pdf:
+        cfg.report_pdf = config.option.llm_report_pdf
+    if config.option.llm_evidence_bundle:
+        cfg.report_evidence_bundle = config.option.llm_evidence_bundle
+    if config.option.llm_dependency_snapshot:
+        cfg.report_dependency_snapshot = config.option.llm_dependency_snapshot
+    if config.option.llm_requests_per_minute is not None:
+        cfg.llm_requests_per_minute = config.option.llm_requests_per_minute
+    if config.option.llm_max_retries is not None:
+        cfg.llm_max_retries = config.option.llm_max_retries
+
+    # Aggregation options
+    if config.option.llm_aggregate_dir:
+        cfg.aggregate_dir = config.option.llm_aggregate_dir
+    if config.option.llm_aggregate_policy:
+        cfg.aggregate_policy = config.option.llm_aggregate_policy
+    if config.option.llm_aggregate_run_id:
+        cfg.aggregate_run_id = config.option.llm_aggregate_run_id
+    if config.option.llm_aggregate_group_id:
+        cfg.aggregate_group_id = config.option.llm_aggregate_group_id
+    if config.option.llm_coverage_source:
+        cfg.llm_coverage_source = config.option.llm_coverage_source
+
+    # Set repo root
+    cfg.repo_root = config.rootpath
+
+    return cfg

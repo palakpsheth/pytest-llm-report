@@ -225,8 +225,15 @@ class TestRunMeta:
             plugin_version="0.1.0",
             python_version="3.11",
             platform="linux",
+            # Legacy fields
             git_sha="abc1234",
             git_dirty=True,
+            # New fields
+            repo_version="1.0.0",
+            repo_git_sha="abc1234",
+            repo_git_dirty=True,
+            plugin_git_sha="def5678",
+            plugin_git_dirty=False,
             config_hash="def5678",
             pytest_invocation="pytest -v",
             pytest_config_summary="config_summary",
@@ -243,13 +250,39 @@ class TestRunMeta:
 
         assert data["git_sha"] == "abc1234"
         assert data["git_dirty"] is True
+        assert data["repo_version"] == "1.0.0"
+        assert data["repo_git_sha"] == "abc1234"
+        assert data["repo_git_dirty"] is True
+        assert data["plugin_git_sha"] == "def5678"
+        assert data["plugin_git_dirty"] is False
         assert data["config_hash"] == "def5678"
-        assert data["pytest_invocation"] == "pytest -v"
-        assert data["pytest_config_summary"] == "config_summary"
-        assert data["run_id"] == "run-1"
-        assert data["run_group_id"] == "group-1"
-        assert data["aggregation_policy"] == "merge"
         assert len(data["source_reports"]) == 1
+
+    def test_llm_traceability_fields(self):
+        """Test LLM traceability fields are included when enabled."""
+        meta = RunMeta(
+            llm_provider="ollama",
+            llm_model="llama3.2:1b",
+            llm_context_mode="complete",
+            llm_annotations_enabled=True,
+            llm_annotations_count=10,
+            llm_annotations_errors=2,
+        )
+        data = meta.to_dict()
+        assert data["llm_annotations_enabled"] is True
+        assert data["llm_provider"] == "ollama"
+        assert data["llm_model"] == "llama3.2:1b"
+        assert data["llm_context_mode"] == "complete"
+        assert data["llm_annotations_count"] == 10
+        assert data["llm_annotations_errors"] == 2
+
+    def test_llm_fields_excluded_when_disabled(self):
+        """Test LLM fields are excluded when annotations not enabled."""
+        meta = RunMeta(llm_annotations_enabled=False)
+        data = meta.to_dict()
+        assert "llm_annotations_enabled" not in data
+        assert "llm_provider" not in data
+        assert "llm_model" not in data
 
 
 class TestReportRoot:

@@ -21,8 +21,9 @@ uv sync
 # Run tests
 uv run pytest
 
-# Run with coverage
-uv run pytest --cov=pytest_llm_report --cov-report=term-missing
+# Run with accurate coverage
+uv run coverage run -m pytest -o "addopts=" -p no:pytest-cov
+uv run coverage report
 ```
 
 ## Building
@@ -83,18 +84,23 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 120
     strategy:
+      fail-fast: false
       matrix:
         python-version: ["3.11", "3.12", "3.13"]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Install uv
-        uses: astral-sh/setup-uv@v4
+        uses: astral-sh/setup-uv@v7
 
       - name: Set up Python ${{ matrix.python-version }}
         run: uv python install ${{ matrix.python-version }}
@@ -102,22 +108,92 @@ jobs:
       - name: Install dependencies
         run: uv sync --all-extras
 
-      - name: Run tests
+      - name: Install Playwright browsers
+        run: uv run playwright install chromium
+
+      # Ollama setup (Main branch only)
+      - name: Install Ollama
+        if: github.ref == 'refs/heads/main'
+        run: curl -fsSL https://ollama.com/install.sh | sh
+
+      - name: Start Ollama
+        if: github.ref == 'refs/heads/main'
+        run: ollama serve &
+
+      - name: Pull LLM Model
+        if: github.ref == 'refs/heads/main'
         run: |
-          uv run pytest \
-            --cov=pytest_llm_report \
-            --cov-context=test \
-            --cov-report=xml \
-            --cov-fail-under=90
+          sleep 5
+          ollama pull llama3.2:1b
+
+      - name: Run tests
+        id: pytest
+        continue-on-error: true
+        run: |
+          mkdir -p reports
+          json_report="reports/pytest_llm_report-py${{ matrix.python-version }}.json"
+          pdf_report="reports/pytest_llm_report-py${{ matrix.python-version }}.pdf"
+          llm_args=()
+
+          # Use Ollama on main branch for Python 3.12
+          if [ "${{ matrix.python-version }}" = "3.12" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
+             llm_args+=(
+              -o llm_report_provider=ollama
+              -o llm_report_model=llama3.2:1b
+              -o llm_report_context_mode=minimal
+            )
+          fi
+
+          uv run coverage run -m pytest \
+            -o "addopts=" \
+            -p no:pytest-cov \
+            -o llm_report_context_mode=complete \
+            --llm-report-json="${json_report}" \
+            --llm-pdf="${pdf_report}" \
+            "${llm_args[@]}"
+          test_exit_code=$?
+
+          uv run coverage xml
+          uv run coverage report --fail-under=90
+          cov_exit_code=$?
+
+          if [ $test_exit_code -ne 0 ]; then
+            exit_code=$test_exit_code
+          elif [ $cov_exit_code -ne 0 ]; then
+             exit_code=$cov_exit_code
+          else
+             exit_code=0
+          fi
+
+          echo "exit_code=${exit_code}" >> "${GITHUB_OUTPUT}"
+          exit 0
 
       - name: Upload coverage
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
+        if: matrix.python-version == '3.12'
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: false
+
+      - name: Upload report artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: report-py${{ matrix.python-version }}
+          path: |
+            reports/pytest_llm_report-py${{ matrix.python-version }}.json
+            reports/pytest_llm_report-py${{ matrix.python-version }}.pdf
+          retention-days: 7
+
+      - name: Fail if tests failed
+        if: steps.pytest.outputs.exit_code != '0'
+        run: exit 1
 
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v4
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v7
       - run: uv sync
       - run: uv run ruff check .
       - run: uv run ruff format --check .
@@ -126,14 +202,14 @@ jobs:
     needs: [test, lint]
     runs-on: ubuntu-latest
     if: github.event_name == 'release'
+    permissions:
+      id-token: write
 
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v4
-
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v7
       - name: Build
         run: uv build
-
       - name: Publish to PyPI
         run: uv publish
         env:

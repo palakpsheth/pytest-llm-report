@@ -313,6 +313,12 @@ class RunMeta:
         aggregation_policy: Aggregation policy used.
         run_count: Number of runs aggregated.
         source_reports: List of source reports (for aggregated reports).
+        llm_provider: LLM provider name (e.g., "ollama", "gemini").
+        llm_model: LLM model name/version (e.g., "llama3.2:1b").
+        llm_context_mode: LLM context mode (minimal, balanced, complete).
+        llm_annotations_enabled: Whether LLM annotations were enabled.
+        llm_annotations_count: Number of tests annotated.
+        llm_annotations_errors: Number of annotation errors.
     """
 
     start_time: str = ""
@@ -322,8 +328,13 @@ class RunMeta:
     plugin_version: str = ""
     python_version: str = ""
     platform: str = ""
-    git_sha: str | None = None
-    git_dirty: bool | None = None
+    git_sha: str | None = None  # Deprecated in favor of repo_git_sha
+    git_dirty: bool | None = None  # Deprecated in favor of repo_git_dirty
+    repo_version: str | None = None
+    repo_git_sha: str | None = None
+    repo_git_dirty: bool | None = None
+    plugin_git_sha: str | None = None
+    plugin_git_dirty: bool | None = None
     config_hash: str | None = None
     pytest_invocation: list[str] | None = None
     pytest_config_summary: dict[str, str] | None = None
@@ -340,6 +351,13 @@ class RunMeta:
     aggregation_policy: str | None = None
     run_count: int = 1
     source_reports: list[SourceReport] = field(default_factory=list)
+    # LLM traceability fields
+    llm_provider: str | None = None
+    llm_model: str | None = None
+    llm_context_mode: str | None = None
+    llm_annotations_enabled: bool = False
+    llm_annotations_count: int | None = None
+    llm_annotations_errors: int | None = None
 
     def to_dict(self) -> dict:
         """Convert to dictionary for JSON serialization."""
@@ -364,6 +382,14 @@ class RunMeta:
         if self.git_sha:
             result["git_sha"] = self.git_sha
             result["git_dirty"] = self.git_dirty
+        if self.repo_version:
+            result["repo_version"] = self.repo_version
+        if self.repo_git_sha:
+            result["repo_git_sha"] = self.repo_git_sha
+            result["repo_git_dirty"] = self.repo_git_dirty
+        if self.plugin_git_sha:
+            result["plugin_git_sha"] = self.plugin_git_sha
+            result["plugin_git_dirty"] = self.plugin_git_dirty
         if self.config_hash:
             result["config_hash"] = self.config_hash
         if self.pytest_invocation is not None:
@@ -377,6 +403,19 @@ class RunMeta:
         if self.is_aggregated:
             result["aggregation_policy"] = self.aggregation_policy
             result["source_reports"] = [s.to_dict() for s in self.source_reports]
+        # LLM traceability fields
+        if self.llm_annotations_enabled:
+            result["llm_annotations_enabled"] = True
+            if self.llm_provider:
+                result["llm_provider"] = self.llm_provider
+            if self.llm_model:
+                result["llm_model"] = self.llm_model
+            if self.llm_context_mode:
+                result["llm_context_mode"] = self.llm_context_mode
+            if self.llm_annotations_count is not None:
+                result["llm_annotations_count"] = self.llm_annotations_count
+            if self.llm_annotations_errors is not None:
+                result["llm_annotations_errors"] = self.llm_annotations_errors
         return result
 
 

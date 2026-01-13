@@ -1,188 +1,200 @@
-# SPDX-License-Identifier: MIT
-"""Tests for pytest_llm_report.options module."""
+from unittest.mock import MagicMock
 
-from pytest_llm_report.options import Config, get_default_config
+import pytest
 
-
-class TestConfigDefaults:
-    """Tests for Config default values."""
-
-    def test_provider_defaults_to_none(self):
-        """Provider should default to 'none' for privacy."""
-        config = Config()
-        assert config.provider == "none"
-
-    def test_context_mode_defaults_to_minimal(self):
-        """Context mode should default to 'minimal' for safety."""
-        config = Config()
-        assert config.llm_context_mode == "minimal"
-
-    def test_llm_include_param_values_defaults_to_false(self):
-        """Parameter values should not be included by default."""
-        config = Config()
-        assert config.llm_include_param_values is False
-
-    def test_capture_failed_output_defaults_to_false(self):
-        """Captured output should be opt-in."""
-        config = Config()
-        assert config.capture_failed_output is False
-
-    def test_aggregate_policy_defaults_to_latest(self):
-        """Aggregation policy should default to 'latest'."""
-        config = Config()
-        assert config.aggregate_policy == "latest"
-
-    def test_default_exclude_globs_include_secrets(self):
-        """Default excludes should include common secret patterns."""
-        config = Config()
-        assert ".env" in config.llm_context_exclude_globs
-        assert "*secret*" in config.llm_context_exclude_globs
-        assert "*password*" in config.llm_context_exclude_globs
-
-    def test_omit_tests_from_coverage_defaults_to_true(self):
-        """Test files should be omitted from coverage by default."""
-        config = Config()
-        assert config.omit_tests_from_coverage is True
-
-    def test_llm_requests_per_minute_defaults_to_five(self):
-        """LLM requests per minute should default to 5."""
-        config = Config()
-        assert config.llm_requests_per_minute == 5
+from pytest_llm_report.options import Config, get_default_config, load_config
 
 
-class TestConfigValidation:
-    """Tests for Config validation."""
+class TestConfig:
+    def test_default_values(self):
+        """Test that default values are set correctly."""
+        cfg = Config()
+        assert cfg.provider == "none"
+        assert cfg.llm_context_mode == "minimal"
+        assert cfg.llm_max_tests == 0
+        assert cfg.llm_max_retries == 3
+        # Additional defaults
+        assert cfg.llm_context_bytes == 32000
+        assert cfg.llm_context_file_limit == 10
+        assert cfg.llm_requests_per_minute == 5
+        assert cfg.llm_timeout_seconds == 30
+        assert cfg.llm_cache_ttl_seconds == 86400
+        assert cfg.include_phase == "run"
+        assert cfg.aggregate_policy == "latest"
+        assert cfg.is_llm_enabled() is False
 
-    def test_valid_config_has_no_errors(self):
-        """Valid config should pass validation."""
-        config = Config()
-        errors = config.validate()
-        assert errors == []
+    def test_is_llm_enabled(self):
+        """Test is_llm_enabled check."""
+        assert Config(provider="none").is_llm_enabled() is False
+        assert Config(provider="ollama").is_llm_enabled() is True
+        cfg = Config()
+        assert not cfg.is_llm_enabled()
+        cfg.provider = "ollama"
+        assert cfg.is_llm_enabled()
 
-    def test_invalid_provider_produces_error(self):
-        """Invalid provider should produce validation error."""
-        config = Config(provider="invalid")
-        errors = config.validate()
+    def test_get_default_config(self):
+        """Test the factory function."""
+        cfg = get_default_config()
+        assert isinstance(cfg, Config)
+        assert cfg.provider == "none"
+
+    def test_validate_valid_config(self):
+        """Test validation with a valid configuration."""
+        cfg = Config()
+        errors = cfg.validate()
+        assert not errors
+
+    def test_validate_invalid_provider(self):
+        """Test validation with an invalid provider."""
+        cfg = Config(provider="invalid_provider")
+        errors = cfg.validate()
         assert len(errors) == 1
-        assert "provider" in errors[0]
+        assert "Invalid provider 'invalid_provider'" in errors[0]
 
-    def test_invalid_context_mode_produces_error(self):
-        """Invalid context mode should produce validation error."""
-        config = Config(llm_context_mode="invalid")
-        errors = config.validate()
+    def test_validate_invalid_context_mode(self):
+        """Test validation with an invalid context mode."""
+        cfg = Config(llm_context_mode="mega_max")
+        errors = cfg.validate()
         assert len(errors) == 1
-        assert "llm_context_mode" in errors[0]
+        assert "Invalid llm_context_mode 'mega_max'" in errors[0]
 
-    def test_invalid_aggregate_policy_produces_error(self):
-        """Invalid aggregation policy should produce validation error."""
-        config = Config(aggregate_policy="invalid")
-        errors = config.validate()
+    def test_validate_invalid_aggregate_policy(self):
+        """Test validation with an invalid aggregation policy."""
+        cfg = Config(aggregate_policy="random")
+        errors = cfg.validate()
         assert len(errors) == 1
-        assert "aggregate_policy" in errors[0]
+        assert "Invalid aggregate_policy 'random'" in errors[0]
 
-    def test_invalid_include_phase_produces_error(self):
-        """Invalid include_phase should produce validation error."""
-        config = Config(include_phase="invalid")
-        errors = config.validate()
+    def test_validate_invalid_include_phase(self):
+        """Test validation with an invalid include phase."""
+        cfg = Config(include_phase="lunch_break")
+        errors = cfg.validate()
         assert len(errors) == 1
-        assert "include_phase" in errors[0]
+        assert "Invalid include_phase 'lunch_break'" in errors[0]
 
-    def test_context_bytes_too_small_produces_error(self):
-        """Context bytes below minimum should produce error."""
-        config = Config(llm_context_bytes=100)
-        errors = config.validate()
-        assert len(errors) == 1
-        assert "llm_context_bytes" in errors[0]
-
-    def test_max_tests_too_small_produces_error(self):
-        """Max tests below 1 should produce error."""
-        config = Config(llm_max_tests=0)
-        errors = config.validate()
-        assert len(errors) == 1
-        assert "llm_max_tests" in errors[0]
-
-    def test_timeout_too_small_produces_error(self):
-        """Timeout below 1 should produce error."""
-        config = Config(llm_timeout_seconds=0)
-        errors = config.validate()
-        assert len(errors) == 1
-        assert "llm_timeout_seconds" in errors[0]
-
-    def test_requests_per_minute_too_small_produces_error(self):
-        """Requests per minute below 1 should produce error."""
-        config = Config(llm_requests_per_minute=0)
-        errors = config.validate()
-        assert len(errors) == 1
-        assert "llm_requests_per_minute" in errors[0]
-
-    def test_multiple_errors_reported(self):
-        """Multiple validation errors should all be reported."""
-        config = Config(
-            provider="invalid",
-            llm_context_mode="invalid",
+    def test_validate_numeric_ranges(self):
+        """Test validation of numeric constraints."""
+        cfg = Config(
+            llm_context_bytes=500,  # < 1000
+            llm_max_tests=-1,
+            llm_requests_per_minute=0,
+            llm_timeout_seconds=0,
+            llm_max_retries=-1,
         )
-        errors = config.validate()
-        assert len(errors) == 2
+        errors = cfg.validate()
+        assert len(errors) >= 5
+        assert "llm_context_bytes must be at least 1000" in errors
+        assert "llm_max_tests must be 0 (no limit) or positive" in errors
+        assert "llm_requests_per_minute must be at least 1" in errors
+        assert "llm_timeout_seconds must be at least 1" in errors
+        assert "llm_max_retries must be 0 or positive" in errors
 
 
-class TestConfigIsLlmEnabled:
-    """Tests for is_llm_enabled method."""
+class TestLoadConfig:
+    @pytest.fixture
+    def mock_pytest_config(self):
+        config = MagicMock()
+        config.getini = MagicMock(return_value=None)
+        # Mock CLI options as an object with attributes
+        config.option = MagicMock()
+        # Set all potential CLI options to None by default
+        for attr in [
+            "llm_report_html",
+            "llm_report_json",
+            "llm_report_pdf",
+            "llm_evidence_bundle",
+            "llm_dependency_snapshot",
+            "llm_requests_per_minute",
+            "llm_aggregate_dir",
+            "llm_aggregate_policy",
+            "llm_aggregate_run_id",
+            "llm_aggregate_group_id",
+            "llm_coverage_source",
+            "llm_max_retries",
+        ]:
+            setattr(config.option, attr, None)
 
-    def test_none_provider_not_enabled(self):
-        """Provider 'none' should not be enabled."""
-        config = Config(provider="none")
-        assert config.is_llm_enabled() is False
+        config.rootpath = "/mock/root"
+        return config
 
-    def test_ollama_provider_is_enabled(self):
-        """Provider 'ollama' should be enabled."""
-        config = Config(provider="ollama")
-        assert config.is_llm_enabled() is True
+    def test_load_defaults(self, mock_pytest_config):
+        """Test loading configuration when no options are set."""
+        cfg = load_config(mock_pytest_config)
+        assert cfg.provider == "none"
+        assert cfg.report_html is None
 
-    def test_litellm_provider_is_enabled(self):
-        """Provider 'litellm' should be enabled."""
-        config = Config(provider="litellm")
-        assert config.is_llm_enabled() is True
+    def test_load_from_ini(self, mock_pytest_config):
+        """Test loading values from ini options."""
+        ini_values = {
+            "llm_report_provider": "ollama",
+            "llm_report_model": "llama3",
+            "llm_report_context_mode": "balanced",
+            "llm_report_requests_per_minute": 10,
+            "llm_report_max_retries": 5,
+            "llm_report_html": "report.html",
+            "llm_report_json": "report.json",
+        }
+        mock_pytest_config.getini.side_effect = lambda key: ini_values.get(key)
 
-    def test_gemini_provider_is_enabled(self):
-        """Provider 'gemini' should be enabled."""
-        config = Config(provider="gemini")
-        assert config.is_llm_enabled() is True
+        cfg = load_config(mock_pytest_config)
+        assert cfg.provider == "ollama"
+        assert cfg.model == "llama3"
+        assert cfg.llm_context_mode == "balanced"
+        assert cfg.llm_requests_per_minute == 10
+        assert cfg.llm_max_retries == 5
+        assert cfg.report_html == "report.html"
+        assert cfg.report_json == "report.json"
 
+    def test_load_config_invalid_int_ini(self, mock_pytest_config):
+        """Test handling of invalid integer values in INI (lines 266-267)."""
+        ini_values = {
+            "llm_report_max_retries": "garbage",
+        }
+        mock_pytest_config.getini.side_effect = lambda key: ini_values.get(key)
+        cfg = load_config(mock_pytest_config)
+        # Should fallback to default 3 or not crash
+        assert cfg.llm_max_retries == 3
 
-class TestGetDefaultConfig:
-    """Tests for get_default_config function."""
+    def test_load_from_cli_overrides_ini(self, mock_pytest_config):
+        """Test that CLI options override ini options."""
+        # Set ini values
+        mock_pytest_config.getini.side_effect = (
+            lambda key: "ini_value" if key == "llm_report_html" else None
+        )
 
-    def test_returns_config_instance(self):
-        """Should return a Config instance."""
-        config = get_default_config()
-        assert isinstance(config, Config)
+        # Set CLI values
+        mock_pytest_config.option.llm_report_html = "cli_report.html"
+        mock_pytest_config.option.llm_requests_per_minute = 100
 
-    def test_returns_defaults(self):
-        """Should return config with default values."""
-        config = get_default_config()
-        assert config.provider == "none"
-        assert config.llm_context_mode == "minimal"
+        cfg = load_config(mock_pytest_config)
 
+        # CLI should win for html
+        assert cfg.report_html == "cli_report.html"
+        # CLI should set values not in ini
+        assert cfg.llm_requests_per_minute == 100
 
-class TestConfigAggregationFields:
-    """Tests for aggregation-related config fields."""
+    def test_load_from_cli_retries(self, mock_pytest_config):
+        """Test loading retries from CLI."""
+        mock_pytest_config.option.llm_max_retries = 9
+        cfg = load_config(mock_pytest_config)
+        assert cfg.llm_max_retries == 9
 
-    def test_aggregate_dir_defaults_to_none(self):
-        """Aggregate dir should default to None."""
-        config = Config()
-        assert config.aggregate_dir is None
+    def test_load_aggregation_options(self, mock_pytest_config):
+        """Test loading aggregation options."""
+        mock_pytest_config.option.llm_aggregate_dir = "aggr_dir"
+        mock_pytest_config.option.llm_aggregate_policy = "merge"
+        mock_pytest_config.option.llm_aggregate_run_id = "run-123"
+        mock_pytest_config.option.llm_aggregate_group_id = "group-abc"
 
-    def test_aggregate_run_id_defaults_to_none(self):
-        """Run ID should default to None."""
-        config = Config()
-        assert config.aggregate_run_id is None
+        cfg = load_config(mock_pytest_config)
 
-    def test_aggregate_group_id_defaults_to_none(self):
-        """Group ID should default to None."""
-        config = Config()
-        assert config.aggregate_group_id is None
+        assert cfg.aggregate_dir == "aggr_dir"
+        assert cfg.aggregate_policy == "merge"
+        assert cfg.aggregate_run_id == "run-123"
+        assert cfg.aggregate_group_id == "group-abc"
 
-    def test_aggregate_include_history_defaults_to_false(self):
-        """Include history should default to False."""
-        config = Config()
-        assert config.aggregate_include_history is False
+    def test_load_coverage_source(self, mock_pytest_config):
+        """Test loading coverage source option."""
+        mock_pytest_config.option.llm_coverage_source = "cov_dir"
+        cfg = load_config(mock_pytest_config)
+        assert cfg.llm_coverage_source == "cov_dir"

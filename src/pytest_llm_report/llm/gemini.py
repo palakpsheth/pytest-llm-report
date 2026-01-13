@@ -6,33 +6,18 @@ Connects to the Gemini API for LLM annotations.
 
 from __future__ import annotations
 
-import json
 import os
 import time
 from collections import deque
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from pytest_llm_report.llm.base import LlmProvider, LlmRateLimits
+from pytest_llm_report.llm.base import SYSTEM_PROMPT, LlmProvider
 from pytest_llm_report.models import LlmAnnotation
 
 if TYPE_CHECKING:
     from pytest_llm_report.models import TestCaseResult
     from pytest_llm_report.options import Config
-
-
-SYSTEM_PROMPT = """You are a helpful assistant that analyzes Python test code.
-Given a test function, provide a structured annotation with:
-1. scenario: What the test verifies (1-3 sentences)
-2. why_needed: What bug or regression this test prevents (1-3 sentences)
-3. key_assertions: The critical checks performed (3-8 bullet points)
-
-Respond ONLY with valid JSON in this exact format:
-{
-  "scenario": "...",
-  "why_needed": "...",
-  "key_assertions": ["...", "..."]
-}"""
 
 
 @dataclass(frozen=True)
@@ -147,7 +132,7 @@ class GeminiProvider(LlmProvider):
             config: Plugin configuration.
         """
         super().__init__(config)
-        self._available: bool | None = None
+        # self._available handled by base
         self._rate_limits: dict[str, _GeminiRateLimitConfig] = {}
         self._rate_limiters: dict[str, _GeminiRateLimiter] = {}
         self._models: list[str] | None = None
@@ -156,7 +141,7 @@ class GeminiProvider(LlmProvider):
         self._model_exhausted_at: dict[str, float] = {}
         self._cooldowns: dict[str, float] = {}
 
-    def annotate(
+    def _annotate_internal(
         self,
         test: TestCaseResult,
         test_source: str,
@@ -229,25 +214,40 @@ class GeminiProvider(LlmProvider):
             if wait_for > 0:
                 time.sleep(wait_for)
 
-            try:
-                limiter = self._get_rate_limiter(api_token, model)
-                limiter.record_request()
-                response, tokens_used = self._call_gemini(prompt, api_token, model)
-                if tokens_used is not None:
-                    limiter.record_tokens(tokens_used)
-                return self._parse_response(response)
-            except _GeminiRateLimitExceeded as exc:
-                if exc.limit_type == "requests_per_day":
-                    daily_limit_hit = True
-                    self._model_exhausted_at[model] = time.time()
-                    continue
-                if exc.limit_type in {"requests_per_minute", "tokens_per_minute"}:
-                    retry_after = exc.retry_after or 60.0
-                    self._cooldowns[model] = time.monotonic() + retry_after
-                    continue
-                raise
-            except Exception as e:
-                return LlmAnnotation(error=str(e))
+            for _ in range(self.config.llm_max_retries):
+                try:
+                    limiter = self._get_rate_limiter(api_token, model)
+                    limiter.record_request()
+                    response, tokens_used = self._call_gemini(prompt, api_token, model)
+                    if tokens_used is not None:
+                        limiter.record_tokens(tokens_used)
+
+                    annotation = self._parse_response(response)
+                    if not annotation.error:
+                        return annotation
+
+                    # If "context too long", fail immediately so base class can fallback
+                    if "context too long" in annotation.error.lower():
+                        return annotation
+
+                except _GeminiRateLimitExceeded as exc:
+                    if exc.limit_type == "requests_per_day":
+                        daily_limit_hit = True
+                        self._model_exhausted_at[model] = time.time()
+                        break  # Try next model
+                    if exc.limit_type in {"requests_per_minute", "tokens_per_minute"}:
+                        retry_after = (
+                            exc.retry_after if exc.retry_after is not None else 60.0
+                        )
+                        self._cooldowns[model] = time.monotonic() + retry_after
+                        break  # Try next model
+                    raise
+                except Exception as e:
+                    msg = str(e)
+                    if "400" in msg or "too large" in msg.lower():
+                        return LlmAnnotation(error=f"Context too long: {msg}")
+
+                time.sleep(1)
 
         if daily_limit_hit:
             return LlmAnnotation(
@@ -257,181 +257,18 @@ class GeminiProvider(LlmProvider):
             error="Gemini rate limits reached for all available models"
         )
 
-    def is_available(self) -> bool:
+    def _check_availability(self) -> bool:
         """Check if Gemini provider is available.
 
         Returns:
             True if httpx is installed and token is set.
         """
-        if self._available is not None:
-            return self._available
-
         try:
             import httpx  # noqa: F401
 
-            self._available = bool(os.getenv("GEMINI_API_TOKEN"))
+            return bool(os.getenv("GEMINI_API_TOKEN"))
         except ImportError:
-            self._available = False
-
-        return self._available
-
-    def get_rate_limits(self) -> LlmRateLimits | None:
-        """Get rate limits for the configured Gemini model."""
-        api_token = os.getenv("GEMINI_API_TOKEN")
-        if not api_token:
-            return None
-        models = self._ensure_models_and_limits(api_token)
-        if not models:
-            return None
-        limits = self._rate_limits.get(models[0])
-        if not limits:
-            return None
-        return LlmRateLimits(
-            requests_per_minute=limits.requests_per_minute,
-            tokens_per_minute=limits.tokens_per_minute,
-            requests_per_day=limits.requests_per_day,
-        )
-
-    def _build_prompt(
-        self,
-        test: TestCaseResult,
-        test_source: str,
-        context_files: dict[str, str] | None = None,
-    ) -> str:
-        """Build the prompt for the LLM.
-
-        Args:
-            test: Test result.
-            test_source: Test source code.
-            context_files: Optional context files.
-
-        Returns:
-            Prompt string.
-        """
-        parts = [f"Test: {test.nodeid}", "", "```python", test_source, "```"]
-
-        if context_files:
-            parts.append("\nRelevant context:")
-            for path, content in list(context_files.items())[:5]:
-                parts.append(f"\n{path}:")
-                parts.append("```python")
-                parts.append(content[:2000])
-                parts.append("```")
-
-        return "\n".join(parts)
-
-    def _call_gemini(
-        self, prompt: str, api_token: str, model: str
-    ) -> tuple[str, int | None]:
-        """Make a request to the Gemini API.
-
-        Args:
-            prompt: User prompt.
-            api_token: Gemini API token.
-
-        Returns:
-            Response text and token usage if available.
-        """
-        import httpx
-
-        model = self._normalize_model_name(model)
-        url = (
-            "https://generativelanguage.googleapis.com/v1beta/models/"
-            f"{model}:generateContent?key={api_token}"
-        )
-        payload = {
-            "system_instruction": {"parts": [{"text": SYSTEM_PROMPT}]},
-            "contents": [{"role": "user", "parts": [{"text": prompt}]}],
-            "generation_config": {"temperature": 0.3},
-        }
-
-        max_retries = 3
-        base_backoff = 1.0
-        response = None
-        last_delay = None
-        for attempt in range(max_retries + 1):
-            response = httpx.post(
-                url,
-                json=payload,
-                timeout=self.config.llm_timeout_seconds,
-            )
-            if response.status_code != 429:
-                response.raise_for_status()
-                break
-            if attempt >= max_retries:
-                raise _GeminiRateLimitExceeded(
-                    "requests_per_minute", retry_after=last_delay
-                )
-            retry_after = response.headers.get("Retry-After")
-            if retry_after is not None:
-                try:
-                    delay = float(retry_after)
-                except ValueError:
-                    delay = base_backoff * (2**attempt)
-            else:
-                delay = base_backoff * (2**attempt)
-            last_delay = delay
-            time.sleep(delay)
-
-        if response is None:
-            raise RuntimeError(
-                "Failed to get a response from Gemini API after retries."
-            )
-        data = response.json()
-        tokens_used = None
-        usage_metadata = data.get("usageMetadata") or {}
-        total_tokens = usage_metadata.get("totalTokenCount")
-        if isinstance(total_tokens, int):
-            tokens_used = total_tokens
-        candidates = data.get("candidates", [])
-        if not candidates:
-            return "", tokens_used
-        content = candidates[0].get("content", {})
-        parts = content.get("parts", [])
-        if not parts:
-            return "", tokens_used
-        return str(parts[0].get("text", "")), tokens_used
-
-    def _parse_response(self, response: str) -> LlmAnnotation:
-        """Parse the LLM response into an annotation.
-
-        Args:
-            response: Raw LLM response.
-
-        Returns:
-            Parsed LlmAnnotation.
-        """
-        from pytest_llm_report.llm.schemas import extract_json_from_response
-
-        json_str = extract_json_from_response(response)
-        if not json_str:
-            return LlmAnnotation(error="Failed to parse LLM response as JSON")
-
-        try:
-            data = json.loads(json_str)
-
-            scenario = data.get("scenario", "")
-            why_needed = data.get("why_needed", "")
-            key_assertions = data.get("key_assertions", [])
-
-            if not isinstance(scenario, str):
-                scenario = str(scenario) if scenario else ""
-            if not isinstance(why_needed, str):
-                why_needed = str(why_needed) if why_needed else ""
-            if not isinstance(key_assertions, list):
-                return LlmAnnotation(
-                    error="Invalid response: key_assertions must be a list"
-                )
-            key_assertions = [str(a) for a in key_assertions if a]
-
-            return LlmAnnotation(
-                scenario=scenario,
-                why_needed=why_needed,
-                key_assertions=key_assertions,
-                confidence=0.8,
-            )
-        except json.JSONDecodeError:
-            return LlmAnnotation(error="Failed to parse LLM response as JSON")
+            return False
 
     def _get_rate_limiter(self, api_token: str, model: str) -> _GeminiRateLimiter:
         if model not in self._rate_limiters:
@@ -462,6 +299,48 @@ class GeminiProvider(LlmProvider):
             )
         self._rate_limits[model] = limits
         return limits
+
+    def _call_gemini(
+        self, prompt: str, api_token: str, model: str
+    ) -> tuple[str, int | None]:
+        """Make a request to the Gemini API.
+
+        Args:
+            prompt: User prompt.
+            api_token: Gemini API token.
+
+        Returns:
+            Response text and token usage if available.
+        """
+        import httpx
+
+        model = self._normalize_model_name(model)
+        url = (
+            "https://generativelanguage.googleapis.com/v1beta/models/"
+            f"{model}:generateContent?key={api_token}"
+        )
+        payload = {
+            "system_instruction": {"parts": [{"text": SYSTEM_PROMPT}]},
+            "contents": [{"role": "user", "parts": [{"text": prompt}]}],
+            "generation_config": {"temperature": 0.3},
+        }
+        response = httpx.post(
+            url, json=payload, timeout=self.config.llm_timeout_seconds
+        )
+        if response.status_code == 429:
+            retry_after = float(response.headers.get("Retry-After", 60.0))
+            raise _GeminiRateLimitExceeded(
+                "requests_per_minute", retry_after=retry_after
+            )
+        response.raise_for_status()
+        data = response.json()
+        text = ""
+        for part in data.get("candidates", [])[0].get("content", {}).get("parts", []):
+            text += part.get("text", "")
+        token_usage = None
+        if "usageMetadata" in data:
+            token_usage = data["usageMetadata"].get("totalTokenCount")
+        return text, token_usage
 
     def _fetch_rate_limits(self, api_token: str, model: str) -> _GeminiRateLimitConfig:
         import httpx

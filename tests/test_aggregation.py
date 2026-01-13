@@ -1,7 +1,7 @@
 import json
 import tempfile
 from pathlib import Path
-from unittest.mock import Mock, patch
+from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
@@ -301,3 +301,54 @@ class TestAggregator:
             assert len(result.source_coverage) == 1
             assert isinstance(result.source_coverage[0], SourceCoverageEntry)
             assert result.source_coverage[0].file_path == "src/foo.py"
+
+    def test_load_coverage_from_source(self, aggregator):
+        """Test loading coverage from configured source file."""
+        # 1. Test when option is not set
+        aggregator.config.llm_coverage_source = None
+        assert aggregator._load_coverage_from_source() is None
+
+        # 2. Test when file doesn't exist
+        aggregator.config.llm_coverage_source = "/nonexistent/coverage"
+        with pytest.warns(UserWarning, match="Coverage source not found"):
+            assert aggregator._load_coverage_from_source() is None
+
+        # 3. Test successful loading (mocking coverage.py)
+        aggregator.config.llm_coverage_source = ".coverage"
+        with (
+            patch("pathlib.Path.exists", return_value=True),
+            patch("coverage.Coverage") as mock_cov_cls,
+            patch("pytest_llm_report.coverage_map.CoverageMapper") as mock_mapper_cls,
+        ):
+            mock_cov = MagicMock()
+            mock_cov_cls.return_value = mock_cov
+
+            mock_mapper = MagicMock()
+            mock_mapper_cls.return_value = mock_mapper
+
+            # Setup mock return values
+            entry = SourceCoverageEntry(
+                file_path="src/foo.py",
+                statements=10,
+                missed=2,
+                covered=8,
+                coverage_percent=80.0,
+                covered_ranges="1-8",
+                missed_ranges="9-10",
+            )
+            mock_mapper.map_source_coverage.return_value = [entry]
+
+            # Run method under test
+            result = aggregator._load_coverage_from_source()
+
+            # Verify interactions
+            mock_cov_cls.assert_called_with(data_file=".coverage")
+            mock_cov.load.assert_called_once()
+            mock_mapper.map_source_coverage.assert_called_with(mock_cov)
+
+            # Verify result
+            assert result is not None
+            entries, percent = result
+            assert len(entries) == 1
+            assert entries[0] == entry
+            assert percent == 80.0

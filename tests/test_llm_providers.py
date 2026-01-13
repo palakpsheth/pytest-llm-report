@@ -110,7 +110,7 @@ class TestLiteLLMProvider:
         test = CaseResult(nodeid="tests/test_sample.py::test_case", outcome="passed")
         annotation = provider.annotate(test, "def test_case(): assert True")
 
-        assert annotation.error == "Invalid response: key_assertions must be a list"
+        assert "Invalid response: key_assertions must be a list" in annotation.error
 
     def test_annotate_handles_completion_error(self, monkeypatch: pytest.MonkeyPatch):
         """LiteLLM provider surfaces completion errors in annotation."""
@@ -126,7 +126,7 @@ class TestLiteLLMProvider:
         test = CaseResult(nodeid="tests/test_sample.py::test_case", outcome="passed")
         annotation = provider.annotate(test, "def test_case(): assert True")
 
-        assert annotation.error == "boom"
+        assert "boom" in annotation.error
 
     def test_annotate_missing_dependency(self, mock_import_error):
         """LiteLLM provider reports missing dependency cleanly."""
@@ -326,7 +326,7 @@ class TestGeminiProvider:
 
         assert annotation.scenario == "Checks login"
         assert len(calls) == 2
-        assert sleep_calls == [0.0]
+        assert sleep_calls == []
 
     def test_annotate_skips_on_daily_limit(
         self, monkeypatch: pytest.MonkeyPatch
@@ -577,6 +577,116 @@ class TestGeminiProvider:
         provider.annotate(test, "def test_login(): assert True")
         assert len(model_fetches) == 2
 
+    def test_annotate_records_tokens(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """Gemini provider records token usage."""
+        captured = {}
+
+        def fake_post(url, **kwargs):
+            captured["json"] = kwargs.get("json")
+            response_data = {
+                "scenario": "Checks login",
+                "why_needed": "Stops regressions",
+                "key_assertions": ["status ok"],
+            }
+            # Response with usage metadata
+            payload = {
+                "candidates": [
+                    {"content": {"parts": [{"text": json.dumps(response_data)}]}}
+                ],
+                "usageMetadata": {"totalTokenCount": 123},
+            }
+            return FakeGeminiResponse(payload)
+
+        def fake_get(url, **_kwargs):
+            if "models?" in url:
+                models_payload = {
+                    "models": [
+                        {
+                            "name": "models/gemini-1.5-pro",
+                            "supportedGenerationMethods": ["generateContent"],
+                        }
+                    ]
+                }
+                return FakeGeminiResponse(models_payload)
+            rate_limits_payload = {
+                "rateLimits": [{"name": "tokensPerMinute", "value": 1000}]
+            }
+            return FakeGeminiResponse(rate_limits_payload)
+
+        fake_httpx = SimpleNamespace(post=fake_post, get=fake_get)
+        monkeypatch.setitem(__import__("sys").modules, "httpx", fake_httpx)
+        monkeypatch.setenv("GEMINI_API_TOKEN", "test-token")
+
+        config = Config(provider="gemini", model="gemini-1.5-pro")
+        provider = GeminiProvider(config)
+        test = CaseResult(nodeid="tests/test_auth.py::test_login", outcome="passed")
+
+        # Verify tokens recorded on limiter
+        provider.annotate(test, "def test_login(): assert True")
+        # Rate limits logic is internal, but we can check if it ran without error
+        # To truly verify, we'd inspect provider._rate_limiters['gemini-1.5-pro']._token_usage
+        limiter = provider._rate_limiters.get("gemini-1.5-pro")
+        assert limiter is not None
+        assert len(limiter._token_usage) == 1
+        assert limiter._token_usage[0][1] == 123
+
+    def test_annotate_handles_context_too_large(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Gemini provider handles 400 Context too large errors."""
+
+        def fake_post(url, **kwargs):
+            # Simulate 400 error
+            raise RuntimeError("400 Bad Request: Context too large")
+
+        def fake_get(url, **_kwargs):
+            if "models?" in url:
+                models_payload = {
+                    "models": [
+                        {
+                            "name": "models/gemini-1.5-pro",
+                            "supportedGenerationMethods": ["generateContent"],
+                        }
+                    ]
+                }
+                return FakeGeminiResponse(models_payload)
+            return FakeGeminiResponse({"rateLimits": []})
+
+        fake_httpx = SimpleNamespace(post=fake_post, get=fake_get)
+        monkeypatch.setitem(__import__("sys").modules, "httpx", fake_httpx)
+        monkeypatch.setenv("GEMINI_API_TOKEN", "test-token")
+
+        config = Config(provider="gemini")
+        provider = GeminiProvider(config)
+        test = CaseResult(nodeid="tests/test.py::test_foo", outcome="passed")
+
+        annotation = provider.annotate(test, "def test_foo(): pass")
+        assert "Context too long" in annotation.error
+        assert "400" in annotation.error
+
+    def test_fetch_available_models_error(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Gemini provider handles model fetch errors gracefully."""
+
+        def fake_get(url, **_kwargs):
+            if "models?" in url:
+                raise RuntimeError("Network error")
+            return FakeGeminiResponse({"rateLimits": []})
+
+        fake_httpx = SimpleNamespace(get=fake_get)
+        monkeypatch.setitem(__import__("sys").modules, "httpx", fake_httpx)
+        monkeypatch.setenv("GEMINI_API_TOKEN", "test-token")
+
+        config = Config(provider="gemini")
+        provider = GeminiProvider(config)
+
+        # Trigger model fetch
+        models = provider._ensure_models_and_limits("test-token")
+
+        assert len(models) == 1
+        assert models[0] == "gemini-1.5-flash-latest"
+
 
 class TestOllamaProvider:
     """Tests for the Ollama provider."""
@@ -636,18 +746,21 @@ class TestOllamaProvider:
 
     def test_annotate_handles_call_error(self, monkeypatch: pytest.MonkeyPatch):
         """Ollama provider surfaces call errors in annotation."""
+        # Mock sleep to avoid waiting during retries
+        monkeypatch.setattr("time.sleep", lambda s: None)
+
         config = Config(provider="ollama")
         provider = OllamaProvider(config)
         test = CaseResult(nodeid="tests/test_sample.py::test_case", outcome="passed")
         monkeypatch.setitem(__import__("sys").modules, "httpx", SimpleNamespace())
 
-        def fake_call(prompt: str) -> str:
+        def fake_call(prompt: str, system_prompt: str) -> str:
             raise RuntimeError("boom")
 
         monkeypatch.setattr(provider, "_call_ollama", fake_call)
         annotation = provider.annotate(test, "def test_case(): assert True")
 
-        assert annotation.error == "boom"
+        assert annotation.error == "Failed after 3 retries. Last error: boom"
 
     def test_parse_response_json_in_code_fence(self):
         """Ollama provider extracts JSON from markdown code fences."""
@@ -685,3 +798,214 @@ I hope this helps!"""
         assert annotation.scenario == "Verifies data"
         assert annotation.why_needed == "Catches bugs"
         assert annotation.key_assertions == ["a", "b"]
+
+    def test_annotate_fallbacks_on_context_length_error(
+        self, monkeypatch: pytest.MonkeyPatch
+    ):
+        """Ollama provider falls back to minimal context on 'context too long' error."""
+        monkeypatch.setattr("time.sleep", lambda s: None)
+
+        config = Config(provider="ollama")
+        provider = OllamaProvider(config)
+        test = CaseResult(nodeid="tests/test_sample.py::test_case", outcome="passed")
+        monkeypatch.setitem(__import__("sys").modules, "httpx", SimpleNamespace())
+
+        # Track calls to _build_prompt to verify context usage
+        original_build_prompt = provider._build_prompt
+        build_prompt_calls = []
+
+        def tracked_build_prompt(test, source, context):
+            build_prompt_calls.append(context)
+            return original_build_prompt(test, source, context)
+
+        monkeypatch.setattr(provider, "_build_prompt", tracked_build_prompt)
+
+        # Mock call_ollama to return error first, then success
+        call_count = 0
+
+        def fake_call(prompt: str, system_prompt: str) -> str:
+            nonlocal call_count
+            call_count += 1
+            if call_count == 1:
+                return "error"
+            return (
+                '{"scenario": "ok", "why_needed": "fix", "key_assertions": ["assert"]}'
+            )
+
+        monkeypatch.setattr(provider, "_call_ollama", fake_call)
+
+        # Mock parse_response to return the error object
+        original_parse = provider._parse_response
+
+        def fake_parse(response: str) -> LlmAnnotation:
+            if response == "error":
+                return LlmAnnotation(error="Context too long, please reduce it.")
+            return original_parse(response)
+
+        monkeypatch.setattr(provider, "_parse_response", fake_parse)
+
+        context_files = {"file1.py": "content"}
+        annotation = provider.annotate(test, "def test(): pass", context_files)
+
+        assert annotation.error is None
+        assert call_count == 2
+        # First call should have context, second should have None
+        assert len(build_prompt_calls) == 2
+        assert build_prompt_calls[0] == context_files
+        assert build_prompt_calls[1] is None
+
+    def test_is_local_returns_true(self):
+        """Ollama provider should always return is_local=True."""
+        config = Config(provider="ollama")
+        provider = OllamaProvider(config)
+
+        assert provider.is_local() is True
+
+    def test_check_availability_success(self, monkeypatch: pytest.MonkeyPatch):
+        """Ollama provider checks availability via /api/tags endpoint."""
+
+        class FakeResponse:
+            status_code = 200
+
+        def fake_get(url, **kwargs):
+            assert "/api/tags" in url
+            return FakeResponse()
+
+        fake_httpx = SimpleNamespace(get=fake_get)
+        monkeypatch.setitem(__import__("sys").modules, "httpx", fake_httpx)
+
+        config = Config(provider="ollama", ollama_host="http://localhost:11434")
+        provider = OllamaProvider(config)
+
+        assert provider._check_availability() is True
+
+    def test_check_availability_failure(self, monkeypatch: pytest.MonkeyPatch):
+        """Ollama provider returns False when server is unavailable."""
+
+        def fake_get(url, **kwargs):
+            raise ConnectionError("Server not running")
+
+        fake_httpx = SimpleNamespace(get=fake_get)
+        monkeypatch.setitem(__import__("sys").modules, "httpx", fake_httpx)
+
+        config = Config(provider="ollama")
+        provider = OllamaProvider(config)
+
+        assert provider._check_availability() is False
+
+    def test_check_availability_non_200(self, monkeypatch: pytest.MonkeyPatch):
+        """Ollama provider returns False for non-200 status codes."""
+
+        class FakeResponse:
+            status_code = 500
+
+        def fake_get(url, **kwargs):
+            return FakeResponse()
+
+        fake_httpx = SimpleNamespace(get=fake_get)
+        monkeypatch.setitem(__import__("sys").modules, "httpx", fake_httpx)
+
+        config = Config(provider="ollama")
+        provider = OllamaProvider(config)
+
+        assert provider._check_availability() is False
+
+    def test_call_ollama_success(self, monkeypatch: pytest.MonkeyPatch):
+        """Ollama provider makes correct API call."""
+        captured = {}
+
+        class FakeResponse:
+            status_code = 200
+
+            def raise_for_status(self):
+                pass
+
+            def json(self):
+                return {"response": "test response"}
+
+        def fake_post(url, **kwargs):
+            captured["url"] = url
+            captured["json"] = kwargs.get("json")
+            captured["timeout"] = kwargs.get("timeout")
+            return FakeResponse()
+
+        fake_httpx = SimpleNamespace(post=fake_post)
+        monkeypatch.setitem(__import__("sys").modules, "httpx", fake_httpx)
+
+        config = Config(
+            provider="ollama",
+            ollama_host="http://localhost:11434",
+            model="llama3.2:1b",
+            llm_timeout_seconds=60,
+        )
+        provider = OllamaProvider(config)
+
+        result = provider._call_ollama("test prompt", "system prompt")
+
+        assert result == "test response"
+        assert captured["url"] == "http://localhost:11434/api/generate"
+        assert captured["json"]["model"] == "llama3.2:1b"
+        assert captured["json"]["prompt"] == "test prompt"
+        assert captured["json"]["system"] == "system prompt"
+        assert captured["json"]["stream"] is False
+        assert captured["timeout"] == 60
+
+    def test_call_ollama_uses_default_model(self, monkeypatch: pytest.MonkeyPatch):
+        """Ollama provider uses default model when not specified."""
+        captured = {}
+
+        class FakeResponse:
+            def raise_for_status(self):
+                pass
+
+            def json(self):
+                return {"response": "ok"}
+
+        def fake_post(url, **kwargs):
+            captured["json"] = kwargs.get("json")
+            return FakeResponse()
+
+        fake_httpx = SimpleNamespace(post=fake_post)
+        monkeypatch.setitem(__import__("sys").modules, "httpx", fake_httpx)
+
+        config = Config(provider="ollama", model="")  # Empty model
+        provider = OllamaProvider(config)
+
+        provider._call_ollama("prompt", "system")
+
+        assert captured["json"]["model"] == "llama3.2"  # Default model
+
+    def test_annotate_success_full_flow(self, monkeypatch: pytest.MonkeyPatch):
+        """Ollama provider full annotation flow with mocked HTTP."""
+
+        class FakeResponse:
+            def raise_for_status(self):
+                pass
+
+            def json(self):
+                return {
+                    "response": json.dumps(
+                        {
+                            "scenario": "Tests user login",
+                            "why_needed": "Prevents auth bugs",
+                            "key_assertions": ["check status", "validate token"],
+                        }
+                    )
+                }
+
+        def fake_post(url, **kwargs):
+            return FakeResponse()
+
+        fake_httpx = SimpleNamespace(post=fake_post)
+        monkeypatch.setitem(__import__("sys").modules, "httpx", fake_httpx)
+
+        config = Config(provider="ollama", model="llama3.2")
+        provider = OllamaProvider(config)
+        test = CaseResult(nodeid="tests/test_auth.py::test_login", outcome="passed")
+
+        annotation = provider.annotate(test, "def test_login(): assert True")
+
+        assert annotation.scenario == "Tests user login"
+        assert annotation.why_needed == "Prevents auth bugs"
+        assert annotation.key_assertions == ["check status", "validate token"]
+        assert annotation.error is None

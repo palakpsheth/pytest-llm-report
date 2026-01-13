@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.11"
 resolution-markers = [
     "python_full_version >= '3.14'",
@@ -1666,10 +1666,13 @@ all = [
     { name = "urllib3" },
 ]
 dev = [
+    { name = "httpx" },
+    { name = "litellm" },
     { name = "mypy" },
     { name = "playwright" },
     { name = "pytest-xdist" },
     { name = "ruff" },
+    { name = "urllib3" },
 ]
 gemini = [
     { name = "httpx" },
@@ -1688,16 +1691,24 @@ pdf = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "httpx" },
+    { name = "litellm" },
+    { name = "mypy" },
+    { name = "playwright" },
     { name = "pre-commit" },
+    { name = "pytest-xdist" },
     { name = "ruff" },
+    { name = "urllib3" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "coverage", specifier = ">=7.0.0" },
+    { name = "httpx", marker = "extra == 'dev'", specifier = ">=0.24.0" },
     { name = "httpx", marker = "extra == 'gemini'", specifier = ">=0.24.0" },
     { name = "httpx", marker = "extra == 'ollama'", specifier = ">=0.24.0" },
     { name = "jinja2", specifier = ">=3.0.0" },
+    { name = "litellm", marker = "extra == 'dev'", specifier = ">=1.0.0" },
     { name = "litellm", marker = "extra == 'litellm'", specifier = ">=1.0.0" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.0.0" },
     { name = "playwright", marker = "extra == 'dev'", specifier = ">=1.40.0" },
@@ -1707,6 +1718,7 @@ requires-dist = [
     { name = "pytest-llm-report", extras = ["ollama", "litellm", "gemini", "pdf", "dev"], marker = "extra == 'all'" },
     { name = "pytest-xdist", marker = "extra == 'dev'", specifier = ">=3.0.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.1.0" },
+    { name = "urllib3", marker = "extra == 'dev'", specifier = ">=2.6.3" },
     { name = "urllib3", marker = "extra == 'gemini'", specifier = ">=2.6.3" },
     { name = "urllib3", marker = "extra == 'ollama'", specifier = ">=2.6.3" },
 ]
@@ -1714,8 +1726,14 @@ provides-extras = ["ollama", "litellm", "gemini", "pdf", "dev", "all"]
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "httpx", specifier = ">=0.24.0" },
+    { name = "litellm", specifier = ">=1.0.0" },
+    { name = "mypy", specifier = ">=1.0.0" },
+    { name = "playwright", specifier = ">=1.40.0" },
     { name = "pre-commit", specifier = ">=4.5.1" },
+    { name = "pytest-xdist", specifier = ">=3.0.0" },
     { name = "ruff", specifier = ">=0.14.10" },
+    { name = "urllib3", specifier = ">=2.6.3" },
 ]
 
 [[package]]

@@ -86,7 +86,7 @@ class CoverageMapper:
         parallel_files = list(glob.glob(".coverage.*"))
 
         if not coverage_file.exists() and not parallel_files:
-            self.warnings.append(make_warning(WarningCode.W001_NO_COVERAGE).to_dict())
+            self.warnings.append(make_warning(WarningCode.W001_NO_COVERAGE))
             return None
 
         try:
@@ -142,7 +142,7 @@ class CoverageMapper:
                 continue
 
         if not has_contexts:
-            self.warnings.append(make_warning(WarningCode.W002_NO_CONTEXTS).to_dict())
+            self.warnings.append(make_warning(WarningCode.W002_NO_CONTEXTS))
             return result
 
         repo_root = self.config.repo_root or Path.cwd()
