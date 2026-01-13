@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Concurrent LLM annotation support via `llm_max_concurrency` (default: 4 for cloud, 2 for local recommended)
 - Performance optimization for local providers (e.g., Ollama) to skip artificial rate limits
 - `llm_max_tests` now defaults to 0 (no limit) instead of 100
+- New `--llm-coverage-source` CLI option to inject external coverage data (e.g., from `coverage run`) into reports
+- HTML report now expands all test details by default for better visibility
+
 
 ### Changed
 

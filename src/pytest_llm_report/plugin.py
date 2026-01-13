@@ -103,6 +103,12 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         default=None,
         help="Group ID for related runs",
     )
+    group.addoption(
+        "--llm-coverage-source",
+        dest="llm_coverage_source",
+        default=None,
+        help="Path to .coverage file or directory for aggregation enhancement",
+    )
 
     # Add ini-file options for pyproject.toml [tool.pytest_llm_report]
     parser.addini(
@@ -189,6 +195,8 @@ def _load_config_from_pytest(config: pytest.Config) -> Config:
         cfg.aggregate_run_id = config.option.llm_aggregate_run_id
     if config.option.llm_aggregate_group_id:
         cfg.aggregate_group_id = config.option.llm_aggregate_group_id
+    if config.option.llm_coverage_source:
+        cfg.llm_coverage_source = config.option.llm_coverage_source
 
     # Set repo root
     cfg.repo_root = config.rootpath

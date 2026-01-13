@@ -15,6 +15,7 @@ Complete configuration reference for pytest-llm-report.
 | `--llm-aggregate-policy POLICY` | Aggregation policy: latest, merge, all | latest |
 | `--llm-aggregate-run-id ID` | Unique run ID | Auto-generated |
 | `--llm-aggregate-group-id ID` | Group ID for related runs | None |
+| `--llm-coverage-source PATH` | Path to .coverage file/dir to inject into report | None |
 
 > **Tip**: Run `pytest --help` to see usage examples for each option.
 

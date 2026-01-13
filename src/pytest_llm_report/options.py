@@ -128,6 +128,7 @@ class Config:
     # Coverage settings
     omit_tests_from_coverage: bool = True
     include_phase: str = "run"
+    llm_coverage_source: str | None = None
 
     # Report behavior
     report_collect_only: bool = True

@@ -33,7 +33,21 @@ pytest --collect-only \
 - **merge**: Groups results by test ID but keeps strictly distinct outcomes (not fully implemented yet, falls back to latest).
 - **all**: Keeps all results as separate entries. Useful for analyzing history.
 
+- **all**: Keeps all results as separate entries. Useful for analyzing history.
+
+### Aggregating with Coverage
+
+If your individual test runs do not capture valid coverage data (e.g., when using `coverage run` separately from pytest), you can inject coverage data into the aggregated report using a `.coverage` file or directory:
+
+```bash
+pytest --collect-only \
+  --llm-aggregate-dir=reports \
+  --llm-report=report.html \
+  --llm-coverage-source=.coverage
+```
+
 ## CI Example (GitHub Actions)
+
 
 Here's how to aggregate reports from a matrix strategy in GitHub Actions:
 

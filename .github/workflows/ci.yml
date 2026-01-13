@@ -97,6 +97,10 @@ jobs:
           disable_search: true
           fail_ci_if_error: false
 
+      - name: Prepare coverage artifact
+        if: matrix.python-version == '3.12'
+        run: cp .coverage reports/.coverage.py3.12 || true
+
       - name: Upload report artifact
         uses: actions/upload-artifact@v4
         if: always()
@@ -105,6 +109,7 @@ jobs:
           path: |
             reports/pytest_llm_report-py${{ matrix.python-version }}.json
             reports/pytest_llm_report-py${{ matrix.python-version }}.pdf
+            reports/.coverage.py${{ matrix.python-version }}
           retention-days: 7
 
       - name: Fail if tests failed
@@ -167,7 +172,8 @@ jobs:
             --llm-aggregate-dir=collected-reports/ \
             --llm-aggregate-policy=merge \
             --llm-report=site/reports/index.html \
-            --llm-report-json=site/reports/latest.json
+            --llm-report-json=site/reports/latest.json \
+            --llm-coverage-source=collected-reports/.coverage.py3.12
 
       - name: Copy latest PDF report
         run: |

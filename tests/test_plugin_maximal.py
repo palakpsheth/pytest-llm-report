@@ -585,3 +585,4 @@ class TestPluginTerminalSummary:
         # Verify specific option
         calls = [c[0] for c in group.addoption.call_args_list]
         assert any("--llm-report" in args[0] for args in calls)
+        assert any("--llm-coverage-source" in args[0] for args in calls)
