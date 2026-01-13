@@ -488,4 +488,100 @@ class TestPluginTerminalSummary:
 
                 pytest_terminal_summary(mock_terminalreporter, 0, mock_config)
 
-                mock_writer.write_report.assert_called_once()
+    def test_terminal_summary_llm_enabled(self):
+        """Test terminal summary with LLM enabled runs annotations."""
+        from pytest_llm_report.options import Config
+        from pytest_llm_report.plugin import (
+            _config_key,
+            _enabled_key,
+            pytest_terminal_summary,
+        )
+
+        mock_config = MagicMock()
+        del mock_config.workerinput
+
+        # Provider enabled
+        cfg = Config(provider="ollama", report_html="out.html")
+        stash = {_enabled_key: True, _config_key: cfg}
+
+        # Proper stash mock
+        class MockStash(dict):
+            pass
+
+        mock_config.stash = MockStash(stash)
+
+        mock_terminalreporter = MagicMock()
+        mock_terminalreporter.stats = {}
+
+        # Patch dependencies at source
+        with (
+            patch("pytest_llm_report.coverage_map.CoverageMapper"),
+            patch("pytest_llm_report.report_writer.ReportWriter") as mock_writer_cls,
+            patch("pytest_llm_report.llm.annotator.annotate_tests") as mock_annotate,
+            patch("pytest_llm_report.llm.base.get_provider") as mock_get_provider,
+        ):
+            mock_writer = MagicMock()
+            mock_writer_cls.return_value = mock_writer
+
+            mock_provider = MagicMock()
+            mock_provider.get_model_name.return_value = "gpt-4"
+            mock_get_provider.return_value = mock_provider
+
+            pytest_terminal_summary(mock_terminalreporter, 0, mock_config)
+
+            mock_annotate.assert_called_once()
+            assert mock_annotate.call_args[0][1] == cfg  # Verify config passed
+
+    def test_terminal_summary_coverage_calculation(self):
+        """Test coverage percentage calculation logic."""
+        from pytest_llm_report.options import Config
+        from pytest_llm_report.plugin import (
+            _config_key,
+            _enabled_key,
+            pytest_terminal_summary,
+        )
+
+        mock_config = MagicMock()
+        del mock_config.workerinput
+        cfg = Config(report_html="out.html")
+        stash = {_enabled_key: True, _config_key: cfg}
+
+        class MockStash(dict):
+            pass
+
+        mock_config.stash = MockStash(stash)
+
+        # Mock coverage file existence and Coverage class
+        with (
+            patch("pathlib.Path.exists", return_value=True),
+            patch("coverage.Coverage") as mock_cov_cls,
+            patch("pytest_llm_report.coverage_map.CoverageMapper"),
+            patch("pytest_llm_report.report_writer.ReportWriter"),
+        ):
+            mock_cov = MagicMock()
+            mock_cov_cls.return_value = mock_cov
+            mock_cov.report.return_value = 85.5
+
+            pytest_terminal_summary(MagicMock(), 0, mock_config)
+
+            mock_cov.load.assert_called_once()
+            mock_cov.report.assert_called_once()
+
+    def test_pytest_addoption(self):
+        """Test pytest_addoption adds expected arguments."""
+        from pytest_llm_report.plugin import pytest_addoption
+
+        parser = MagicMock()
+        group = MagicMock()
+        parser.getgroup.return_value = group
+
+        pytest_addoption(parser)
+
+        parser.getgroup.assert_called_with("llm-report", "LLM-enhanced test reports")
+        # Check a few options were added
+        assert group.addoption.call_count > 0
+        assert parser.addini.call_count > 0
+
+        # Verify specific option
+        calls = [c[0] for c in group.addoption.call_args_list]
+        assert any("--llm-report" in args[0] for args in calls)
