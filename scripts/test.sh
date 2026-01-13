@@ -3,7 +3,7 @@
 set -e
 uv run pytest \
     --cov=pytest_llm_report \
+    --cov-branch \
     --cov-context=test \
     --cov-report=term-missing \
-    --cov-fail-under=90 \
     "$@"

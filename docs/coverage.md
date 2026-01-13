@@ -25,9 +25,15 @@ Add to your `pyproject.toml`:
 [tool.pytest.ini_options]
 addopts = [
     "--cov=your_package",       # Replace with your package name
+    "--cov-branch",             # Enable branch coverage
     "--cov-context=test",       # Required for per-test coverage mapping
     "--cov-report=",            # Suppress default coverage report (optional)
 ]
+
+[tool.coverage.report]
+fail_under = 90                 # Enforce 90% coverage
+show_missing = true
+
 ```
 
 ### Option 2: pytest.ini
@@ -36,6 +42,7 @@ addopts = [
 [pytest]
 addopts =
     --cov=your_package
+    --cov-branch
     --cov-context=test
     --cov-report=
 ```
@@ -46,6 +53,7 @@ addopts =
 [tool:pytest]
 addopts =
     --cov=your_package
+    --cov-branch
     --cov-context=test
     --cov-report=
 ```
@@ -53,7 +61,7 @@ addopts =
 ### Option 4: Command Line
 
 ```bash
-pytest --cov=your_package --cov-context=test --llm-report=report.html
+pytest --cov=your_package --cov-branch --cov-context=test --llm-report=report.html
 ```
 
 ## Configuration Options
@@ -61,6 +69,7 @@ pytest --cov=your_package --cov-context=test --llm-report=report.html
 | Option | Description |
 |--------|-------------|
 | `--cov=PKG` | Package/directory to measure coverage for |
+| `--cov-branch` | Enable branch coverage |
 | `--cov-context=test` | Record context for each test |
 | `--cov-report=` | Suppress default report (set empty) |
 | `--cov-append` | Append to existing coverage data |
@@ -76,7 +85,7 @@ If you need accurate coverage for these early imports (common for plugin develop
 coverage erase
 
 # Run with coverage wrapper
-coverage run -m pytest -o "addopts=" -p no:pytest-cov
+coverage run --branch -m pytest -o "addopts=" -p no:pytest-cov
 
 # View report
 coverage report
@@ -89,13 +98,13 @@ The `-o "addopts=" -p no:pytest-cov` flags are recommended to prevent conflicts 
 For `pytest-xdist` (parallel testing), coverage data is automatically combined when using `pytest-cov`:
 
 ```bash
-pytest -n auto --cov=your_package --cov-context=test --llm-report=report.html
+pytest -n auto --cov=your_package --cov-branch --cov-context=test --llm-report=report.html
 ```
 
 When using `coverage run` with `xdist`, make sure to use `coverage combine` if running manually:
 
 ```bash
-coverage run -p -m pytest -n auto ...
+coverage run --branch -p -m pytest -n auto ...
 coverage combine
 coverage report
 ```
@@ -109,7 +118,7 @@ Recommended CI command for full accuracy:
 ```yaml
 - name: Run tests and collect coverage
   run: |
-    coverage run -m pytest \
+    coverage run --branch -m pytest \
       -o "addopts=" \
       -p no:pytest-cov \
       --llm-report=report.html \

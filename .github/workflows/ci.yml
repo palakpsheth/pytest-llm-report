@@ -64,7 +64,7 @@ jobs:
             )
           fi
           uv run pytest tests \
-            -o "addopts=--cov=src/pytest_llm_report --cov-context=test --cov-report=" \
+            -o "addopts=--cov=src/pytest_llm_report --cov-branch --cov-context=test --cov-report=" \
             -o llm_report_context_mode=complete \
             --llm-report-json="${json_report}" \
             --llm-pdf="${pdf_report}" \
@@ -73,7 +73,7 @@ jobs:
           test_exit_code=$?
 
           uv run coverage xml
-          uv run coverage report --fail-under=90
+          uv run coverage report
           cov_exit_code=$?
 
           if [ $test_exit_code -ne 0 ]; then

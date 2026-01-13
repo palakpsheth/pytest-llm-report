@@ -91,6 +91,7 @@ addopts = [
     "-ra",
     "-q",
     "--cov=src/pytest_llm_report",
+    "--cov-branch",
     "--cov-context=test",
     "--cov-report=",
     # The following options cause an HTML and JSON LLM report to be generated
@@ -143,6 +144,7 @@ exclude_also = [
     # Don't complain about defensive assertions
     "raise AssertionError",
 ]
+fail_under = 90
 
 [tool.ruff]
 line-length = 88

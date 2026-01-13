@@ -8,7 +8,7 @@ Common issues and solutions for pytest-llm-report.
 
 **Solution**: Run with `--cov-context=test`:
 ```bash
-pytest --cov=my_pkg --cov-context=test --llm-report=report.html
+pytest --cov=my_pkg --cov-branch --cov-context=test --llm-report=report.html
 ```
 
 ## "No .coverage file found"

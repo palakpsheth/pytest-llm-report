@@ -24,7 +24,7 @@ uv run playwright install chromium
 uv run pytest
 
 # Run tests with coverage (accurate for plugin imports)
-uv run coverage run -m pytest -o "addopts=" -p no:pytest-cov
+uv run coverage run --branch -m pytest -o "addopts=" -p no:pytest-cov
 uv run coverage report
 ```
 
@@ -45,11 +45,11 @@ This ensures `uv sync` installs everything needed to run all tests.
 uv run pytest
 
 # With accurate coverage (Recommended)
-uv run coverage run -m pytest -o "addopts=" -p no:pytest-cov
-uv run coverage report --fail-under=90
+uv run coverage run --branch -m pytest -o "addopts=" -p no:pytest-cov
+uv run coverage report
 
 # With pytest-cov (Faster, but may miss early plugin imports)
-uv run pytest --cov=pytest_llm_report --cov-fail-under=90
+uv run pytest --cov=pytest_llm_report --cov-branch
 
 # Specific test file
 uv run pytest tests/test_models.py -v
@@ -93,6 +93,6 @@ When contributing:
 
 1. Fork and create a feature branch
 2. Add tests for new functionality
-3. Ensure `uv run coverage run -m pytest -o "addopts=" -p no:pytest-cov && uv run coverage report --fail-under=90` passes
+3. Ensure `uv run coverage run --branch -m pytest -o "addopts=" -p no:pytest-cov && uv run coverage report` passes
 4. Run `uv run ruff check . && uv run ruff format --check .`
 5. Submit PR with clear description

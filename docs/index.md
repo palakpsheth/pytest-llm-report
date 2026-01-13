@@ -20,7 +20,7 @@ pip install pytest-llm-report
 
 Run tests with a report:
 ```bash
-pytest --cov=my_pkg --cov-context=test --llm-report=report.html
+pytest --cov=my_pkg --cov-branch --cov-context=test --llm-report=report.html
 ```
 
 ## Features
