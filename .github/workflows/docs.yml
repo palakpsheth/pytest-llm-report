@@ -35,7 +35,7 @@ jobs:
         uses: astral-sh/setup-uv@v7
 
       - name: Build docs
-        run: uv tool run --from mkdocs-material mkdocs build
+        run: uv tool run --from mkdocs-material --with mkdocs-git-revision-date-localized-plugin mkdocs build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
