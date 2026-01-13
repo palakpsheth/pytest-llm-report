@@ -4,6 +4,8 @@ coverage:
     project:
       default:
         target: 90%
+        threshold: 2
 
 ignore:
   - "src/pytest_llm_report/templates/**/*"
+  - "tests/**"

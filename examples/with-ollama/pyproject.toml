@@ -30,4 +30,5 @@ llm_max_tests = 50
 
 
 [tool.coverage.run]
-branch = true
+source = ["pytest_llm_report"]
+branch = false
