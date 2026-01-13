@@ -769,10 +769,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#example-multi-package-project" class="md-nav__link">
+  <a href="#advanced-accurate-module-level-coverage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example: Multi-Package Project
+        Advanced: Accurate Module-Level Coverage
       
     </span>
   </a>
@@ -1115,10 +1115,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#example-multi-package-project" class="md-nav__link">
+  <a href="#advanced-accurate-module-level-coverage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example: Multi-Package Project
+        Advanced: Accurate Module-Level Coverage
       
     </span>
   </a>
@@ -1281,49 +1281,49 @@
 </tr>
 </tbody>
 </table>
-<h2 id="example-multi-package-project">Example: Multi-Package Project</h2>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">[tool.pytest.ini_options]</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">addopts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="s2">&quot;--cov=src/package_a&quot;</span><span class="p">,</span>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="s2">&quot;--cov=src/package_b&quot;</span><span class="p">,</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">    </span><span class="s2">&quot;--cov-context=test&quot;</span><span class="p">,</span>
-<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="w">    </span><span class="s2">&quot;--llm-report=reports/test-report.html&quot;</span><span class="p">,</span>
-<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="w">    </span><span class="s2">&quot;--llm-report-json=reports/test-report.json&quot;</span><span class="p">,</span>
-<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="p">]</span>
+<h2 id="advanced-accurate-module-level-coverage">Advanced: Accurate Module-Level Coverage</h2>
+<p>By default, <code>pytest-cov</code> starts measuring coverage after pytest has already loaded many of your project's modules. This can lead to "missing" coverage for top-level code like class definitions, constants, and global variables in those files.</p>
+<p>If you need accurate coverage for these early imports (common for plugin development or critical library setup), use <code>coverage run -m pytest</code> instead:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Erase old data</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>coverage<span class="w"> </span>erase
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># Run with coverage wrapper</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>coverage<span class="w"> </span>run<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>-o<span class="w"> </span><span class="s2">&quot;addopts=&quot;</span><span class="w"> </span>-p<span class="w"> </span>no:pytest-cov
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
+<a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1"># View report</span>
+<a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>coverage<span class="w"> </span>report
 </code></pre></div>
+<p>The <code>-o "addopts=" -p no:pytest-cov</code> flags are recommended to prevent conflicts with your existing <code>pytest-cov</code> configuration.</p>
 <h2 id="paralleldistributed-testing">Parallel/Distributed Testing</h2>
-<p>For <code>pytest-xdist</code> (parallel testing), coverage data is automatically combined:</p>
+<p>For <code>pytest-xdist</code> (parallel testing), coverage data is automatically combined when using <code>pytest-cov</code>:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>pytest<span class="w"> </span>-n<span class="w"> </span>auto<span class="w"> </span>--cov<span class="o">=</span>your_package<span class="w"> </span>--cov-context<span class="o">=</span><span class="nb">test</span><span class="w"> </span>--llm-report<span class="o">=</span>report.html
 </code></pre></div>
-<p>The plugin reads both <code>.coverage</code> and <code>.coverage.*</code> files.</p>
+<p>When using <code>coverage run</code> with <code>xdist</code>, make sure to use <code>coverage combine</code> if running manually:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>coverage<span class="w"> </span>run<span class="w"> </span>-p<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>-n<span class="w"> </span>auto<span class="w"> </span>...
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>coverage<span class="w"> </span>combine
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>coverage<span class="w"> </span>report
+</code></pre></div>
+<p>The plugin reads both <code>.coverage</code> and <code>.coverage.*</code> files to generate the final report.</p>
 <h2 id="ci-integration">CI Integration</h2>
-<p>Example GitHub Actions workflow:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run tests</span>
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="w">    </span><span class="no">pytest \</span>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="w">      </span><span class="no">--cov=your_package \</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="w">      </span><span class="no">--cov-context=test \</span>
-<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="w">      </span><span class="no">--cov-report=xml \</span>
-<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="w">      </span><span class="no">--llm-report=report.html \</span>
-<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="w">      </span><span class="no">--llm-report-json=report.json</span>
-<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>
-<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Upload report</span>
-<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="w">  </span><span class="nt">uses</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">actions/upload-artifact@v4</span>
-<a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="w">  </span><span class="nt">with</span><span class="p">:</span>
-<a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">test-report</span>
-<a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="w">      </span><span class="no">report.html</span>
-<a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="w">      </span><span class="no">report.json</span>
+<p>Recommended CI command for full accuracy:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run tests and collect coverage</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="w">    </span><span class="no">coverage run -m pytest \</span>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="w">      </span><span class="no">-o &quot;addopts=&quot; \</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="w">      </span><span class="no">-p no:pytest-cov \</span>
+<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="w">      </span><span class="no">--llm-report=report.html \</span>
+<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="w">      </span><span class="no">--llm-report-json=report.json</span>
+<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>
+<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Generate coverage XML</span>
+<a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">coverage xml</span>
 </code></pre></div>
 <h2 id="troubleshooting">Troubleshooting</h2>
 <h3 id="no-coverage-contexts-found-warning">"No coverage contexts found" warning</h3>
 <p>This means <code>--cov-context=test</code> was not set. Add it to your pytest configuration.</p>
 <h3 id="no-coverage-file-found-warning">"No .coverage file found" warning</h3>
-<p>Ensure you're running with <code>--cov=your_package</code>. The <code>.coverage</code> file must exist after the test run.</p>
+<p>Ensure you're running with <code>--cov=your_package</code> or <code>coverage run</code>. The <code>.coverage</code> file must exist after the test run.</p>
 <h3 id="coverage-data-seems-stale">Coverage data seems stale</h3>
-<p>Run <code>coverage erase</code> before your test run to clear old data:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>coverage<span class="w"> </span>erase<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>pytest<span class="w"> </span>--cov<span class="o">=</span>your_package<span class="w"> </span>--cov-context<span class="o">=</span><span class="nb">test</span>
-</code></pre></div>
+<p>Run <code>coverage erase</code> before your test run to clear old data, or use the <code>--cov-clear</code> flag if using <code>pytest-cov</code>.</p>
 
 
 
