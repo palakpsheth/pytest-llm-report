@@ -1189,6 +1189,11 @@
 <td>5</td>
 </tr>
 <tr>
+<td><code>--llm-max-retries N</code></td>
+<td>Maximum retries for transient errors</td>
+<td>3</td>
+</tr>
+<tr>
 <td><code>--llm-aggregate-dir DIR</code></td>
 <td>Directory with reports to <a href="../aggregation/">aggregate</a></td>
 <td>None</td>
@@ -1238,8 +1243,11 @@
 <a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a><span class="c1"># Lower this if experiencing timeouts or system instability with local LLM</span>
 <a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="n">llm_max_concurrency</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
 <a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>
-<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="c1"># Tip: Local providers (like &quot;ollama&quot;) skip rate limiting automatically</span>
-<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="c1"># so you can increase concurrency to speed up annotations.</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a><span class="c1"># Maximum retries for transient errors (default: 3)</span>
+<a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="n">llm_report_max_retries</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>
+<a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="c1"># Tip: Local providers (like &quot;ollama&quot;) skip rate limiting automatically</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a><span class="c1"># so you can increase concurrency to speed up annotations.</span>
 </code></pre></div>
 <h2 id="llm-provider-settings">LLM Provider Settings</h2>
 <h3 id="provider-none-default">Provider: none (default)</h3>
