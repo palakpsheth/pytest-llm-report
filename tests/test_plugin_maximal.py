@@ -582,11 +582,78 @@ class TestPluginTerminalSummary:
         pytest_addoption(parser)
 
         parser.getgroup.assert_called_with("llm-report", "LLM-enhanced test reports")
-        # Check a few options were added
-        assert group.addoption.call_count > 0
-        assert parser.addini.call_count > 0
-
         # Verify specific option
         calls = [c[0] for c in group.addoption.call_args_list]
         assert any("--llm-report" in args[0] for args in calls)
         assert any("--llm-coverage-source" in args[0] for args in calls)
+
+    def test_pytest_addoption_ini(self):
+        """Test pytest_addoption adds INI options (lines 13-34)."""
+        from pytest_llm_report.plugin import pytest_addoption
+
+        parser = MagicMock()
+        pytest_addoption(parser)
+        # Verify ini additions
+        ini_calls = [c[0][0] for c in parser.addini.call_args_list]
+        assert "llm_report_html" in ini_calls
+        assert "llm_report_json" in ini_calls
+        assert "llm_report_max_retries" in ini_calls
+
+
+class TestPluginTerminalSummaryErrors:
+    """Tests for error branches in terminal summary."""
+
+    def test_terminal_summary_coverage_error(self):
+        """Test coverage calculation error (lines 322-328)."""
+        from pytest_llm_report.options import Config
+        from pytest_llm_report.plugin import (
+            _config_key,
+            _enabled_key,
+            pytest_terminal_summary,
+        )
+
+        mock_config = MagicMock()
+        del mock_config.workerinput
+        cfg = Config(report_html="out.html", llm_coverage_source=".coverage")
+        mock_config.stash = {_enabled_key: True, _config_key: cfg}
+
+        with (
+            patch("pathlib.Path.exists", return_value=True),
+            patch("coverage.Coverage") as mock_cov_cls,
+            patch("pytest_llm_report.coverage_map.CoverageMapper"),
+            patch("pytest_llm_report.report_writer.ReportWriter"),
+        ):
+            mock_cov = MagicMock()
+            mock_cov_cls.return_value = mock_cov
+            # Force OSError during load
+            mock_cov.load.side_effect = OSError("Disk full")
+
+            with pytest.warns(
+                UserWarning, match="Failed to compute coverage percentage"
+            ):
+                pytest_terminal_summary(MagicMock(), 0, mock_config)
+
+
+class TestPluginConfigureFallback:
+    """Tests for configuration fallback paths."""
+
+    def test_pytest_configure_fallback_load(self):
+        """Test fallback to load_config if Config.load is missing (lines 188-195)."""
+        from pytest_llm_report.plugin import pytest_configure
+
+        mock_config = MagicMock()
+        del mock_config.workerinput
+        mock_config.stash = {}
+        mock_config.getini.return_value = None
+        mock_config.option.llm_report_html = None
+        mock_config.option.llm_max_retries = None
+
+        with (
+            patch("pytest_llm_report.options.Config", spec=[]),  # No load() method
+            patch("pytest_llm_report.options.load_config") as mock_load,
+        ):
+            mock_cfg = MagicMock()
+            mock_cfg.validate.return_value = []
+            mock_load.return_value = mock_cfg
+            pytest_configure(mock_config)
+            mock_load.assert_called_once()

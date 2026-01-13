@@ -13,21 +13,30 @@ class TestConfig:
         assert cfg.llm_context_mode == "minimal"
         assert cfg.llm_max_tests == 0
         assert cfg.llm_max_retries == 3
+        # Additional defaults
+        assert cfg.llm_context_bytes == 32000
+        assert cfg.llm_context_file_limit == 10
+        assert cfg.llm_requests_per_minute == 5
+        assert cfg.llm_timeout_seconds == 30
+        assert cfg.llm_cache_ttl_seconds == 86400
+        assert cfg.include_phase == "run"
+        assert cfg.aggregate_policy == "latest"
         assert cfg.is_llm_enabled() is False
+
+    def test_is_llm_enabled(self):
+        """Test is_llm_enabled check."""
+        assert Config(provider="none").is_llm_enabled() is False
+        assert Config(provider="ollama").is_llm_enabled() is True
+        cfg = Config()
+        assert not cfg.is_llm_enabled()
+        cfg.provider = "ollama"
+        assert cfg.is_llm_enabled()
 
     def test_get_default_config(self):
         """Test the factory function."""
         cfg = get_default_config()
         assert isinstance(cfg, Config)
         assert cfg.provider == "none"
-
-    def test_is_llm_enabled(self):
-        """Test is_llm_enabled predicate."""
-        cfg = Config()
-        assert not cfg.is_llm_enabled()
-
-        cfg.provider = "ollama"
-        assert cfg.is_llm_enabled()
 
     def test_validate_valid_config(self):
         """Test validation with a valid configuration."""
@@ -66,7 +75,7 @@ class TestConfig:
     def test_validate_numeric_ranges(self):
         """Test validation of numeric constraints."""
         cfg = Config(
-            llm_context_bytes=10,
+            llm_context_bytes=500,  # < 1000
             llm_max_tests=-1,
             llm_requests_per_minute=0,
             llm_timeout_seconds=0,
@@ -74,11 +83,11 @@ class TestConfig:
         )
         errors = cfg.validate()
         assert len(errors) >= 5
-        assert any("llm_context_bytes" in e for e in errors)
-        assert any("llm_max_tests" in e for e in errors)
-        assert any("llm_requests_per_minute" in e for e in errors)
-        assert any("llm_timeout_seconds" in e for e in errors)
-        assert any("llm_max_retries" in e for e in errors)
+        assert "llm_context_bytes must be at least 1000" in errors
+        assert "llm_max_tests must be 0 (no limit) or positive" in errors
+        assert "llm_requests_per_minute must be at least 1" in errors
+        assert "llm_timeout_seconds must be at least 1" in errors
+        assert "llm_max_retries must be 0 or positive" in errors
 
 
 class TestLoadConfig:
@@ -135,6 +144,16 @@ class TestLoadConfig:
         assert cfg.llm_max_retries == 5
         assert cfg.report_html == "report.html"
         assert cfg.report_json == "report.json"
+
+    def test_load_config_invalid_int_ini(self, mock_pytest_config):
+        """Test handling of invalid integer values in INI (lines 266-267)."""
+        ini_values = {
+            "llm_report_max_retries": "garbage",
+        }
+        mock_pytest_config.getini.side_effect = lambda key: ini_values.get(key)
+        cfg = load_config(mock_pytest_config)
+        # Should fallback to default 3 or not crash
+        assert cfg.llm_max_retries == 3
 
     def test_load_from_cli_overrides_ini(self, mock_pytest_config):
         """Test that CLI options override ini options."""
