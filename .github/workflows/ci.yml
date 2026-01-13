@@ -102,8 +102,8 @@ jobs:
         run: cp .coverage reports/.coverage.py3.12 || true
 
       - name: Upload report artifact
+        if: matrix.python-version == '3.12'
         uses: actions/upload-artifact@v4
-        if: always()
         with:
           name: report-py${{ matrix.python-version }}
           path: |
