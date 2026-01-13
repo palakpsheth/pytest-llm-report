@@ -11,8 +11,14 @@ For full documentation, see: [palakpsheth.github.io/pytest-llm-report](https://p
 git clone https://github.com/palakpsheth/pytest-llm-report.git
 cd pytest-llm-report
 
-# Install with dev dependencies
-uv sync --all-extras
+# Install with all development dependencies (includes all LLM providers)
+uv sync
+
+# Or install manually with all extras
+uv pip install -e ".[dev]"
+
+# Install Playwright browsers (required for PDF tests)
+uv run playwright install chromium
 
 # Run tests
 uv run pytest
@@ -24,6 +30,15 @@ uv run pytest --cov=pytest_llm_report --cov-report=term-missing
 uv run ruff format .
 uv run ruff check .
 ```
+
+### What Gets Installed
+
+The `dev` optional dependency group includes:
+- **All LLM providers**: httpx (for Ollama/Gemini), litellm
+- **PDF generation**: playwright
+- **Development tools**: ruff, mypy, pytest-xdist
+
+This ensures `uv sync` installs everything needed to run all tests.
 
 ## Running Tests
 

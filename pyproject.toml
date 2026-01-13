@@ -51,11 +51,16 @@ dev = [
     "ruff>=0.1.0",
     "mypy>=1.0.0",
     "pytest-xdist>=3.0.0",
+    # Include all LLM provider dependencies for testing
+    "httpx>=0.24.0",
+    "urllib3>=2.6.3",
+    "litellm>=1.0.0",
     "playwright>=1.40.0",
 ]
 all = [
     "pytest-llm-report[ollama,litellm,gemini,pdf,dev]",
 ]
+
 
 [project.urls]
 Homepage = "https://github.com/palakpsheth/pytest-llm-report"
@@ -77,6 +82,17 @@ include = [
     "README.md",
     "LICENSE",
     "CHANGELOG.md",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+    "pytest-xdist>=3.0.0",
+    "httpx>=0.24.0",
+    "urllib3>=2.6.3",
+    "litellm>=1.0.0",
+    "playwright>=1.40.0",
 ]
 
 [tool.pytest.ini_options]

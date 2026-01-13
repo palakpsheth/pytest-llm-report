@@ -36,6 +36,32 @@ Or with uv:
 uv add pytest-llm-report
 ```
 
+### Optional Dependencies
+
+Install additional features as needed:
+
+```bash
+# Ollama provider
+pip install pytest-llm-report[ollama]
+
+# Gemini provider
+pip install pytest-llm-report[gemini]
+
+# LiteLLM provider (supports OpenAI, Anthropic, etc.)
+pip install pytest-llm-report[litellm]
+
+# PDF generation
+pip install pytest-llm-report[pdf]
+
+# All features
+pip install pytest-llm-report[all]
+```
+
+With uv:
+```bash
+uv add "pytest-llm-report[ollama]"  # or gemini, litellm, pdf, all
+```
+
 ## Quick Start
 
 Run pytest with coverage contexts enabled:
