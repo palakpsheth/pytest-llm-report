@@ -4,7 +4,7 @@
 from pytest_llm_report.options import Config, get_default_config
 
 
-class TestConfigValidation:
+class TestConfigValidationMaximal:
     """Tests for Config.validate() method."""
 
     def test_validate_valid_config(self):
@@ -56,7 +56,7 @@ class TestConfigValidation:
         assert any("llm_timeout_seconds" in e for e in errors)
 
 
-class TestConfigDefaults:
+class TestConfigDefaultsMaximal:
     """Tests for Config defaults."""
 
     def test_default_values(self):
@@ -86,7 +86,7 @@ class TestConfigDefaults:
         assert any("--api[_-]?key" in p for p in patterns)
 
 
-class TestConfigHelpers:
+class TestConfigHelpersMaximal:
     """Tests for Config helper methods."""
 
     def test_is_llm_enabled(self):

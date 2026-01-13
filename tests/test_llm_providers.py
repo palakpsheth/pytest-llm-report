@@ -577,6 +577,116 @@ class TestGeminiProvider:
         provider.annotate(test, "def test_login(): assert True")
         assert len(model_fetches) == 2
 
+    def test_annotate_records_tokens(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """Gemini provider records token usage."""
+        captured = {}
+
+        def fake_post(url, **kwargs):
+            captured["json"] = kwargs.get("json")
+            response_data = {
+                "scenario": "Checks login",
+                "why_needed": "Stops regressions",
+                "key_assertions": ["status ok"],
+            }
+            # Response with usage metadata
+            payload = {
+                "candidates": [
+                    {"content": {"parts": [{"text": json.dumps(response_data)}]}}
+                ],
+                "usageMetadata": {"totalTokenCount": 123},
+            }
+            return FakeGeminiResponse(payload)
+
+        def fake_get(url, **_kwargs):
+            if "models?" in url:
+                models_payload = {
+                    "models": [
+                        {
+                            "name": "models/gemini-1.5-pro",
+                            "supportedGenerationMethods": ["generateContent"],
+                        }
+                    ]
+                }
+                return FakeGeminiResponse(models_payload)
+            rate_limits_payload = {
+                "rateLimits": [{"name": "tokensPerMinute", "value": 1000}]
+            }
+            return FakeGeminiResponse(rate_limits_payload)
+
+        fake_httpx = SimpleNamespace(post=fake_post, get=fake_get)
+        monkeypatch.setitem(__import__("sys").modules, "httpx", fake_httpx)
+        monkeypatch.setenv("GEMINI_API_TOKEN", "test-token")
+
+        config = Config(provider="gemini", model="gemini-1.5-pro")
+        provider = GeminiProvider(config)
+        test = CaseResult(nodeid="tests/test_auth.py::test_login", outcome="passed")
+
+        # Verify tokens recorded on limiter
+        provider.annotate(test, "def test_login(): assert True")
+        # Rate limits logic is internal, but we can check if it ran without error
+        # To truly verify, we'd inspect provider._rate_limiters['gemini-1.5-pro']._token_usage
+        limiter = provider._rate_limiters.get("gemini-1.5-pro")
+        assert limiter is not None
+        assert len(limiter._token_usage) == 1
+        assert limiter._token_usage[0][1] == 123
+
+    def test_annotate_handles_context_too_large(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Gemini provider handles 400 Context too large errors."""
+
+        def fake_post(url, **kwargs):
+            # Simulate 400 error
+            raise RuntimeError("400 Bad Request: Context too large")
+
+        def fake_get(url, **_kwargs):
+            if "models?" in url:
+                models_payload = {
+                    "models": [
+                        {
+                            "name": "models/gemini-1.5-pro",
+                            "supportedGenerationMethods": ["generateContent"],
+                        }
+                    ]
+                }
+                return FakeGeminiResponse(models_payload)
+            return FakeGeminiResponse({"rateLimits": []})
+
+        fake_httpx = SimpleNamespace(post=fake_post, get=fake_get)
+        monkeypatch.setitem(__import__("sys").modules, "httpx", fake_httpx)
+        monkeypatch.setenv("GEMINI_API_TOKEN", "test-token")
+
+        config = Config(provider="gemini")
+        provider = GeminiProvider(config)
+        test = CaseResult(nodeid="tests/test.py::test_foo", outcome="passed")
+
+        annotation = provider.annotate(test, "def test_foo(): pass")
+        assert "Context too long" in annotation.error
+        assert "400" in annotation.error
+
+    def test_fetch_available_models_error(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Gemini provider handles model fetch errors gracefully."""
+
+        def fake_get(url, **_kwargs):
+            if "models?" in url:
+                raise RuntimeError("Network error")
+            return FakeGeminiResponse({"rateLimits": []})
+
+        fake_httpx = SimpleNamespace(get=fake_get)
+        monkeypatch.setitem(__import__("sys").modules, "httpx", fake_httpx)
+        monkeypatch.setenv("GEMINI_API_TOKEN", "test-token")
+
+        config = Config(provider="gemini")
+        provider = GeminiProvider(config)
+
+        # Trigger model fetch
+        models = provider._ensure_models_and_limits("test-token")
+
+        assert len(models) == 1
+        assert models[0] == "gemini-1.5-flash-latest"
+
 
 class TestOllamaProvider:
     """Tests for the Ollama provider."""
