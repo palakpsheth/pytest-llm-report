@@ -114,18 +114,8 @@ include_phase = "run"
 source = ["src/pytest_llm_report"]
 branch = true
 omit = [
-    # External service providers (require network/services for real tests)
-    "*/llm/ollama.py",
-    "*/llm/litellm_provider.py",
-    "*/llm/gemini.py",
-    # Pytest hook integration (require full pytest run to test properly)
-    "*/collector.py",
-    "*/coverage_map.py",
-    "*/plugin.py",
-    # Config dataclass (field access doesn't count as coverage)
-    "*/options.py",
-    # Context assembly (file I/O heavy, tested via integration)
-    "*/prompts.py",
+    "src/pytest_llm_report/__about__.py",
+    "src/pytest_llm_report/__init__.py",
 ]
 
 [tool.coverage.report]

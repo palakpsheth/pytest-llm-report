@@ -326,7 +326,7 @@ class TestGeminiProvider:
 
         assert annotation.scenario == "Checks login"
         assert len(calls) == 2
-        assert sleep_calls == [0.0]
+        assert sleep_calls == []
 
     def test_annotate_skips_on_daily_limit(
         self, monkeypatch: pytest.MonkeyPatch
@@ -644,7 +644,7 @@ class TestOllamaProvider:
         test = CaseResult(nodeid="tests/test_sample.py::test_case", outcome="passed")
         monkeypatch.setitem(__import__("sys").modules, "httpx", SimpleNamespace())
 
-        def fake_call(prompt: str) -> str:
+        def fake_call(prompt: str, system_prompt: str) -> str:
             raise RuntimeError("boom")
 
         monkeypatch.setattr(provider, "_call_ollama", fake_call)
@@ -713,7 +713,7 @@ I hope this helps!"""
         # Mock call_ollama to return error first, then success
         call_count = 0
 
-        def fake_call(prompt: str) -> str:
+        def fake_call(prompt: str, system_prompt: str) -> str:
             nonlocal call_count
             call_count += 1
             if call_count == 1:

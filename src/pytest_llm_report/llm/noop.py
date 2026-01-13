@@ -31,7 +31,7 @@ class NoopProvider(LlmProvider):
         """
         super().__init__(config)
 
-    def annotate(
+    def _annotate_internal(
         self,
         test: TestCaseResult,
         test_source: str,
@@ -49,7 +49,7 @@ class NoopProvider(LlmProvider):
         """
         return LlmAnnotation()
 
-    def is_available(self) -> bool:
+    def _check_availability(self) -> bool:
         """Always available.
 
         Returns:
