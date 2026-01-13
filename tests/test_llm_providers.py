@@ -743,3 +743,159 @@ I hope this helps!"""
         assert len(build_prompt_calls) == 2
         assert build_prompt_calls[0] == context_files
         assert build_prompt_calls[1] is None
+
+    def test_is_local_returns_true(self):
+        """Ollama provider should always return is_local=True."""
+        config = Config(provider="ollama")
+        provider = OllamaProvider(config)
+
+        assert provider.is_local() is True
+
+    def test_check_availability_success(self, monkeypatch: pytest.MonkeyPatch):
+        """Ollama provider checks availability via /api/tags endpoint."""
+
+        class FakeResponse:
+            status_code = 200
+
+        def fake_get(url, **kwargs):
+            assert "/api/tags" in url
+            return FakeResponse()
+
+        fake_httpx = SimpleNamespace(get=fake_get)
+        monkeypatch.setitem(__import__("sys").modules, "httpx", fake_httpx)
+
+        config = Config(provider="ollama", ollama_host="http://localhost:11434")
+        provider = OllamaProvider(config)
+
+        assert provider._check_availability() is True
+
+    def test_check_availability_failure(self, monkeypatch: pytest.MonkeyPatch):
+        """Ollama provider returns False when server is unavailable."""
+
+        def fake_get(url, **kwargs):
+            raise ConnectionError("Server not running")
+
+        fake_httpx = SimpleNamespace(get=fake_get)
+        monkeypatch.setitem(__import__("sys").modules, "httpx", fake_httpx)
+
+        config = Config(provider="ollama")
+        provider = OllamaProvider(config)
+
+        assert provider._check_availability() is False
+
+    def test_check_availability_non_200(self, monkeypatch: pytest.MonkeyPatch):
+        """Ollama provider returns False for non-200 status codes."""
+
+        class FakeResponse:
+            status_code = 500
+
+        def fake_get(url, **kwargs):
+            return FakeResponse()
+
+        fake_httpx = SimpleNamespace(get=fake_get)
+        monkeypatch.setitem(__import__("sys").modules, "httpx", fake_httpx)
+
+        config = Config(provider="ollama")
+        provider = OllamaProvider(config)
+
+        assert provider._check_availability() is False
+
+    def test_call_ollama_success(self, monkeypatch: pytest.MonkeyPatch):
+        """Ollama provider makes correct API call."""
+        captured = {}
+
+        class FakeResponse:
+            status_code = 200
+
+            def raise_for_status(self):
+                pass
+
+            def json(self):
+                return {"response": "test response"}
+
+        def fake_post(url, **kwargs):
+            captured["url"] = url
+            captured["json"] = kwargs.get("json")
+            captured["timeout"] = kwargs.get("timeout")
+            return FakeResponse()
+
+        fake_httpx = SimpleNamespace(post=fake_post)
+        monkeypatch.setitem(__import__("sys").modules, "httpx", fake_httpx)
+
+        config = Config(
+            provider="ollama",
+            ollama_host="http://localhost:11434",
+            model="llama3.2:1b",
+            llm_timeout_seconds=60,
+        )
+        provider = OllamaProvider(config)
+
+        result = provider._call_ollama("test prompt", "system prompt")
+
+        assert result == "test response"
+        assert captured["url"] == "http://localhost:11434/api/generate"
+        assert captured["json"]["model"] == "llama3.2:1b"
+        assert captured["json"]["prompt"] == "test prompt"
+        assert captured["json"]["system"] == "system prompt"
+        assert captured["json"]["stream"] is False
+        assert captured["timeout"] == 60
+
+    def test_call_ollama_uses_default_model(self, monkeypatch: pytest.MonkeyPatch):
+        """Ollama provider uses default model when not specified."""
+        captured = {}
+
+        class FakeResponse:
+            def raise_for_status(self):
+                pass
+
+            def json(self):
+                return {"response": "ok"}
+
+        def fake_post(url, **kwargs):
+            captured["json"] = kwargs.get("json")
+            return FakeResponse()
+
+        fake_httpx = SimpleNamespace(post=fake_post)
+        monkeypatch.setitem(__import__("sys").modules, "httpx", fake_httpx)
+
+        config = Config(provider="ollama", model="")  # Empty model
+        provider = OllamaProvider(config)
+
+        provider._call_ollama("prompt", "system")
+
+        assert captured["json"]["model"] == "llama3.2"  # Default model
+
+    def test_annotate_success_full_flow(self, monkeypatch: pytest.MonkeyPatch):
+        """Ollama provider full annotation flow with mocked HTTP."""
+
+        class FakeResponse:
+            def raise_for_status(self):
+                pass
+
+            def json(self):
+                return {
+                    "response": json.dumps(
+                        {
+                            "scenario": "Tests user login",
+                            "why_needed": "Prevents auth bugs",
+                            "key_assertions": ["check status", "validate token"],
+                        }
+                    )
+                }
+
+        def fake_post(url, **kwargs):
+            return FakeResponse()
+
+        fake_httpx = SimpleNamespace(post=fake_post)
+        monkeypatch.setitem(__import__("sys").modules, "httpx", fake_httpx)
+
+        config = Config(provider="ollama", model="llama3.2")
+        provider = OllamaProvider(config)
+        test = CaseResult(nodeid="tests/test_auth.py::test_login", outcome="passed")
+
+        annotation = provider.annotate(test, "def test_login(): assert True")
+
+        assert annotation.scenario == "Tests user login"
+        assert annotation.why_needed == "Prevents auth bugs"
+        assert annotation.key_assertions == ["check status", "validate token"]
+        assert annotation.error is None
