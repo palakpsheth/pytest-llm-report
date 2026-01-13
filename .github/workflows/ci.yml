@@ -63,9 +63,8 @@ jobs:
               -o llm_report_context_mode=minimal
             )
           fi
-          uv run coverage run -m pytest \
-            -o "addopts=" \
-            -p no:pytest-cov \
+          uv run coverage run -m pytest tests/unit \
+            -o "addopts=--cov=src/pytest_llm_report --cov-context=test --cov-report=" \
             -o llm_report_context_mode=complete \
             --llm-report-json="${json_report}" \
             --llm-pdf="${pdf_report}" \
