@@ -21,8 +21,9 @@ uv sync
 # Run tests
 uv run pytest
 
-# Run with coverage
-uv run pytest --cov=pytest_llm_report --cov-report=term-missing
+# Run with accurate coverage
+uv run coverage run -m pytest -o "addopts=" -p no:pytest-cov
+uv run coverage report
 ```
 
 ## Building
@@ -143,17 +144,27 @@ jobs:
             )
           fi
 
-          uv run pytest \
-            --cov=pytest_llm_report \
-            --cov-context=test \
-            --cov-report=xml \
-            --cov-fail-under=90 \
+          uv run coverage run -m pytest \
+            -o "addopts=" \
+            -p no:pytest-cov \
             -o llm_report_context_mode=complete \
             --llm-report-json="${json_report}" \
             --llm-pdf="${pdf_report}" \
             "${llm_args[@]}"
+          test_exit_code=$?
 
-          exit_code=$?
+          uv run coverage xml
+          uv run coverage report --fail-under=90
+          cov_exit_code=$?
+
+          if [ $test_exit_code -ne 0 ]; then
+            exit_code=$test_exit_code
+          elif [ $cov_exit_code -ne 0 ]; then
+             exit_code=$cov_exit_code
+          else
+             exit_code=0
+          fi
+
           echo "exit_code=${exit_code}" >> "${GITHUB_OUTPUT}"
           exit 0
 
