@@ -1,10 +1,8 @@
 # SPDX-License-Identifier: MIT
 """Tests for pytest_llm_report.report_writer module."""
 
-import sys
 from datetime import UTC, datetime
 from pathlib import Path
-from types import ModuleType
 
 from pytest_llm_report.errors import WarningCode
 from pytest_llm_report.models import CoverageEntry, SourceCoverageEntry, TestCaseResult
@@ -284,74 +282,58 @@ class TestReportWriterWithFiles:
             assert sha is None
             assert dirty is None
 
-    def test_write_pdf_creates_file(self, tmp_path, monkeypatch):
+    def test_write_pdf_creates_file(self, tmp_path):
         """Should create PDF file when Playwright is available."""
+        from unittest.mock import MagicMock, patch
+
         pdf_path = tmp_path / "report.pdf"
         config = Config(report_pdf=str(pdf_path))
         writer = ReportWriter(config)
 
-        output_path = pdf_path
+        # Mock the playwright module and browser
+        mock_page = MagicMock()
+        mock_browser = MagicMock()
 
-        class DummyPage:
-            def goto(self, url):
-                self.url = url
+        mock_playwright_context = MagicMock()
 
-            def wait_for_load_state(self, state):
-                self.state = state
+        # Setup page.pdf to actually write the file
+        def write_pdf(path, **kwargs):
+            Path(path).write_bytes(b"%PDF-1.4\n%fake")
 
-            def emulate_media(self, media):
-                self.media = media
+        mock_page.pdf = write_pdf
 
-            def pdf(self, path, format, print_background):
-                Path(path).write_bytes(b"%PDF-1.4\n%fake")
+        # Setup the mock chain
+        mock_browser.new_page.return_value = mock_page
+        mock_playwright_context.chromium.launch.return_value = mock_browser
+        mock_playwright_context.__enter__.return_value = mock_playwright_context
+        mock_playwright_context.__exit__.return_value = False
 
-        class DummyBrowser:
-            def new_page(self):
-                return DummyPage()
+        mock_sync_playwright = MagicMock(return_value=mock_playwright_context)
 
-            def close(self):
-                return None
+        # Mock both the module import and find_spec
+        mock_module = MagicMock()
+        mock_module.sync_playwright = mock_sync_playwright
 
-        class DummyPlaywright:
-            def __init__(self):
-                self.chromium = self
+        with patch.dict("sys.modules", {"playwright.sync_api": mock_module}):
+            with patch("importlib.util.find_spec", return_value=MagicMock()):
+                tests = [TestCaseResult(nodeid="test1", outcome="passed")]
+                writer.write_report(tests)
 
-            def launch(self):
-                return DummyBrowser()
+        assert pdf_path.exists()
+        assert any(artifact.path == str(pdf_path) for artifact in writer.artifacts)
 
-            def __enter__(self):
-                return self
-
-            def __exit__(self, exc_type, exc, tb):
-                return False
-
-        def fake_find_spec(name):
-            if name == "playwright.sync_api":
-                return object()
-            return None
-
-        module = ModuleType("playwright.sync_api")
-        module.sync_playwright = lambda: DummyPlaywright()
-        monkeypatch.setattr("importlib.util.find_spec", fake_find_spec)
-        monkeypatch.setitem(sys.modules, "playwright", ModuleType("playwright"))
-        monkeypatch.setitem(sys.modules, "playwright.sync_api", module)
-
-        tests = [TestCaseResult(nodeid="test1", outcome="passed")]
-        writer.write_report(tests)
-
-        assert output_path.exists()
-        assert any(artifact.path == str(output_path) for artifact in writer.artifacts)
-
-    def test_write_pdf_missing_playwright_warns(self, tmp_path, monkeypatch):
+    def test_write_pdf_missing_playwright_warns(self, tmp_path):
         """Should warn when Playwright is missing for PDF output."""
+        from unittest.mock import patch
+
         pdf_path = tmp_path / "report.pdf"
         config = Config(report_pdf=str(pdf_path))
         writer = ReportWriter(config)
 
-        monkeypatch.setattr("importlib.util.find_spec", lambda name: None)
-
-        tests = [TestCaseResult(nodeid="test1", outcome="passed")]
-        writer.write_report(tests)
+        # Mock importlib.util.find_spec to return None (module not found)
+        with patch("importlib.util.find_spec", return_value=None):
+            tests = [TestCaseResult(nodeid="test1", outcome="passed")]
+            writer.write_report(tests)
 
         assert not pdf_path.exists()
         assert any(
