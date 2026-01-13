@@ -35,15 +35,15 @@ jobs:
         run: uv run playwright install chromium
 
       - name: Install Ollama
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' && matrix.python-version == '3.12'
         run: curl -fsSL https://ollama.com/install.sh | sh
 
       - name: Start Ollama
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' && matrix.python-version == '3.12'
         run: ollama serve &
 
       - name: Pull LLM Model
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' && matrix.python-version == '3.12'
         run: |
           sleep 5
           ollama pull llama3.2:1b
@@ -65,7 +65,7 @@ jobs:
           fi
           uv run pytest tests \
             -o "addopts=--cov=src/pytest_llm_report --cov-branch --cov-context=test --cov-report=" \
-            -o llm_report_context_mode=complete \
+            -o llm_report_provider=noop \
             --llm-report-json="${json_report}" \
             --llm-pdf="${pdf_report}" \
             --llm-aggregate-run-id="${{ github.run_id }}-py${{ matrix.python-version }}" \
