@@ -368,10 +368,33 @@ def pytest_terminal_summary(
                 test.coverage = coverage[test.nodeid]
 
     # Apply LLM annotations
+    llm_info = None
     if cfg.is_llm_enabled():
         from pytest_llm_report.llm.annotator import annotate_tests
+        from pytest_llm_report.llm.base import get_provider
+
+        # Get provider to capture model info
+        provider = get_provider(cfg)
 
         annotate_tests(tests, cfg, progress=terminalreporter.write_line)
+
+        # Count annotations and errors
+        annotations_count = 0
+        annotations_errors = 0
+        for test in tests:
+            if test.llm_annotation:
+                if test.llm_annotation.error:
+                    annotations_errors += 1
+                else:
+                    annotations_count += 1
+
+        llm_info = {
+            "provider": cfg.provider,
+            "model": provider.get_model_name(),
+            "context_mode": cfg.llm_context_mode,
+            "annotations_count": annotations_count,
+            "annotations_errors": annotations_errors,
+        }
 
     writer = ReportWriter(cfg)
     writer.write_report(
@@ -383,6 +406,7 @@ def pytest_terminal_summary(
         exit_code=exitstatus,
         start_time=start_time,
         end_time=end_time,
+        llm_info=llm_info,
     )
 
 

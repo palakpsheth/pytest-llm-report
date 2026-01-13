@@ -258,6 +258,32 @@ class TestRunMeta:
         assert data["config_hash"] == "def5678"
         assert len(data["source_reports"]) == 1
 
+    def test_llm_traceability_fields(self):
+        """Test LLM traceability fields are included when enabled."""
+        meta = RunMeta(
+            llm_provider="ollama",
+            llm_model="llama3.2:1b",
+            llm_context_mode="complete",
+            llm_annotations_enabled=True,
+            llm_annotations_count=10,
+            llm_annotations_errors=2,
+        )
+        data = meta.to_dict()
+        assert data["llm_annotations_enabled"] is True
+        assert data["llm_provider"] == "ollama"
+        assert data["llm_model"] == "llama3.2:1b"
+        assert data["llm_context_mode"] == "complete"
+        assert data["llm_annotations_count"] == 10
+        assert data["llm_annotations_errors"] == 2
+
+    def test_llm_fields_excluded_when_disabled(self):
+        """Test LLM fields are excluded when annotations not enabled."""
+        meta = RunMeta(llm_annotations_enabled=False)
+        data = meta.to_dict()
+        assert "llm_annotations_enabled" not in data
+        assert "llm_provider" not in data
+        assert "llm_model" not in data
+
 
 class TestReportRoot:
     """Tests for ReportRoot dataclass."""

@@ -32,6 +32,11 @@
                         ({{ report.run_meta.repo_git_sha }})
                         {% if report.run_meta.repo_git_dirty %}[dirty]{% endif %}
                     {% endif %}
+                    {% if report.run_meta.llm_annotations_enabled %}<br>
+                    <strong>LLM:</strong> {{ report.run_meta.llm_provider }} / {{ report.run_meta.llm_model or "default" }}
+                        ({{ report.run_meta.llm_context_mode or "minimal" }} context,
+                         {{ report.run_meta.llm_annotations_count or 0 }} annotated{% if report.run_meta.llm_annotations_errors %}, {{ report.run_meta.llm_annotations_errors }} errors{% endif %})
+                    {% endif %}
                 </div>
             </div>
             {% if report.summary.coverage_total_percent is not none %}

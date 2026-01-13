@@ -60,6 +60,19 @@ When aggregation is enabled (`--llm-aggregate-dir`):
 | `run_count` | integer | Number of runs aggregated |
 | `source_reports` | array | Source report paths and hashes |
 
+### LLM Traceability Fields
+
+When LLM annotations are enabled:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `llm_provider` | string | LLM provider (e.g., "ollama", "gemini") |
+| `llm_model` | string | Model name/version (e.g., "llama3.2:1b") |
+| `llm_context_mode` | string | Context mode (minimal, balanced, complete) |
+| `llm_annotations_enabled` | boolean | Whether LLM annotations were enabled |
+| `llm_annotations_count` | integer | Number of tests annotated |
+| `llm_annotations_errors` | integer | Number of annotation errors |
+
 ## Summary Statistics (`summary`)
 
 | Field | Type | Description |

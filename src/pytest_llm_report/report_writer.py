@@ -167,6 +167,7 @@ class ReportWriter:
         exit_code: int = 0,
         start_time: datetime | None = None,
         end_time: datetime | None = None,
+        llm_info: dict | None = None,
     ) -> ReportRoot:
         """Assemble and write the report.
 
@@ -188,7 +189,9 @@ class ReportWriter:
                     test.coverage = coverage[test.nodeid]
 
         # Build run metadata
-        run_meta = self._build_run_meta(tests, exit_code, start_time, end_time)
+        run_meta = self._build_run_meta(
+            tests, exit_code, start_time, end_time, llm_info
+        )
 
         # Build summary
         summary = self._build_summary(tests)
@@ -235,6 +238,7 @@ class ReportWriter:
         exit_code: int,
         start_time: datetime | None,
         end_time: datetime | None,
+        llm_info: dict | None = None,
     ) -> RunMeta:
         """Build run metadata.
 
@@ -283,6 +287,17 @@ class ReportWriter:
             selected_count=len(tests),
             run_id=self.config.aggregate_run_id,
             run_group_id=self.config.aggregate_group_id,
+            # LLM traceability fields
+            llm_provider=llm_info.get("provider") if llm_info else None,
+            llm_model=llm_info.get("model") if llm_info else None,
+            llm_context_mode=llm_info.get("context_mode") if llm_info else None,
+            llm_annotations_enabled=bool(llm_info),
+            llm_annotations_count=llm_info.get("annotations_count")
+            if llm_info
+            else None,
+            llm_annotations_errors=llm_info.get("annotations_errors")
+            if llm_info
+            else None,
         )
 
     def _build_summary(self, tests: list[TestCaseResult]) -> Summary:
