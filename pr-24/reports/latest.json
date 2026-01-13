@@ -4,11 +4,11 @@
     "collect_only": false,
     "collected_count": 389,
     "deselected_count": 0,
-    "duration": 15.143414,
-    "end_time": "2026-01-13T02:31:32.076835+00:00",
+    "duration": 14.915294,
+    "end_time": "2026-01-13T02:34:38.533594+00:00",
     "exit_code": 0,
     "git_dirty": false,
-    "git_sha": "bada16608f88146178750417f9bb07c46c53301f",
+    "git_sha": "64440594c739544f7249c3c679abe8977f521864",
     "interrupted": false,
     "is_aggregated": true,
     "llm_annotations_count": 0,
@@ -22,1684 +22,1684 @@
     "plugin_git_sha": "2f498263985a34902252c53c11fb820445bd8f21",
     "plugin_version": "0.1.0",
     "pytest_version": "9.0.2",
-    "python_version": "3.11.14",
+    "python_version": "3.13.11",
     "repo_git_dirty": false,
-    "repo_git_sha": "bada16608f88146178750417f9bb07c46c53301f",
+    "repo_git_sha": "64440594c739544f7249c3c679abe8977f521864",
     "repo_version": "0.1.0",
     "rerun_count": 0,
     "run_count": 3,
-    "run_id": "20942435217-py3.11",
+    "run_id": "20942496237-py3.13",
     "selected_count": 389,
     "source_reports": [],
-    "start_time": "2026-01-13T02:31:16.933421+00:00"
+    "start_time": "2026-01-13T02:34:23.618300+00:00"
   },
   "schema_version": "1.0.0",
-  "sha256": "344c0ffa60ff8da3746f266617d193e3348a7a2abdd182abc1dc1f23380b68fd",
+  "sha256": "6fdb2e35cd48f09ad9dce2a1664dbf9615c479c020f300de58a0b5e7b3965edb",
   "summary": {
     "error": 0,
     "failed": 0,
     "passed": 389,
     "skipped": 0,
     "total": 389,
-    "total_duration": 13.6638714890003,
+    "total_duration": 13.500271559999867,
     "xfailed": 0,
     "xpassed": 0
   },
   "tests": [
     {
-      "duration": 0.0011048429999931386,
+      "duration": 0.001188698999996518,
       "nodeid": "tests/test_aggregation.py::TestAggregator::test_aggregate_all_policy",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0012764950000132558,
+      "duration": 0.0013679179999996904,
       "nodeid": "tests/test_aggregation.py::TestAggregator::test_aggregate_dir_not_exists",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0015878589999971382,
+      "duration": 0.0018507329999977173,
       "nodeid": "tests/test_aggregation.py::TestAggregator::test_aggregate_latest_policy",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0002296399999863752,
+      "duration": 0.00024861299999656694,
       "nodeid": "tests/test_aggregation.py::TestAggregator::test_aggregate_no_dir_configured",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0009364269999991848,
+      "duration": 0.0009910349999984192,
       "nodeid": "tests/test_aggregation.py::TestAggregator::test_aggregate_no_reports",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0009677449999969667,
+      "duration": 0.0011036679999989474,
       "nodeid": "tests/test_aggregation.py::TestAggregator::test_aggregate_with_coverage_and_llm_annotations",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0008451159999935953,
+      "duration": 0.0009774090000007618,
       "nodeid": "tests/test_aggregation.py::TestAggregator::test_aggregate_with_source_coverage",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0002186010000002625,
+      "duration": 0.00021728100000473205,
       "nodeid": "tests/test_aggregation.py::TestAggregator::test_recalculate_summary",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0014959060000023783,
+      "duration": 0.0013091369999997937,
       "nodeid": "tests/test_aggregation.py::TestAggregator::test_skips_invalid_json",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00021471299999120674,
+      "duration": 0.0002363079999980755,
       "nodeid": "tests/test_aggregation_maximal.py::TestAggregationMaximal::test_recalculate_summary_coverage",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.001046776000009686,
+      "duration": 0.0007429169999966234,
       "nodeid": "tests/test_annotator.py::TestAnnotateTests::test_cached_tests_are_skipped",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.002302032000002896,
+      "duration": 0.002144754999989118,
       "nodeid": "tests/test_annotator.py::TestAnnotateTests::test_concurrent_annotation",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0016886659999926223,
+      "duration": 0.001253160999993952,
       "nodeid": "tests/test_annotator.py::TestAnnotateTests::test_concurrent_annotation_handles_failures",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0017465150000077756,
+      "duration": 0.0010202760000055378,
       "nodeid": "tests/test_annotator.py::TestAnnotateTests::test_progress_reporting",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 12.001006566000001,
+      "duration": 12.000991891000005,
       "nodeid": "tests/test_annotator.py::TestAnnotateTests::test_sequential_annotation",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00021139600001163217,
+      "duration": 0.0001928350000000023,
       "nodeid": "tests/test_annotator.py::TestAnnotateTests::test_skips_if_disabled",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.000293170000006171,
+      "duration": 0.00033983299999817973,
       "nodeid": "tests/test_annotator.py::TestAnnotateTests::test_skips_if_provider_unavailable",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0020605110000104787,
+      "duration": 0.001241538999991576,
       "nodeid": "tests/test_annotator_maximal.py::TestAnnotatorAdvanced::test_annotate_concurrent_with_progress_and_errors",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0030922690000068087,
+      "duration": 0.0018396259999917675,
       "nodeid": "tests/test_annotator_maximal.py::TestAnnotatorAdvanced::test_annotate_sequential_rate_limit_wait",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00265526300000829,
+      "duration": 0.0013793159999977433,
       "nodeid": "tests/test_annotator_maximal.py::TestAnnotatorAdvanced::test_annotate_tests_cached_progress",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0011301330000037524,
+      "duration": 0.0007026020000040489,
       "nodeid": "tests/test_annotator_maximal.py::TestAnnotatorAdvanced::test_annotate_tests_provider_unavailable",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018981400000939175,
+      "duration": 0.00018323199999770168,
       "nodeid": "tests/test_base_maximal.py::TestGetProvider::test_get_gemini_provider",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0004776530000043522,
+      "duration": 0.0004419459999951414,
       "nodeid": "tests/test_base_maximal.py::TestGetProvider::test_get_invalid_provider",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017922600000019884,
+      "duration": 0.00017839299999877767,
       "nodeid": "tests/test_base_maximal.py::TestGetProvider::test_get_litellm_provider",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019844099999488662,
+      "duration": 0.00019411200000263307,
       "nodeid": "tests/test_base_maximal.py::TestGetProvider::test_get_noop_provider",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018316300000265073,
+      "duration": 0.00017984599999465445,
       "nodeid": "tests/test_base_maximal.py::TestGetProvider::test_get_ollama_provider",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00023138299999914125,
+      "duration": 0.00024808399999187714,
       "nodeid": "tests/test_base_maximal.py::TestLlmProviderDefaults::test_available_caches_result",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018347300000698397,
+      "duration": 0.00016998699999248856,
       "nodeid": "tests/test_base_maximal.py::TestLlmProviderDefaults::test_get_model_name_defaults_to_config",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017373499998996067,
+      "duration": 0.00016691199999741002,
       "nodeid": "tests/test_base_maximal.py::TestLlmProviderDefaults::test_get_rate_limits_defaults_to_none",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018420400000707104,
+      "duration": 0.0001718299999993178,
       "nodeid": "tests/test_base_maximal.py::TestLlmProviderDefaults::test_is_local_defaults_to_false",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018032699999537272,
+      "duration": 0.000176069000005441,
       "nodeid": "tests/test_cache.py::TestHashSource::test_consistent_hash",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017926399999623754,
+      "duration": 0.00016777300000114792,
       "nodeid": "tests/test_cache.py::TestHashSource::test_different_source_different_hash",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016451699998754066,
+      "duration": 0.00018063799998913055,
       "nodeid": "tests/test_cache.py::TestHashSource::test_hash_length",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0006243569999924148,
+      "duration": 0.0006845779999906654,
       "nodeid": "tests/test_cache.py::TestLlmCache::test_clear",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00024816399999849637,
+      "duration": 0.00025219100000128947,
       "nodeid": "tests/test_cache.py::TestLlmCache::test_does_not_cache_errors",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00027108599999792204,
+      "duration": 0.0003045280000009143,
       "nodeid": "tests/test_cache.py::TestLlmCache::test_get_missing",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.000494082999992429,
+      "duration": 0.0005258829999945647,
       "nodeid": "tests/test_cache.py::TestLlmCache::test_set_and_get",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016583999999397747,
+      "duration": 0.00016979699999808417,
       "nodeid": "tests/test_collector.py::TestCollectorCollectionErrors::test_collection_error_structure",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017562899999745696,
+      "duration": 0.00016841500000452925,
       "nodeid": "tests/test_collector.py::TestCollectorCollectionErrors::test_get_collection_errors_initially_empty",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016811500000812885,
+      "duration": 0.00017950599999494443,
       "nodeid": "tests/test_collector.py::TestCollectorMarkerExtraction::test_llm_context_override_default_none",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017494700000497687,
+      "duration": 0.000186999000007404,
       "nodeid": "tests/test_collector.py::TestCollectorMarkerExtraction::test_llm_opt_out_default_false",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001729330000017626,
+      "duration": 0.00019752900000469253,
       "nodeid": "tests/test_collector.py::TestCollectorOutputCapture::test_capture_disabled_by_default",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016938699999968776,
+      "duration": 0.0001851860000101624,
       "nodeid": "tests/test_collector.py::TestCollectorOutputCapture::test_capture_max_chars_default",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019499499998687497,
+      "duration": 0.00020263899999406476,
       "nodeid": "tests/test_collector.py::TestCollectorXfailHandling::test_xfail_failed_is_xfailed",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018405299999812996,
+      "duration": 0.0001862280000040073,
       "nodeid": "tests/test_collector.py::TestCollectorXfailHandling::test_xfail_passed_is_xpassed",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019367100000522441,
+      "duration": 0.00020920000000046457,
       "nodeid": "tests/test_collector.py::TestTestCollector::test_create_collector",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019662799999764502,
+      "duration": 0.00022342699999455817,
       "nodeid": "tests/test_collector.py::TestTestCollector::test_get_results_sorted",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018529599999794755,
+      "duration": 0.00021198599999650014,
       "nodeid": "tests/test_collector.py::TestTestCollector::test_handle_collection_finish",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0016884959999998728,
+      "duration": 0.0009465779999970891,
       "nodeid": "tests/test_collector_maximal.py::TestCollectorInternals::test_capture_output_disabled_via_handle_report",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0004430479999939507,
+      "duration": 0.00029208500001232096,
       "nodeid": "tests/test_collector_maximal.py::TestCollectorInternals::test_capture_output_stderr",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00042347100000483806,
+      "duration": 0.0003036770000051092,
       "nodeid": "tests/test_collector_maximal.py::TestCollectorInternals::test_capture_output_stdout",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0005321250000065447,
+      "duration": 0.00031896500000527794,
       "nodeid": "tests/test_collector_maximal.py::TestCollectorInternals::test_capture_output_truncated",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.002990529999991054,
+      "duration": 0.0016898460000049909,
       "nodeid": "tests/test_collector_maximal.py::TestCollectorInternals::test_create_result_with_item_markers",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0028387859999980947,
+      "duration": 0.0007330389999964382,
       "nodeid": "tests/test_collector_maximal.py::TestCollectorInternals::test_extract_error_repr_crash",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0005251719999961324,
+      "duration": 0.0006555439999971213,
       "nodeid": "tests/test_collector_maximal.py::TestCollectorInternals::test_extract_error_string",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00042320100000381444,
+      "duration": 0.00029081200000291574,
       "nodeid": "tests/test_collector_maximal.py::TestCollectorInternals::test_extract_skip_reason_fallback",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00044851799999889863,
+      "duration": 0.00028731700000150795,
       "nodeid": "tests/test_collector_maximal.py::TestCollectorInternals::test_extract_skip_reason_string",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0004327979999914078,
+      "duration": 0.0002990579999959664,
       "nodeid": "tests/test_collector_maximal.py::TestCollectorInternals::test_extract_skip_reason_tuple",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00047245400000406335,
+      "duration": 0.00031840399999794045,
       "nodeid": "tests/test_collector_maximal.py::TestCollectorReportHandling::test_handle_collection_report_failure",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0015494760000080987,
+      "duration": 0.0008125079999956597,
       "nodeid": "tests/test_collector_maximal.py::TestCollectorReportHandling::test_handle_runtest_rerun",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0004573450000009416,
+      "duration": 0.0003245160000062697,
       "nodeid": "tests/test_collector_maximal.py::TestCollectorReportHandling::test_handle_runtest_setup_failure",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0009518999999897915,
+      "duration": 0.0005827790000125788,
       "nodeid": "tests/test_collector_maximal.py::TestCollectorReportHandling::test_handle_runtest_teardown_failure",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0002195709999881501,
+      "duration": 0.00024981600000728577,
       "nodeid": "tests/test_coverage_boosters.py::TestCoverageBoosters::test_gemini_model_parsing_edge_cases",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00022312699999815777,
+      "duration": 0.0002590839999925265,
       "nodeid": "tests/test_coverage_boosters.py::TestCoverageBoosters::test_gemini_rate_limiter_edge_math",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0002099129999919569,
+      "duration": 0.00022212499999341162,
       "nodeid": "tests/test_coverage_boosters.py::TestCoverageBoosters::test_models_to_dict_variants",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020327999999381063,
+      "duration": 0.00018106899999281723,
       "nodeid": "tests/test_coverage_map.py::TestCoverageMapper::test_create_mapper",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020680699999786611,
+      "duration": 0.00018402399999217778,
       "nodeid": "tests/test_coverage_map.py::TestCoverageMapper::test_get_warnings",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0010305859999988343,
+      "duration": 0.0008132299999914494,
       "nodeid": "tests/test_coverage_map.py::TestCoverageMapper::test_map_coverage_no_coverage_file",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018491499999129246,
+      "duration": 0.00019650700001250243,
       "nodeid": "tests/test_coverage_map.py::TestCoverageMapperContextExtraction::test_extract_nodeid_all_phases",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017545700001164732,
+      "duration": 0.00017724100000293674,
       "nodeid": "tests/test_coverage_map.py::TestCoverageMapperContextExtraction::test_extract_nodeid_empty_context",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017731100000162314,
+      "duration": 0.00017724100000293674,
       "nodeid": "tests/test_coverage_map.py::TestCoverageMapperContextExtraction::test_extract_nodeid_filters_setup",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0002828490000013062,
+      "duration": 0.00018239100000982944,
       "nodeid": "tests/test_coverage_map.py::TestCoverageMapperContextExtraction::test_extract_nodeid_with_run_phase",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0013050100000100429,
+      "duration": 0.0011949519999916447,
       "nodeid": "tests/test_coverage_map_maximal.py::TestCoverageMapperMaximal::test_extract_contexts_full_logic",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0009719869999997854,
+      "duration": 0.0005742819999881021,
       "nodeid": "tests/test_coverage_map_maximal.py::TestCoverageMapperMaximal::test_extract_contexts_no_contexts",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020779899999467943,
+      "duration": 0.0002067660000051319,
       "nodeid": "tests/test_coverage_map_maximal.py::TestCoverageMapperMaximal::test_extract_nodeid_variants",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0004443300000076533,
+      "duration": 0.0004501510000096687,
       "nodeid": "tests/test_coverage_map_maximal.py::TestCoverageMapperMaximal::test_load_coverage_data_no_files",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0014433580000030588,
+      "duration": 0.0009960599999914166,
       "nodeid": "tests/test_coverage_map_maximal.py::TestCoverageMapperMaximal::test_load_coverage_data_read_error",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.003512976000010326,
+      "duration": 0.0021558370000036575,
       "nodeid": "tests/test_coverage_map_maximal.py::TestCoverageMapperMaximal::test_load_coverage_data_with_parallel_files",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0005168060000073638,
+      "duration": 0.00036330799999007013,
       "nodeid": "tests/test_coverage_map_maximal.py::TestCoverageMapperMaximal::test_map_coverage_no_data",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0015553670000088005,
+      "duration": 0.0010970790000044417,
       "nodeid": "tests/test_coverage_map_maximal.py::TestCoverageMapperMaximal::test_map_source_coverage_analysis_error",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.001745382000009954,
+      "duration": 0.0009800310000116497,
       "nodeid": "tests/test_coverage_map_maximal.py::TestCoverageMapperMaximal::test_map_source_coverage_comprehensive",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018098800001098425,
+      "duration": 0.0001737649999995483,
       "nodeid": "tests/test_errors_maximal.py::TestMakeWarning::test_make_warning_known_code",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001690160000009655,
+      "duration": 0.00016455799999448573,
       "nodeid": "tests/test_errors_maximal.py::TestMakeWarning::test_make_warning_unknown_code",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017185199999403267,
+      "duration": 0.00017214099999307564,
       "nodeid": "tests/test_errors_maximal.py::TestMakeWarning::test_make_warning_with_detail",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00022111300000915435,
+      "duration": 0.00021374899999671015,
       "nodeid": "tests/test_errors_maximal.py::TestWarningCodes::test_codes_are_strings",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017994600000292849,
+      "duration": 0.00017161000000953663,
       "nodeid": "tests/test_errors_maximal.py::TestWarningDataClass::test_warning_to_dict_no_detail",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020506299999567545,
+      "duration": 0.00019073699999694327,
       "nodeid": "tests/test_errors_maximal.py::TestWarningDataClass::test_warning_to_dict_with_detail",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0002024979999930565,
+      "duration": 0.000162002000010375,
       "nodeid": "tests/test_fs.py::TestIsPythonFile::test_non_python_file",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020773900000392587,
+      "duration": 0.000165268999992918,
       "nodeid": "tests/test_fs.py::TestIsPythonFile::test_python_file",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0004895650000094065,
+      "duration": 0.0004208360000035327,
       "nodeid": "tests/test_fs.py::TestMakeRelative::test_makes_path_relative",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001782130000123061,
+      "duration": 0.00016562899999428282,
       "nodeid": "tests/test_fs.py::TestMakeRelative::test_returns_normalized_with_no_base",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016425700000866073,
+      "duration": 0.00015452899999957026,
       "nodeid": "tests/test_fs.py::TestNormalizePath::test_already_normalized",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001707889999948975,
+      "duration": 0.00018393300000241197,
       "nodeid": "tests/test_fs.py::TestNormalizePath::test_forward_slashes",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001652189999958864,
+      "duration": 0.00015760499999828426,
       "nodeid": "tests/test_fs.py::TestNormalizePath::test_strips_trailing_slash",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00024474800000007235,
+      "duration": 0.0003491420000045764,
       "nodeid": "tests/test_fs.py::TestShouldSkipPath::test_custom_exclude_patterns",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0003460660000058624,
+      "duration": 0.0001779119999980594,
       "nodeid": "tests/test_fs.py::TestShouldSkipPath::test_normal_path",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017771199999572218,
+      "duration": 0.00016768400000444217,
       "nodeid": "tests/test_fs.py::TestShouldSkipPath::test_skips_git",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018413400000838465,
+      "duration": 0.00015858599999774015,
       "nodeid": "tests/test_fs.py::TestShouldSkipPath::test_skips_pycache",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018315300000892876,
+      "duration": 0.00022575099998789483,
       "nodeid": "tests/test_fs.py::TestShouldSkipPath::test_skips_venv",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018637799999510207,
+      "duration": 0.00019246000000805452,
       "nodeid": "tests/test_gemini_advanced.py::TestGeminiRateLimiter::test_pruning",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0002007149999911917,
+      "duration": 0.00021121400000367885,
       "nodeid": "tests/test_gemini_advanced.py::TestGeminiRateLimiter::test_rpm_limit",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0002453689999981634,
+      "duration": 0.00019816100000014103,
       "nodeid": "tests/test_gemini_advanced.py::TestGeminiRateLimiter::test_tpm_limit",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0009640420000067706,
+      "duration": 0.0005799630000069556,
       "nodeid": "tests/test_gemini_advanced.py::TestGeminiRateLimiter::test_wait_for_slot",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019566599999620848,
+      "duration": 0.00019386200000326426,
       "nodeid": "tests/test_hashing.py::TestComputeConfigHash::test_different_config",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019937199999731092,
+      "duration": 0.0001783530000096789,
       "nodeid": "tests/test_hashing.py::TestComputeConfigHash::test_returns_short_hash",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00027184799999702136,
+      "duration": 0.00026949300000467247,
       "nodeid": "tests/test_hashing.py::TestComputeFileSha256::test_consistent_with_bytes",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0003448850000040693,
+      "duration": 0.0003010930000044709,
       "nodeid": "tests/test_hashing.py::TestComputeFileSha256::test_hashes_file",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0002043220000018664,
+      "duration": 0.00017361399999060723,
       "nodeid": "tests/test_hashing.py::TestComputeHmac::test_different_key",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00023561999999799355,
+      "duration": 0.00021023300000422296,
       "nodeid": "tests/test_hashing.py::TestComputeHmac::test_with_key",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00022130399999298334,
+      "duration": 0.00017725099999665872,
       "nodeid": "tests/test_hashing.py::TestComputeSha256::test_consistent",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018952400000671332,
+      "duration": 0.00016136200000005374,
       "nodeid": "tests/test_hashing.py::TestComputeSha256::test_length",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.08831081000001006,
+      "duration": 0.07778518400000678,
       "nodeid": "tests/test_hashing.py::TestGetDependencySnapshot::test_includes_pytest",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.08861196299999108,
+      "duration": 0.07903692200000023,
       "nodeid": "tests/test_hashing.py::TestGetDependencySnapshot::test_returns_dict",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0003216409999993175,
+      "duration": 0.00030873699999744986,
       "nodeid": "tests/test_hashing.py::TestLoadHmacKey::test_loads_key",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00022783500000400636,
+      "duration": 0.0002522109999887334,
       "nodeid": "tests/test_hashing.py::TestLoadHmacKey::test_missing_key_file",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020408100000679497,
+      "duration": 0.00017317400001104488,
       "nodeid": "tests/test_hashing.py::TestLoadHmacKey::test_no_key_file",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017251299999543335,
+      "duration": 0.0001858069999940426,
       "nodeid": "tests/test_integration_gate.py::TestConfigDefaults::test_aggregation_defaults",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00035187799998936953,
+      "duration": 0.00017292299999382976,
       "nodeid": "tests/test_integration_gate.py::TestConfigDefaults::test_capture_failed_output_default_false",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017340399999454803,
+      "duration": 0.00017692999999496806,
       "nodeid": "tests/test_integration_gate.py::TestConfigDefaults::test_context_mode_default_minimal",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001745859999999766,
+      "duration": 0.00019070599999793103,
       "nodeid": "tests/test_integration_gate.py::TestConfigDefaults::test_llm_not_enabled_by_default",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017017800000473926,
+      "duration": 0.00029170500000930133,
       "nodeid": "tests/test_integration_gate.py::TestConfigDefaults::test_omit_tests_default_true",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020558399999970334,
+      "duration": 0.00022985900000094261,
       "nodeid": "tests/test_integration_gate.py::TestConfigDefaults::test_provider_default_none",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019045599999856222,
+      "duration": 0.00018391400000439262,
       "nodeid": "tests/test_integration_gate.py::TestConfigDefaults::test_secret_exclude_globs",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.005392650000004551,
+      "duration": 0.0058398980000049505,
       "nodeid": "tests/test_integration_gate.py::TestFullPipeline::test_deterministic_output",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.005160064999998326,
+      "duration": 0.0053666239999898835,
       "nodeid": "tests/test_integration_gate.py::TestFullPipeline::test_empty_test_suite",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.03357211299999108,
+      "duration": 0.030722682999993367,
       "nodeid": "tests/test_integration_gate.py::TestFullPipeline::test_html_report_generation",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.04956046000000924,
+      "duration": 0.04794320599999935,
       "nodeid": "tests/test_integration_gate.py::TestFullPipeline::test_json_report_generation",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00022107300000584473,
+      "duration": 0.00021947000000466232,
       "nodeid": "tests/test_integration_gate.py::TestSchemaCompatibility::test_report_root_has_required_fields",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017596899999716697,
+      "duration": 0.0001796160000111513,
       "nodeid": "tests/test_integration_gate.py::TestSchemaCompatibility::test_run_meta_has_aggregation_fields",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018191100001274663,
+      "duration": 0.0001807280000036826,
       "nodeid": "tests/test_integration_gate.py::TestSchemaCompatibility::test_run_meta_has_status_fields",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016801399999621935,
+      "duration": 0.00015699300000449057,
       "nodeid": "tests/test_integration_gate.py::TestSchemaCompatibility::test_schema_version_defined",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017755199999669458,
+      "duration": 0.00017883399999618632,
       "nodeid": "tests/test_integration_gate.py::TestSchemaCompatibility::test_test_case_has_required_fields",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018409400000507503,
+      "duration": 0.00020648599999617545,
       "nodeid": "tests/test_llm.py::TestGetProvider::test_gemini_returns_provider",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001774520000026314,
+      "duration": 0.00018701000000476142,
       "nodeid": "tests/test_llm.py::TestGetProvider::test_litellm_returns_provider",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018372300000635278,
+      "duration": 0.0001861580000053209,
       "nodeid": "tests/test_llm.py::TestGetProvider::test_none_returns_noop",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001861380000036661,
+      "duration": 0.00018339199999672928,
       "nodeid": "tests/test_llm.py::TestGetProvider::test_ollama_returns_provider",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001913980000125548,
+      "duration": 0.0002010160000054384,
       "nodeid": "tests/test_llm.py::TestGetProvider::test_unknown_raises",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017354500000976714,
+      "duration": 0.0002359409999996842,
       "nodeid": "tests/test_llm.py::TestLlmProviderContract::test_noop_implements_interface",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020268899999109635,
+      "duration": 0.00020398099999852093,
       "nodeid": "tests/test_llm.py::TestNoopProvider::test_annotate_returns_empty",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001897839999998041,
+      "duration": 0.00019180799999674036,
       "nodeid": "tests/test_llm.py::TestNoopProvider::test_get_model_name_empty",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0002356410000032838,
+      "duration": 0.00022064200000215806,
       "nodeid": "tests/test_llm.py::TestNoopProvider::test_is_available",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00048514700000623634,
+      "duration": 0.0004799370000085901,
       "nodeid": "tests/test_llm_annotator.py::test_annotate_tests_emits_summary",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00045473000000129105,
+      "duration": 0.0004692070000089643,
       "nodeid": "tests/test_llm_annotator.py::test_annotate_tests_reports_progress",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00047794299999281975,
+      "duration": 0.00048637899999448564,
       "nodeid": "tests/test_llm_annotator.py::test_annotate_tests_respects_opt_out_and_limit",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0006392749999974967,
+      "duration": 0.000679939999997714,
       "nodeid": "tests/test_llm_annotator.py::test_annotate_tests_respects_rate_limit",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.000274893000010934,
+      "duration": 0.00026876100000094993,
       "nodeid": "tests/test_llm_annotator.py::test_annotate_tests_skips_unavailable_provider",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0007241130000039675,
+      "duration": 0.0007799859999977343,
       "nodeid": "tests/test_llm_annotator.py::test_annotate_tests_uses_cache",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016267399999492227,
+      "duration": 0.00016292399999429108,
       "nodeid": "tests/test_llm_contract.py::TestAnnotationSchema::test_required_fields",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019028499998796633,
+      "duration": 0.0001815490000041109,
       "nodeid": "tests/test_llm_contract.py::TestAnnotationSchema::test_schema_from_dict",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016723200000967609,
+      "duration": 0.00017013700001200505,
       "nodeid": "tests/test_llm_contract.py::TestAnnotationSchema::test_schema_handles_empty",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018221999999923355,
+      "duration": 0.0001612209999990455,
       "nodeid": "tests/test_llm_contract.py::TestAnnotationSchema::test_schema_handles_partial",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016833400000848542,
+      "duration": 0.0001731330000040998,
       "nodeid": "tests/test_llm_contract.py::TestAnnotationSchema::test_schema_has_required_fields",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016949700000168377,
+      "duration": 0.0001676229999958423,
       "nodeid": "tests/test_llm_contract.py::TestAnnotationSchema::test_schema_to_dict",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019895199999098168,
+      "duration": 0.00018210999999723754,
       "nodeid": "tests/test_llm_contract.py::TestNoopProvider::test_noop_from_factory",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.000199413000004256,
+      "duration": 0.0001737949999949251,
       "nodeid": "tests/test_llm_contract.py::TestNoopProvider::test_noop_is_llm_provider",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00021048400000722722,
+      "duration": 0.00018911399999410605,
       "nodeid": "tests/test_llm_contract.py::TestNoopProvider::test_noop_returns_empty_annotation",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018954399999415728,
+      "duration": 0.00018456500001207132,
       "nodeid": "tests/test_llm_contract.py::TestProviderContract::test_annotate_returns_annotation",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001855969999979834,
+      "duration": 0.00017676999999594045,
       "nodeid": "tests/test_llm_contract.py::TestProviderContract::test_provider_handles_empty_code",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018159900000114249,
+      "duration": 0.0001752179999954251,
       "nodeid": "tests/test_llm_contract.py::TestProviderContract::test_provider_handles_none_context",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00022464900000329635,
+      "duration": 0.00021521200000051977,
       "nodeid": "tests/test_llm_contract.py::TestProviderContract::test_provider_has_annotate_method",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0002807649999994055,
+      "duration": 0.0002896909999918762,
       "nodeid": "tests/test_llm_providers.py::TestGeminiProvider::test_annotate_handles_context_too_large",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019392199999401782,
+      "duration": 0.0002162440000006427,
       "nodeid": "tests/test_llm_providers.py::TestGeminiProvider::test_annotate_missing_dependency",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020867900001064754,
+      "duration": 0.00019916200000125173,
       "nodeid": "tests/test_llm_providers.py::TestGeminiProvider::test_annotate_missing_token",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.000334965999996939,
+      "duration": 0.00031319500000392964,
       "nodeid": "tests/test_llm_providers.py::TestGeminiProvider::test_annotate_records_tokens",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0004390210000053685,
+      "duration": 0.0004310949999961622,
       "nodeid": "tests/test_llm_providers.py::TestGeminiProvider::test_annotate_retries_on_rate_limit",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00044760699999812914,
+      "duration": 0.0004055080000000544,
       "nodeid": "tests/test_llm_providers.py::TestGeminiProvider::test_annotate_rotates_models_on_daily_limit",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.000364911999994888,
+      "duration": 0.00034911199999498876,
       "nodeid": "tests/test_llm_providers.py::TestGeminiProvider::test_annotate_skips_on_daily_limit",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0004453119999965338,
+      "duration": 0.0005108440000043402,
       "nodeid": "tests/test_llm_providers.py::TestGeminiProvider::test_annotate_success_with_mock_response",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0004746470000043246,
+      "duration": 0.00045582100000274295,
       "nodeid": "tests/test_llm_providers.py::TestGeminiProvider::test_exhausted_model_recovers_after_24h",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00022761500000001433,
+      "duration": 0.00024347500000487798,
       "nodeid": "tests/test_llm_providers.py::TestGeminiProvider::test_fetch_available_models_error",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0005092820000101028,
+      "duration": 0.0004341009999961898,
       "nodeid": "tests/test_llm_providers.py::TestGeminiProvider::test_model_list_refreshes_after_interval",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019953299999997398,
+      "duration": 0.00021602299999301522,
       "nodeid": "tests/test_llm_providers.py::TestLiteLLMProvider::test_annotate_handles_completion_error",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00023543000000358916,
+      "duration": 0.00025108900000248013,
       "nodeid": "tests/test_llm_providers.py::TestLiteLLMProvider::test_annotate_invalid_key_assertions",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019626600000322014,
+      "duration": 0.0001968879999907358,
       "nodeid": "tests/test_llm_providers.py::TestLiteLLMProvider::test_annotate_missing_dependency",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0003016840000071852,
+      "duration": 0.0003263199999992139,
       "nodeid": "tests/test_llm_providers.py::TestLiteLLMProvider::test_annotate_success_with_mock_response",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018381399999611858,
+      "duration": 0.00018194000000448796,
       "nodeid": "tests/test_llm_providers.py::TestLiteLLMProvider::test_is_available_with_module",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0002530729999961068,
+      "duration": 0.00027098600000385886,
       "nodeid": "tests/test_llm_providers.py::TestOllamaProvider::test_annotate_fallbacks_on_context_length_error",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00021509299999422637,
+      "duration": 0.00021486100000345232,
       "nodeid": "tests/test_llm_providers.py::TestOllamaProvider::test_annotate_handles_call_error",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001966779999946766,
+      "duration": 0.00021073399999238518,
       "nodeid": "tests/test_llm_providers.py::TestOllamaProvider::test_annotate_missing_httpx",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00027865100000212806,
+      "duration": 0.00029864799999756997,
       "nodeid": "tests/test_llm_providers.py::TestOllamaProvider::test_annotate_success_full_flow",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00021313900001018737,
+      "duration": 0.0002500579999917818,
       "nodeid": "tests/test_llm_providers.py::TestOllamaProvider::test_call_ollama_success",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020718700000088575,
+      "duration": 0.00021778599999322523,
       "nodeid": "tests/test_llm_providers.py::TestOllamaProvider::test_call_ollama_uses_default_model",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018044700000530156,
+      "duration": 0.0001850149999995665,
       "nodeid": "tests/test_llm_providers.py::TestOllamaProvider::test_check_availability_failure",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019314099999689915,
+      "duration": 0.00018988499999750275,
       "nodeid": "tests/test_llm_providers.py::TestOllamaProvider::test_check_availability_non_200",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00021274700000617486,
+      "duration": 0.0002067660000051319,
       "nodeid": "tests/test_llm_providers.py::TestOllamaProvider::test_check_availability_success",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020063499999878331,
+      "duration": 0.00016795300000183033,
       "nodeid": "tests/test_llm_providers.py::TestOllamaProvider::test_is_local_returns_true",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020955099999753202,
+      "duration": 0.00022221499999375283,
       "nodeid": "tests/test_llm_providers.py::TestOllamaProvider::test_parse_response_invalid_json",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00021154600000272694,
+      "duration": 0.0002177860000074361,
       "nodeid": "tests/test_llm_providers.py::TestOllamaProvider::test_parse_response_invalid_key_assertions",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0002052239999983385,
+      "duration": 0.0002028589999980568,
       "nodeid": "tests/test_llm_providers.py::TestOllamaProvider::test_parse_response_json_in_code_fence",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019788999999548196,
+      "duration": 0.00020158600000286242,
       "nodeid": "tests/test_llm_providers.py::TestOllamaProvider::test_parse_response_json_in_plain_fence",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00023597199999869645,
+      "duration": 0.00024312400000781054,
       "nodeid": "tests/test_llm_providers.py::TestOllamaProvider::test_parse_response_success",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016950699999540575,
+      "duration": 0.0001684839999995802,
       "nodeid": "tests/test_models.py::TestArtifactEntry::test_to_dict",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001628039999985731,
+      "duration": 0.00019226899999580382,
       "nodeid": "tests/test_models.py::TestCollectionError::test_to_dict",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016547999999261265,
+      "duration": 0.0001842039999928602,
       "nodeid": "tests/test_models.py::TestCoverageEntry::test_to_dict",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001641070000033551,
+      "duration": 0.00017192100000329447,
       "nodeid": "tests/test_models.py::TestLlmAnnotation::test_empty_annotation",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016746400000045014,
+      "duration": 0.00017273199999578992,
       "nodeid": "tests/test_models.py::TestLlmAnnotation::test_to_dict_minimal",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00027424200000325527,
+      "duration": 0.0002007749999961561,
       "nodeid": "tests/test_models.py::TestLlmAnnotation::test_to_dict_with_all_fields",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019548499999189062,
+      "duration": 0.00019784900000274774,
       "nodeid": "tests/test_models.py::TestReportRoot::test_default_report",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019430400000430836,
+      "duration": 0.00020248799999933453,
       "nodeid": "tests/test_models.py::TestReportRoot::test_report_with_collection_errors",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019633599998769569,
+      "duration": 0.00019569600000579612,
       "nodeid": "tests/test_models.py::TestReportRoot::test_report_with_warnings",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020719799999824318,
+      "duration": 0.00020373099999915212,
       "nodeid": "tests/test_models.py::TestReportRoot::test_tests_sorted_by_nodeid",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016172200000141856,
+      "duration": 0.00016051000000061322,
       "nodeid": "tests/test_models.py::TestReportWarning::test_to_dict_with_detail",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001651489999972,
+      "duration": 0.0005629519999956756,
       "nodeid": "tests/test_models.py::TestReportWarning::test_to_dict_without_detail",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00021838799999329694,
+      "duration": 0.00020109499999421132,
       "nodeid": "tests/test_models.py::TestRunMeta::test_aggregation_fields_present",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018012700000724635,
+      "duration": 0.0001687549999900284,
       "nodeid": "tests/test_models.py::TestRunMeta::test_llm_fields_excluded_when_disabled",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018731000000116182,
+      "duration": 0.00017749100000230555,
       "nodeid": "tests/test_models.py::TestRunMeta::test_llm_traceability_fields",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00021570299999496,
+      "duration": 0.0001658700000035651,
       "nodeid": "tests/test_models.py::TestRunMeta::test_non_aggregated_excludes_source_reports",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00022028200000079323,
+      "duration": 0.00019855099999688264,
       "nodeid": "tests/test_models.py::TestRunMeta::test_run_meta_to_dict_full",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0002026490000019976,
+      "duration": 0.00018183900000678932,
       "nodeid": "tests/test_models.py::TestRunMeta::test_run_status_fields",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016905600000427512,
+      "duration": 0.00017889400000115074,
       "nodeid": "tests/test_models.py::TestSchemaVersion::test_schema_version_format",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020291899998881036,
+      "duration": 0.00020065399999680267,
       "nodeid": "tests/test_models.py::TestSchemaVersion::test_schema_version_in_report_root",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017102900000054433,
+      "duration": 0.0001768400000088377,
       "nodeid": "tests/test_models.py::TestSourceCoverageEntry::test_to_dict",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001652889999945728,
+      "duration": 0.00017108000000121137,
       "nodeid": "tests/test_models.py::TestSourceReport::test_to_dict_minimal",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001626840000028551,
+      "duration": 0.00018124899999349964,
       "nodeid": "tests/test_models.py::TestSourceReport::test_to_dict_with_run_id",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016776399999685054,
+      "duration": 0.0001887829999986934,
       "nodeid": "tests/test_models.py::TestSummary::test_to_dict",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001731339999935244,
+      "duration": 0.0001873399999965386,
       "nodeid": "tests/test_models.py::TestTestCaseResult::test_minimal_result",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017565800000340914,
+      "duration": 0.0001674129999997831,
       "nodeid": "tests/test_models.py::TestTestCaseResult::test_result_with_coverage",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001682540000018662,
+      "duration": 0.0001578450000039311,
       "nodeid": "tests/test_models.py::TestTestCaseResult::test_result_with_llm_opt_out",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016873500000258446,
+      "duration": 0.0001646369999974695,
       "nodeid": "tests/test_models.py::TestTestCaseResult::test_result_with_rerun",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016943699999671935,
+      "duration": 0.00016800299999886192,
       "nodeid": "tests/test_models.py::TestTestCaseResult::test_result_without_rerun_excludes_fields",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016783399999553694,
+      "duration": 0.00018839199999831635,
       "nodeid": "tests/test_options.py::TestConfigAggregationFields::test_aggregate_dir_defaults_to_none",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017953600000453207,
+      "duration": 0.00016051000000061322,
       "nodeid": "tests/test_options.py::TestConfigAggregationFields::test_aggregate_group_id_defaults_to_none",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018158000000312313,
+      "duration": 0.00016073999999832722,
       "nodeid": "tests/test_options.py::TestConfigAggregationFields::test_aggregate_include_history_defaults_to_false",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018276199999434084,
+      "duration": 0.00018295200000295608,
       "nodeid": "tests/test_options.py::TestConfigAggregationFields::test_aggregate_run_id_defaults_to_none",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017864400000178193,
+      "duration": 0.00017338300000346862,
       "nodeid": "tests/test_options.py::TestConfigDefaults::test_aggregate_policy_defaults_to_latest",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017929500000946064,
+      "duration": 0.00017401499999891712,
       "nodeid": "tests/test_options.py::TestConfigDefaults::test_capture_failed_output_defaults_to_false",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018961499999647913,
+      "duration": 0.00016385600000035083,
       "nodeid": "tests/test_options.py::TestConfigDefaults::test_context_mode_defaults_to_minimal",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020542400000067573,
+      "duration": 0.00018192999999655513,
       "nodeid": "tests/test_options.py::TestConfigDefaults::test_default_exclude_globs_include_secrets",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00023405700000012075,
+      "duration": 0.00016717200000471166,
       "nodeid": "tests/test_options.py::TestConfigDefaults::test_llm_include_param_values_defaults_to_false",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017180099999336562,
+      "duration": 0.00019149799999240713,
       "nodeid": "tests/test_options.py::TestConfigDefaults::test_llm_requests_per_minute_defaults_to_five",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018146899999749166,
+      "duration": 0.00017990499999598342,
       "nodeid": "tests/test_options.py::TestConfigDefaults::test_omit_tests_from_coverage_defaults_to_true",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019306000000085533,
+      "duration": 0.00018002599999533686,
       "nodeid": "tests/test_options.py::TestConfigDefaults::test_provider_defaults_to_none",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016747299999053666,
+      "duration": 0.00017261300000370738,
       "nodeid": "tests/test_options.py::TestConfigIsLlmEnabled::test_gemini_provider_is_enabled",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016792399999587815,
+      "duration": 0.00017030899999781468,
       "nodeid": "tests/test_options.py::TestConfigIsLlmEnabled::test_litellm_provider_is_enabled",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017490700000166726,
+      "duration": 0.00016392599999903723,
       "nodeid": "tests/test_options.py::TestConfigIsLlmEnabled::test_none_provider_not_enabled",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.000169697000004021,
+      "duration": 0.0001684140000008938,
       "nodeid": "tests/test_options.py::TestConfigIsLlmEnabled::test_ollama_provider_is_enabled",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00021940099999540053,
+      "duration": 0.00016900500000360807,
       "nodeid": "tests/test_options.py::TestConfigValidation::test_context_bytes_too_small_produces_error",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017738199998973414,
+      "duration": 0.00017660000000319087,
       "nodeid": "tests/test_options.py::TestConfigValidation::test_invalid_aggregate_policy_produces_error",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001797360000068693,
+      "duration": 0.00017589899999848058,
       "nodeid": "tests/test_options.py::TestConfigValidation::test_invalid_context_mode_produces_error",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017734099999699993,
+      "duration": 0.00017319399999848883,
       "nodeid": "tests/test_options.py::TestConfigValidation::test_invalid_include_phase_produces_error",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018388299999116953,
+      "duration": 0.00019713800000431547,
       "nodeid": "tests/test_options.py::TestConfigValidation::test_invalid_provider_produces_error",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020524300001056872,
+      "duration": 0.00016740299999185027,
       "nodeid": "tests/test_options.py::TestConfigValidation::test_max_tests_negative_produces_error",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00033451500000580836,
+      "duration": 0.0001712800000035486,
       "nodeid": "tests/test_options.py::TestConfigValidation::test_multiple_errors_reported",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018142899999418205,
+      "duration": 0.00016835499999956482,
       "nodeid": "tests/test_options.py::TestConfigValidation::test_requests_per_minute_too_small_produces_error",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00021015299999760373,
+      "duration": 0.0001675729999988107,
       "nodeid": "tests/test_options.py::TestConfigValidation::test_timeout_too_small_produces_error",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.000174536000002945,
+      "duration": 0.00021021300000256815,
       "nodeid": "tests/test_options.py::TestConfigValidation::test_valid_config_has_no_errors",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016979800000171963,
+      "duration": 0.00019298000000844695,
       "nodeid": "tests/test_options.py::TestGetDefaultConfig::test_returns_config_instance",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016965700000071138,
+      "duration": 0.0001935110000061968,
       "nodeid": "tests/test_options.py::TestGetDefaultConfig::test_returns_defaults",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001735840000094413,
+      "duration": 0.00020051500000306532,
       "nodeid": "tests/test_options_extended.py::TestConfigAnnotations::test_aggregation_settings",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019303099999490314,
+      "duration": 0.00018882199999836757,
       "nodeid": "tests/test_options_extended.py::TestConfigAnnotations::test_all_output_paths",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019075600000917348,
+      "duration": 0.0001724119999977347,
       "nodeid": "tests/test_options_extended.py::TestConfigAnnotations::test_capture_settings",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020542400000067573,
+      "duration": 0.00017027799999880244,
       "nodeid": "tests/test_options_extended.py::TestConfigAnnotations::test_compliance_settings",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001744460000026038,
+      "duration": 0.00016657099999406455,
       "nodeid": "tests/test_options_extended.py::TestConfigAnnotations::test_coverage_settings",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017564800000968717,
+      "duration": 0.0001613809999980731,
       "nodeid": "tests/test_options_extended.py::TestConfigAnnotations::test_custom_exclude_globs",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018087800000898824,
+      "duration": 0.00017834300000174608,
       "nodeid": "tests/test_options_extended.py::TestConfigAnnotations::test_include_globs",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019708800000728388,
+      "duration": 0.0001624729999889496,
       "nodeid": "tests/test_options_extended.py::TestConfigAnnotations::test_invocation_settings",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017272299999149254,
+      "duration": 0.00017033899999319146,
       "nodeid": "tests/test_options_extended.py::TestConfigAnnotations::test_llm_execution_settings",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016952600000763596,
+      "duration": 0.00016399599999772363,
       "nodeid": "tests/test_options_extended.py::TestConfigAnnotations::test_llm_param_settings",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018735000000447144,
+      "duration": 0.00019828000000643442,
       "nodeid": "tests/test_options_extended.py::TestConfigAnnotations::test_llm_settings",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019446299999970051,
+      "duration": 0.00021827800000551179,
       "nodeid": "tests/test_options_extended.py::TestConfigAnnotations::test_repo_root_path",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020951100000843326,
+      "duration": 0.00019797999999582316,
       "nodeid": "tests/test_options_extended.py::TestConfigAnnotations::test_valid_phase_values",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001714899999996078,
+      "duration": 0.00017022800000177085,
       "nodeid": "tests/test_options_maximal.py::TestConfigDefaultsMaximal::test_default_exclude_globs",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019393200000195066,
+      "duration": 0.00018295199998874523,
       "nodeid": "tests/test_options_maximal.py::TestConfigDefaultsMaximal::test_default_redact_patterns",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001745160000012902,
+      "duration": 0.00018556700000260662,
       "nodeid": "tests/test_options_maximal.py::TestConfigDefaultsMaximal::test_default_values",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00021550300000683364,
+      "duration": 0.00020142600000383482,
       "nodeid": "tests/test_options_maximal.py::TestConfigHelpersMaximal::test_is_llm_enabled",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017724100000293674,
+      "duration": 0.00017360399999688525,
       "nodeid": "tests/test_options_maximal.py::TestConfigValidationMaximal::test_validate_invalid_aggregate_policy",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018330300000002353,
+      "duration": 0.00018103800000801584,
       "nodeid": "tests/test_options_maximal.py::TestConfigValidationMaximal::test_validate_invalid_context_mode",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001760090000004766,
+      "duration": 0.0001781419999957734,
       "nodeid": "tests/test_options_maximal.py::TestConfigValidationMaximal::test_validate_invalid_include_phase",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001828720000105477,
+      "duration": 0.0001772609999903807,
       "nodeid": "tests/test_options_maximal.py::TestConfigValidationMaximal::test_validate_invalid_provider",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001892340000040349,
+      "duration": 0.00019248899999979585,
       "nodeid": "tests/test_options_maximal.py::TestConfigValidationMaximal::test_validate_numeric_bounds",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018453500000248368,
+      "duration": 0.00017943500000683343,
       "nodeid": "tests/test_options_maximal.py::TestConfigValidationMaximal::test_validate_valid_config",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019409300000461371,
+      "duration": 0.00019186900000534024,
       "nodeid": "tests/test_plugin_integration.py::TestPluginConfigLoading::test_config_defaults",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016304499999364452,
+      "duration": 0.00015534000000627657,
       "nodeid": "tests/test_plugin_integration.py::TestPluginConfigLoading::test_markers_exist_in_config",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00015948799999421226,
+      "duration": 0.0001484579999981861,
       "llm_context_override": "balanced",
       "nodeid": "tests/test_plugin_integration.py::TestPluginIntegration::test_llm_context_marker",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001607810000052723,
+      "duration": 0.00017900499999257136,
       "llm_opt_out": true,
       "nodeid": "tests/test_plugin_integration.py::TestPluginIntegration::test_llm_opt_out_marker",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017689100000950475,
+      "duration": 0.00015456799999924442,
       "nodeid": "tests/test_plugin_integration.py::TestPluginIntegration::test_requirement_marker",
       "outcome": "passed",
       "phase": "call",
@@ -1709,679 +1709,679 @@
       ]
     },
     {
-      "duration": 0.03680701599999736,
+      "duration": 0.0318783409999952,
       "nodeid": "tests/test_plugin_integration.py::TestReportGeneration::test_report_writer_integration",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0014845250000092847,
+      "duration": 0.0007208960000042453,
       "nodeid": "tests/test_plugin_maximal.py::TestPluginCollectReport::test_pytest_collectreport_disabled",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0021592259999891894,
+      "duration": 0.0012547240000060356,
       "nodeid": "tests/test_plugin_maximal.py::TestPluginCollectReport::test_pytest_collectreport_enabled",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00044127500000001874,
+      "duration": 0.00029917899999531983,
       "nodeid": "tests/test_plugin_maximal.py::TestPluginCollectReport::test_pytest_collectreport_no_session",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00043751700000882465,
+      "duration": 0.0002966240000006337,
       "nodeid": "tests/test_plugin_maximal.py::TestPluginCollectReport::test_pytest_collectreport_session_none",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0031393480000048157,
+      "duration": 0.0012105210000044053,
       "nodeid": "tests/test_plugin_maximal.py::TestPluginConfigure::test_pytest_configure_llm_enabled_warning",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.002020876999992538,
+      "duration": 0.0011978870000035613,
       "nodeid": "tests/test_plugin_maximal.py::TestPluginConfigure::test_pytest_configure_validation_errors",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0009762349999959952,
+      "duration": 0.0005615289999951756,
       "nodeid": "tests/test_plugin_maximal.py::TestPluginConfigure::test_pytest_configure_worker_skip",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0012476919999926395,
+      "duration": 0.0008778300000074069,
       "nodeid": "tests/test_plugin_maximal.py::TestPluginLoadConfig::test_load_config_all_ini_options",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.001338361999998483,
+      "duration": 0.002760535999996705,
       "nodeid": "tests/test_plugin_maximal.py::TestPluginLoadConfig::test_load_config_cli_overrides_ini",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.005018991000000028,
+      "duration": 0.002689995000011436,
       "nodeid": "tests/test_plugin_maximal.py::TestPluginMaximal::test_load_config_from_pytest",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0012698130000075025,
+      "duration": 0.0006785879999995359,
       "nodeid": "tests/test_plugin_maximal.py::TestPluginMaximal::test_terminal_summary_disabled",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0006508559999929275,
+      "duration": 0.00044509200000675264,
       "nodeid": "tests/test_plugin_maximal.py::TestPluginMaximal::test_terminal_summary_worker_skip",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0021510610000063934,
+      "duration": 0.0009882660000073429,
       "nodeid": "tests/test_plugin_maximal.py::TestPluginRuntest::test_runtest_makereport_disabled",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0029528600000077176,
+      "duration": 0.0014771290000084036,
       "nodeid": "tests/test_plugin_maximal.py::TestPluginRuntest::test_runtest_makereport_enabled",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0012671380000028876,
+      "duration": 0.0006424399999929165,
       "nodeid": "tests/test_plugin_maximal.py::TestPluginSessionHooks::test_pytest_collection_finish_disabled",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0022904209999978775,
+      "duration": 0.001078724999999281,
       "nodeid": "tests/test_plugin_maximal.py::TestPluginSessionHooks::test_pytest_collection_finish_enabled",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0011723410000001877,
+      "duration": 0.0006526890000060348,
       "nodeid": "tests/test_plugin_maximal.py::TestPluginSessionHooks::test_pytest_sessionstart_disabled",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0007385500000083312,
+      "duration": 0.000698114999991617,
       "nodeid": "tests/test_plugin_maximal.py::TestPluginSessionHooks::test_pytest_sessionstart_enabled",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.002331498000003762,
+      "duration": 0.0015043389999931378,
       "nodeid": "tests/test_plugin_maximal.py::TestPluginTerminalSummary::test_pytest_addoption",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.005690265000012573,
+      "duration": 0.003304673000002367,
       "nodeid": "tests/test_plugin_maximal.py::TestPluginTerminalSummary::test_terminal_summary_coverage_calculation",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.005709430999999654,
+      "duration": 0.002293623999989336,
       "nodeid": "tests/test_plugin_maximal.py::TestPluginTerminalSummary::test_terminal_summary_llm_enabled",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.002708882999996831,
+      "duration": 0.0017229080000049635,
       "nodeid": "tests/test_plugin_maximal.py::TestPluginTerminalSummary::test_terminal_summary_no_collector",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0035324430000116536,
+      "duration": 0.0017236890000020821,
       "nodeid": "tests/test_plugin_maximal.py::TestPluginTerminalSummary::test_terminal_summary_with_aggregation",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0018278670000029251,
+      "duration": 0.001683334000006198,
       "nodeid": "tests/test_prompts.py::TestContextAssembler::test_balanced_mode_includes_coverage",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00023850600000230315,
+      "duration": 0.0002369219999991401,
       "nodeid": "tests/test_prompts.py::TestContextAssembler::test_context_override_from_marker",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019940300001053402,
+      "duration": 0.00020386100000280294,
       "nodeid": "tests/test_prompts.py::TestContextAssembler::test_create_assembler",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0003835670000000846,
+      "duration": 0.0003921429999991233,
       "nodeid": "tests/test_prompts.py::TestContextAssembler::test_minimal_mode_returns_empty_context",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0005744230000033212,
+      "duration": 0.0006215110000056256,
       "nodeid": "tests/test_prompts.py::TestContextAssemblerComplete::test_complete_mode_includes_coverage",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0003649110000054634,
+      "duration": 0.00038261400000294543,
       "nodeid": "tests/test_prompts.py::TestContextAssemblerExcludes::test_excludes_secret_files",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0013771139999931847,
+      "duration": 0.0016026039999985642,
       "nodeid": "tests/test_prompts.py::TestContextAssemblerLimits::test_context_limited_by_file_count",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00039159099999608316,
+      "duration": 0.00045028099999910864,
       "nodeid": "tests/test_prompts.py::TestContextAssemblerLimits::test_context_skips_nonexistent_files",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00043714599999589154,
+      "duration": 0.0004868790000074341,
       "nodeid": "tests/test_prompts.py::TestContextAssemblerLimits::test_context_truncated_at_max_bytes",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0003474399999987554,
+      "duration": 0.0003662940000026538,
       "nodeid": "tests/test_prompts.py::TestContextAssemblerRepoRoot::test_uses_config_repo_root",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.000366444999997384,
+      "duration": 0.0003739990000042326,
       "nodeid": "tests/test_prompts.py::TestContextAssemblerRepoRoot::test_uses_cwd_if_no_repo_root",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00032112000000950047,
+      "duration": 0.0003418390000007321,
       "nodeid": "tests/test_prompts.py::TestContextAssemblerSource::test_get_test_source_class_method",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00022891800000479634,
+      "duration": 0.0002366020000010849,
       "nodeid": "tests/test_prompts.py::TestContextAssemblerSource::test_get_test_source_empty_nodeid",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00024467800000138595,
+      "duration": 0.0002558169999957727,
       "nodeid": "tests/test_prompts.py::TestContextAssemblerSource::test_get_test_source_nonexistent_file",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0003296870000042418,
+      "duration": 0.00033995500000116863,
       "nodeid": "tests/test_prompts.py::TestContextAssemblerSource::test_get_test_source_parametrized",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0003276730000010275,
+      "duration": 0.0003771739999933743,
       "nodeid": "tests/test_prompts.py::TestContextAssemblerSource::test_get_test_source_simple",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016843500000618405,
+      "duration": 0.00016886500000623528,
       "nodeid": "tests/test_ranges.py::TestCompressRanges::test_consecutive_lines",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016614100000822418,
+      "duration": 0.00016833499999791002,
       "nodeid": "tests/test_ranges.py::TestCompressRanges::test_duplicates",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017531799998948827,
+      "duration": 0.00017631000000051245,
       "nodeid": "tests/test_ranges.py::TestCompressRanges::test_empty_list",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.000172653000007017,
+      "duration": 0.00019307999998829928,
       "nodeid": "tests/test_ranges.py::TestCompressRanges::test_mixed_ranges",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001705990000004931,
+      "duration": 0.00017004799998687758,
       "nodeid": "tests/test_ranges.py::TestCompressRanges::test_non_consecutive_lines",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017126000000189379,
+      "duration": 0.00017065899999124667,
       "nodeid": "tests/test_ranges.py::TestCompressRanges::test_single_line",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017077900000117552,
+      "duration": 0.00016208300000641884,
       "nodeid": "tests/test_ranges.py::TestCompressRanges::test_two_consecutive",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001690659999979971,
+      "duration": 0.00017999700000359553,
       "nodeid": "tests/test_ranges.py::TestCompressRanges::test_unsorted_input",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018832199999962995,
+      "duration": 0.00016199299999186678,
       "nodeid": "tests/test_ranges.py::TestExpandRanges::test_empty_string",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017748199999800818,
+      "duration": 0.00016584999998769945,
       "nodeid": "tests/test_ranges.py::TestExpandRanges::test_mixed",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001913769999930537,
+      "duration": 0.00016085000000032323,
       "nodeid": "tests/test_ranges.py::TestExpandRanges::test_range",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00019322100000351838,
+      "duration": 0.00022019099999681657,
       "nodeid": "tests/test_ranges.py::TestExpandRanges::test_roundtrip",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018840200000624918,
+      "duration": 0.00016031899998836252,
       "nodeid": "tests/test_ranges.py::TestExpandRanges::test_single_number",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001694759999963935,
+      "duration": 0.0001698570000030486,
       "nodeid": "tests/test_render.py::TestFormatDuration::test_milliseconds",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018986399999221248,
+      "duration": 0.00019934200000193414,
       "nodeid": "tests/test_render.py::TestFormatDuration::test_seconds",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017674000000056367,
+      "duration": 0.00017688100000157192,
       "nodeid": "tests/test_render.py::TestOutcomeToCssClass::test_all_outcomes",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001610810000016727,
+      "duration": 0.00015557999999771255,
       "nodeid": "tests/test_render.py::TestOutcomeToCssClass::test_unknown_outcome",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00026074699999867335,
+      "duration": 0.00028729699999985314,
       "nodeid": "tests/test_render.py::TestRenderFallbackHtml::test_renders_basic_report",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0002090010000017628,
+      "duration": 0.00020955200000116747,
       "nodeid": "tests/test_render.py::TestRenderFallbackHtml::test_renders_coverage",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00021148599999776252,
+      "duration": 0.00020281899999474717,
       "nodeid": "tests/test_render.py::TestRenderFallbackHtml::test_renders_llm_annotation",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00023731299999951716,
+      "duration": 0.0002107939999973496,
       "nodeid": "tests/test_render.py::TestRenderFallbackHtml::test_renders_source_coverage",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00023079199999642697,
+      "duration": 0.00020870000000172695,
       "nodeid": "tests/test_render.py::TestRenderFallbackHtml::test_renders_xpass_summary",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016689200000996607,
+      "duration": 0.00018246099999430498,
       "nodeid": "tests/test_report_writer.py::TestComputeSha256::test_different_content",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018901300001061827,
+      "duration": 0.00020556399999804853,
       "nodeid": "tests/test_report_writer.py::TestComputeSha256::test_empty_bytes",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00487228600000833,
+      "duration": 0.004652319000001626,
       "nodeid": "tests/test_report_writer.py::TestReportWriter::test_build_run_meta",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020007400000565667,
+      "duration": 0.00020821900000100868,
       "nodeid": "tests/test_report_writer.py::TestReportWriter::test_build_summary_all_outcomes",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001967279999917082,
+      "duration": 0.00019411200000263307,
       "nodeid": "tests/test_report_writer.py::TestReportWriter::test_build_summary_counts",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018840200000624918,
+      "duration": 0.00020363000000145348,
       "nodeid": "tests/test_report_writer.py::TestReportWriter::test_create_writer",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.004771558000001619,
+      "duration": 0.004585675000001288,
       "nodeid": "tests/test_report_writer.py::TestReportWriter::test_write_report_assembles_tests",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00523690800000054,
+      "duration": 0.0054336759999955575,
       "nodeid": "tests/test_report_writer.py::TestReportWriter::test_write_report_includes_coverage_percent",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.005188217000011264,
+      "duration": 0.0046042989999932615,
       "nodeid": "tests/test_report_writer.py::TestReportWriter::test_write_report_includes_source_coverage",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.005674894999998514,
+      "duration": 0.004560988999998017,
       "nodeid": "tests/test_report_writer.py::TestReportWriter::test_write_report_merges_coverage",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0061110529999979235,
+      "duration": 0.00525619799999788,
       "nodeid": "tests/test_report_writer.py::TestReportWriterWithFiles::test_atomic_write_fallback",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.006048024999998347,
+      "duration": 0.005536300000002825,
       "nodeid": "tests/test_report_writer.py::TestReportWriterWithFiles::test_creates_directory_if_missing",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0008787820000009106,
+      "duration": 0.0008586529999945469,
       "nodeid": "tests/test_report_writer.py::TestReportWriterWithFiles::test_ensure_dir_failure",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0005839210000004869,
+      "duration": 0.0003732970000100977,
       "nodeid": "tests/test_report_writer.py::TestReportWriterWithFiles::test_git_info_failure",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.035598446999998146,
+      "duration": 0.031089367999996398,
       "nodeid": "tests/test_report_writer.py::TestReportWriterWithFiles::test_write_html_creates_file",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.03513710400000036,
+      "duration": 0.03141650899999604,
       "nodeid": "tests/test_report_writer.py::TestReportWriterWithFiles::test_write_html_includes_xfail_summary",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.005637416000013218,
+      "duration": 0.005010267999992379,
       "nodeid": "tests/test_report_writer.py::TestReportWriterWithFiles::test_write_json_creates_file",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.04257242100000269,
+      "duration": 0.03424206499998661,
       "nodeid": "tests/test_report_writer.py::TestReportWriterWithFiles::test_write_pdf_creates_file",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.005916748999993615,
+      "duration": 0.005700728000007871,
       "nodeid": "tests/test_report_writer.py::TestReportWriterWithFiles::test_write_pdf_missing_playwright_warns",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020512400000427533,
+      "duration": 0.00020194699999365184,
       "nodeid": "tests/test_schemas.py::TestAnnotationSchema::test_from_dict_full",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.000182451000000583,
+      "duration": 0.00017363399999226203,
       "nodeid": "tests/test_schemas.py::TestAnnotationSchema::test_to_dict_full",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.08615482099999383,
+      "duration": 0.08263671599999611,
       "nodeid": "tests/test_smoke_pytester.py::TestBasicReportGeneration::test_html_report_created",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.11496034200000338,
+      "duration": 0.09925576599999886,
       "nodeid": "tests/test_smoke_pytester.py::TestBasicReportGeneration::test_html_summary_counts_all_statuses",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.08414872100000537,
+      "duration": 0.07461905999998919,
       "nodeid": "tests/test_smoke_pytester.py::TestBasicReportGeneration::test_json_report_created",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.05568083299999671,
+      "duration": 0.055706365999995455,
       "nodeid": "tests/test_smoke_pytester.py::TestBasicReportGeneration::test_llm_annotations_in_report",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.08944051299999956,
+      "duration": 0.08280984900000021,
       "nodeid": "tests/test_smoke_pytester.py::TestBasicReportGeneration::test_llm_error_is_reported",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.05444330999999636,
+      "duration": 0.0534477079999931,
       "nodeid": "tests/test_smoke_pytester.py::TestMarkers::test_llm_opt_out_marker",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.05463733199999865,
+      "duration": 0.053543075000007434,
       "nodeid": "tests/test_smoke_pytester.py::TestMarkers::test_requirement_marker",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.05972464100000252,
+      "duration": 0.05667652800001122,
       "nodeid": "tests/test_smoke_pytester.py::TestOutcomes::test_multiple_xfail_outcomes",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.05378793500000256,
+      "duration": 0.057054573999991476,
       "nodeid": "tests/test_smoke_pytester.py::TestOutcomes::test_skip_outcome",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.059088071000005016,
+      "duration": 0.05508318200000417,
       "nodeid": "tests/test_smoke_pytester.py::TestOutcomes::test_xfail_outcome",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.06015946400000871,
+      "duration": 0.058168955999988725,
       "nodeid": "tests/test_smoke_pytester.py::TestParametrization::test_parametrized_tests",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0489270990000108,
+      "duration": 0.04892775499999402,
       "nodeid": "tests/test_smoke_pytester.py::TestPluginRegistration::test_help_contains_examples",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.03604980999999441,
+      "duration": 0.03641955300000177,
       "nodeid": "tests/test_smoke_pytester.py::TestPluginRegistration::test_markers_registered",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.07462999000000536,
+      "duration": 0.046711376000004634,
       "nodeid": "tests/test_smoke_pytester.py::TestPluginRegistration::test_plugin_registered",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.09082948900000076,
+      "duration": 0.08499841700000843,
       "nodeid": "tests/test_smoke_pytester.py::TestSpecialCharacters::test_special_chars_in_nodeid",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016563900000221565,
+      "duration": 0.00015715300000351817,
       "nodeid": "tests/test_time.py::TestFormatDuration::test_boundary_one_minute",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.000181028000000083,
+      "duration": 0.00016850500000487045,
       "nodeid": "tests/test_time.py::TestFormatDuration::test_microseconds_format",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016786400000512458,
+      "duration": 0.00016071000000295044,
       "nodeid": "tests/test_time.py::TestFormatDuration::test_milliseconds_format",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017797299999244842,
+      "duration": 0.0001681140000044934,
       "nodeid": "tests/test_time.py::TestFormatDuration::test_minutes_format",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016778399999850535,
+      "duration": 0.00016048000000523643,
       "nodeid": "tests/test_time.py::TestFormatDuration::test_multiple_minutes",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016898599999137787,
+      "duration": 0.00015632199999515706,
       "nodeid": "tests/test_time.py::TestFormatDuration::test_one_second",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00016918600000792594,
+      "duration": 0.00015820499999108506,
       "nodeid": "tests/test_time.py::TestFormatDuration::test_seconds_format",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001712500000081718,
+      "duration": 0.00015571100000499882,
       "nodeid": "tests/test_time.py::TestFormatDuration::test_small_milliseconds",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001684140000008938,
+      "duration": 0.00020102499999552492,
       "nodeid": "tests/test_time.py::TestFormatDuration::test_very_small_microseconds",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001862980000026937,
+      "duration": 0.0001722319999970523,
       "nodeid": "tests/test_time.py::TestIsoFormat::test_formats_datetime_with_utc",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.0001715599999982942,
+      "duration": 0.00016052000000854605,
       "nodeid": "tests/test_time.py::TestIsoFormat::test_formats_naive_datetime",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00017655999999988126,
+      "duration": 0.00016943600000729475,
       "nodeid": "tests/test_time.py::TestIsoFormat::test_formats_with_microseconds",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00022426900000027672,
+      "duration": 0.00017516699999475804,
       "nodeid": "tests/test_time.py::TestUtcNow::test_has_utc_timezone",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00018337299999870993,
+      "duration": 0.00016604999999003667,
       "nodeid": "tests/test_time.py::TestUtcNow::test_is_current_time",
       "outcome": "passed",
       "phase": "call"
     },
     {
-      "duration": 0.00020756799999332998,
+      "duration": 0.0001935819999943078,
       "nodeid": "tests/test_time.py::TestUtcNow::test_returns_datetime",
       "outcome": "passed",
       "phase": "call"
