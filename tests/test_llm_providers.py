@@ -110,7 +110,7 @@ class TestLiteLLMProvider:
         test = CaseResult(nodeid="tests/test_sample.py::test_case", outcome="passed")
         annotation = provider.annotate(test, "def test_case(): assert True")
 
-        assert annotation.error == "Invalid response: key_assertions must be a list"
+        assert "Invalid response: key_assertions must be a list" in annotation.error
 
     def test_annotate_handles_completion_error(self, monkeypatch: pytest.MonkeyPatch):
         """LiteLLM provider surfaces completion errors in annotation."""
@@ -126,7 +126,7 @@ class TestLiteLLMProvider:
         test = CaseResult(nodeid="tests/test_sample.py::test_case", outcome="passed")
         annotation = provider.annotate(test, "def test_case(): assert True")
 
-        assert annotation.error == "boom"
+        assert "boom" in annotation.error
 
     def test_annotate_missing_dependency(self, mock_import_error):
         """LiteLLM provider reports missing dependency cleanly."""

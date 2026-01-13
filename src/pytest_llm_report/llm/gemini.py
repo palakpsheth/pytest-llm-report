@@ -214,32 +214,40 @@ class GeminiProvider(LlmProvider):
             if wait_for > 0:
                 time.sleep(wait_for)
 
-            try:
-                limiter = self._get_rate_limiter(api_token, model)
-                limiter.record_request()
-                response, tokens_used = self._call_gemini(prompt, api_token, model)
-                if tokens_used is not None:
-                    limiter.record_tokens(tokens_used)
-                return self._parse_response(response)
-            except _GeminiRateLimitExceeded as exc:
-                if exc.limit_type == "requests_per_day":
-                    daily_limit_hit = True
-                    self._model_exhausted_at[model] = time.time()
-                    continue
-                if exc.limit_type in {"requests_per_minute", "tokens_per_minute"}:
-                    retry_after = (
-                        exc.retry_after if exc.retry_after is not None else 60.0
-                    )
-                    self._cooldowns[model] = time.monotonic() + retry_after
-                    continue
-                raise
-            except Exception as e:
-                # If error is generic, check for "context" or "too large" strings
-                # Gemini often returns 400 for context > window
-                msg = str(e)
-                if "400" in msg or "too large" in msg.lower():
-                    return LlmAnnotation(error=f"Context too long: {msg}")
-                return LlmAnnotation(error=msg)
+            for _ in range(self.config.llm_max_retries):
+                try:
+                    limiter = self._get_rate_limiter(api_token, model)
+                    limiter.record_request()
+                    response, tokens_used = self._call_gemini(prompt, api_token, model)
+                    if tokens_used is not None:
+                        limiter.record_tokens(tokens_used)
+
+                    annotation = self._parse_response(response)
+                    if not annotation.error:
+                        return annotation
+
+                    # If "context too long", fail immediately so base class can fallback
+                    if "context too long" in annotation.error.lower():
+                        return annotation
+
+                except _GeminiRateLimitExceeded as exc:
+                    if exc.limit_type == "requests_per_day":
+                        daily_limit_hit = True
+                        self._model_exhausted_at[model] = time.time()
+                        break  # Try next model
+                    if exc.limit_type in {"requests_per_minute", "tokens_per_minute"}:
+                        retry_after = (
+                            exc.retry_after if exc.retry_after is not None else 60.0
+                        )
+                        self._cooldowns[model] = time.monotonic() + retry_after
+                        break  # Try next model
+                    raise
+                except Exception as e:
+                    msg = str(e)
+                    if "400" in msg or "too large" in msg.lower():
+                        return LlmAnnotation(error=f"Context too long: {msg}")
+
+                time.sleep(1)
 
         if daily_limit_hit:
             return LlmAnnotation(

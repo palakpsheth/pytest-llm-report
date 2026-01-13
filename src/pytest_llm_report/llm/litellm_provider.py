@@ -41,32 +41,49 @@ class LiteLLMProvider(LlmProvider):
                 error="litellm not installed. Install with: pip install litellm"
             )
 
+        import time
+
         from pytest_llm_report.llm.base import SYSTEM_PROMPT
 
         # Build prompt
         prompt = self._build_prompt(test, test_source, context_files)
 
-        # Make request
-        try:
-            response = litellm.completion(
-                model=self.config.model or "gpt-3.5-turbo",
-                messages=[
-                    {"role": "system", "content": SYSTEM_PROMPT},
-                    {"role": "user", "content": prompt},
-                ],
-                temperature=0.3,
-                timeout=self.config.llm_timeout_seconds,
-            )
+        max_retries = self.config.llm_max_retries
+        last_error = None
 
-            content = response.choices[0].message.content
-            return self._parse_response(content)
-        except Exception as e:
-            msg = str(e)
-            # Map specific errors if needed, though most providers return clear messages
-            if "context_length_exceeded" in msg or "maximum context length" in msg:
-                # Ensure we trigger the base class fallback
-                return LlmAnnotation(error=f"Context too long: {msg}")
-            return LlmAnnotation(error=msg)
+        for attempt in range(max_retries):
+            try:
+                response = litellm.completion(
+                    model=self.config.model or "gpt-3.5-turbo",
+                    messages=[
+                        {"role": "system", "content": SYSTEM_PROMPT},
+                        {"role": "user", "content": prompt},
+                    ],
+                    temperature=0.3,
+                    timeout=self.config.llm_timeout_seconds,
+                )
+
+                content = response.choices[0].message.content
+                annotation = self._parse_response(content)
+
+                if not annotation.error:
+                    return annotation
+
+                # If "context too long", fail immediately so base class can fallback
+                if "context too long" in annotation.error.lower():
+                    return annotation
+
+                last_error = annotation.error
+
+            except Exception as e:
+                last_error = str(e)
+
+            if attempt < max_retries - 1:
+                time.sleep(2 * (attempt + 1))
+
+        return LlmAnnotation(
+            error=f"Failed after {max_retries} retries. Last error: {last_error}"
+        )
 
     def _check_availability(self) -> bool:
         """Check if LiteLLM is available.

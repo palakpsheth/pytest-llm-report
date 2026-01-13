@@ -52,7 +52,7 @@ class TestAnnotatorAdvanced:
                 # Mock time moving slowly
                 mock_time.side_effect = [100.0, 100.1, 100.2, 100.3, 100.4]
 
-                _annotate_sequential(tasks, provider, cache, config, None, 2, 0, 0)
+                _annotate_sequential(tasks, provider, cache, config, None, 2, 0)
 
                 # Should have slept because only 0.1s elapsed but interval is 1.0s
                 assert mock_sleep.called
@@ -81,14 +81,14 @@ class TestAnnotatorAdvanced:
 
         progress_msgs = []
         annotated, failures, first_error = _annotate_concurrent(
-            tasks, provider, cache, config, progress_msgs.append, 2, 0, 0
+            tasks, provider, cache, config, progress_msgs.append, 2, 0
         )
 
         assert annotated == 2
         assert failures == 1
         assert "first error" in first_error
         assert any("Processing 2 test(s)" in m for m in progress_msgs)
-        assert any("LLM annotation progress" in m for m in progress_msgs)
+        assert any("LLM annotation" in m for m in progress_msgs)
 
     def test_annotate_tests_cached_progress(self):
         """Should report progress for cached tests."""
@@ -117,4 +117,4 @@ class TestAnnotatorAdvanced:
 
                     annotate_tests([test], config, progress=progress_msgs.append)
 
-        assert any("(cached): test_cached" in m for m in progress_msgs)
+        assert any("(cache): test_cached" in m for m in progress_msgs)

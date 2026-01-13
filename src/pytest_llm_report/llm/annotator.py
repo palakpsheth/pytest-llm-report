@@ -69,19 +69,19 @@ def annotate_tests(
 
     # Separate cached and uncached tests
     uncached_tasks: list[_AnnotationTask] = []
-    annotated = 0
+    completed = 0
 
-    for index, test in enumerate(limited_tests, start=1):
+    for test in limited_tests:
         test_source, context_files = assembler.assemble(test, config.repo_root)
         source_hash = hash_source(test_source)
         cached = cache.get(test.nodeid, source_hash)
         if cached:
             test.llm_annotation = cached
-            annotated += 1
+            completed += 1
             if progress:
                 progress(
-                    "pytest-llm-report: LLM annotation progress "
-                    f"{index}/{total} (cached): {test.nodeid}"
+                    f"pytest-llm-report: LLM annotation {completed}/{total} "
+                    f"(cache): {test.nodeid}"
                 )
         else:
             uncached_tasks.append(
@@ -96,41 +96,43 @@ def annotate_tests(
     # Process uncached tests
     failures = 0
     first_error: str | None = None
-    cache_offset = annotated  # For progress reporting
 
     if uncached_tasks:
         # Use concurrent processing for local providers or when concurrency > 1
         use_concurrent = provider.is_local() and config.llm_max_concurrency > 1
 
         if use_concurrent:
-            annotated, failures, first_error = _annotate_concurrent(
+            annotated_count, failures, first_error = _annotate_concurrent(
                 uncached_tasks,
                 provider,
                 cache,
                 config,
                 progress,
                 total,
-                cache_offset,
-                annotated,
+                completed,
             )
         else:
-            annotated, failures, first_error = _annotate_sequential(
+            annotated_count, failures, first_error = _annotate_sequential(
                 uncached_tasks,
                 provider,
                 cache,
                 config,
                 progress,
                 total,
-                cache_offset,
-                annotated,
+                completed,
             )
+        # Sum up for final summary
+        # we don't really need 'annotated' variable as we count failures separately
+    else:
+        annotated_count = 0
 
-    if annotated:
+    total_annotated = completed + annotated_count
+    if total_annotated:
         provider_name = config.provider
         message = (
             "pytest-llm-report: Annotated "
-            f"{annotated} test(s) via {provider_name} "
-            f"({failures} error(s))."
+            f"{total_annotated} test(s) via {provider_name} "
+            f"({completed} from cache, {annotated_count} new, {failures} error(s))."
         )
         if first_error:
             message = f"{message} First error: {first_error}"
@@ -144,8 +146,7 @@ def _annotate_sequential(
     config: Config,
     progress: Callable[[str], None] | None,
     total: int,
-    cache_offset: int,
-    annotated: int,
+    completed: int,
 ) -> tuple[int, int, str | None]:
     """Process annotations sequentially with rate limiting.
 
@@ -156,15 +157,15 @@ def _annotate_sequential(
         config: Plugin configuration.
         progress: Optional progress callback.
         total: Total number of tests.
-        cache_offset: Number of cached tests (for progress index).
-        annotated: Current count of annotated tests.
+        completed: Number of tests already completed (cached).
 
     Returns:
-        Tuple of (annotated_count, failure_count, first_error).
+        Tuple of (newly_annotated_count, failure_count, first_error).
     """
     failures = 0
     first_error: str | None = None
     last_request_time: float | None = None
+    newly_annotated = 0
 
     rate_limits = provider.get_rate_limits()
     requests_per_minute = (
@@ -174,9 +175,7 @@ def _annotate_sequential(
     )
     request_interval = 60.0 / requests_per_minute
 
-    for i, task in enumerate(tasks):
-        index = cache_offset + i + 1
-
+    for task in tasks:
         # Skip rate limiting for local providers
         if not provider.is_local() and last_request_time is not None:
             elapsed = time.monotonic() - last_request_time
@@ -187,12 +186,13 @@ def _annotate_sequential(
         annotation = provider.annotate(task.test, task.test_source, task.context_files)
         task.test.llm_annotation = annotation
         cache.set(task.test.nodeid, task.source_hash, annotation)
-        annotated += 1
+        newly_annotated += 1
+        completed += 1
 
         if progress:
             progress(
-                "pytest-llm-report: LLM annotation progress "
-                f"{index}/{total}: {task.test.nodeid}"
+                f"pytest-llm-report: LLM annotation {completed}/{total} "
+                f"({config.provider}): {task.test.nodeid}"
             )
 
         if annotation.error:
@@ -200,7 +200,7 @@ def _annotate_sequential(
             if first_error is None:
                 first_error = annotation.error
 
-    return annotated, failures, first_error
+    return newly_annotated, failures, first_error
 
 
 def _annotate_concurrent(
@@ -210,8 +210,7 @@ def _annotate_concurrent(
     config: Config,
     progress: Callable[[str], None] | None,
     total: int,
-    cache_offset: int,
-    annotated: int,
+    completed: int,
 ) -> tuple[int, int, str | None]:
     """Process annotations concurrently using ThreadPoolExecutor.
 
@@ -222,15 +221,15 @@ def _annotate_concurrent(
         config: Plugin configuration.
         progress: Optional progress callback.
         total: Total number of tests.
-        cache_offset: Number of cached tests (for progress index).
-        annotated: Current count of annotated tests.
+        completed: Number of tests already completed (cached).
 
     Returns:
-        Tuple of (annotated_count, failure_count, first_error).
+        Tuple of (newly_annotated_count, failure_count, first_error).
     """
     failures = 0
     first_error: str | None = None
     max_workers = config.llm_max_concurrency
+    newly_annotated = 0
 
     def _process_task(task: _AnnotationTask) -> tuple[_AnnotationTask, LlmAnnotation]:
         """Process a single annotation task."""
@@ -243,7 +242,6 @@ def _annotate_concurrent(
             f"with {max_workers} concurrent workers"
         )
 
-    completed = 0
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         futures = {executor.submit(_process_task, task): task for task in tasks}
 
@@ -251,13 +249,13 @@ def _annotate_concurrent(
             task, annotation = future.result()
             task.test.llm_annotation = annotation
             cache.set(task.test.nodeid, task.source_hash, annotation)
-            annotated += 1
+            newly_annotated += 1
             completed += 1
 
             if progress:
                 progress(
-                    "pytest-llm-report: LLM annotation progress "
-                    f"{cache_offset + completed}/{total}: {task.test.nodeid}"
+                    f"pytest-llm-report: LLM annotation {completed}/{total} "
+                    f"({config.provider}): {task.test.nodeid}"
                 )
 
             if annotation.error:
@@ -265,4 +263,4 @@ def _annotate_concurrent(
                 if first_error is None:
                     first_error = annotation.error
 
-    return annotated, failures, first_error
+    return newly_annotated, failures, first_error

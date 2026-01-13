@@ -12,6 +12,7 @@ class TestConfig:
         assert cfg.provider == "none"
         assert cfg.llm_context_mode == "minimal"
         assert cfg.llm_max_tests == 0
+        assert cfg.llm_max_retries == 3
         assert cfg.is_llm_enabled() is False
 
     def test_get_default_config(self):
@@ -69,13 +70,15 @@ class TestConfig:
             llm_max_tests=-1,
             llm_requests_per_minute=0,
             llm_timeout_seconds=0,
+            llm_max_retries=-1,
         )
         errors = cfg.validate()
-        assert len(errors) >= 4
+        assert len(errors) >= 5
         assert any("llm_context_bytes" in e for e in errors)
         assert any("llm_max_tests" in e for e in errors)
         assert any("llm_requests_per_minute" in e for e in errors)
         assert any("llm_timeout_seconds" in e for e in errors)
+        assert any("llm_max_retries" in e for e in errors)
 
 
 class TestLoadConfig:
@@ -98,6 +101,7 @@ class TestLoadConfig:
             "llm_aggregate_run_id",
             "llm_aggregate_group_id",
             "llm_coverage_source",
+            "llm_max_retries",
         ]:
             setattr(config.option, attr, None)
 
@@ -117,6 +121,7 @@ class TestLoadConfig:
             "llm_report_model": "llama3",
             "llm_report_context_mode": "balanced",
             "llm_report_requests_per_minute": 10,
+            "llm_report_max_retries": 5,
             "llm_report_html": "report.html",
             "llm_report_json": "report.json",
         }
@@ -127,6 +132,7 @@ class TestLoadConfig:
         assert cfg.model == "llama3"
         assert cfg.llm_context_mode == "balanced"
         assert cfg.llm_requests_per_minute == 10
+        assert cfg.llm_max_retries == 5
         assert cfg.report_html == "report.html"
         assert cfg.report_json == "report.json"
 
@@ -147,6 +153,12 @@ class TestLoadConfig:
         assert cfg.report_html == "cli_report.html"
         # CLI should set values not in ini
         assert cfg.llm_requests_per_minute == 100
+
+    def test_load_from_cli_retries(self, mock_pytest_config):
+        """Test loading retries from CLI."""
+        mock_pytest_config.option.llm_max_retries = 9
+        cfg = load_config(mock_pytest_config)
+        assert cfg.llm_max_retries == 9
 
     def test_load_aggregation_options(self, mock_pytest_config):
         """Test loading aggregation options."""

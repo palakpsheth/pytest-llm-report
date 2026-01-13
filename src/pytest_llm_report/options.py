@@ -54,6 +54,7 @@ class Config:
         llm_max_concurrency: Maximum concurrent LLM requests.
         llm_requests_per_minute: Maximum LLM requests per minute.
         llm_timeout_seconds: Timeout for LLM requests.
+        llm_max_retries: Maximum retries for LLM requests.
         llm_cache_ttl_seconds: Cache TTL in seconds.
         cache_dir: Directory for LLM cache.
 
@@ -126,6 +127,7 @@ class Config:
     llm_max_concurrency: int = 1
     llm_requests_per_minute: int = 5
     llm_timeout_seconds: int = 30
+    llm_max_retries: int = 3
     llm_cache_ttl_seconds: int = 86400  # 24 hours
     cache_dir: str = ".pytest_llm_cache"
 
@@ -212,6 +214,8 @@ class Config:
             errors.append("llm_requests_per_minute must be at least 1")
         if self.llm_timeout_seconds < 1:
             errors.append("llm_timeout_seconds must be at least 1")
+        if self.llm_max_retries < 0:
+            errors.append("llm_max_retries must be 0 or positive")
 
         return errors
 
@@ -256,6 +260,11 @@ def load_config(config: "pytest.Config") -> Config:
         cfg.report_html = config.getini("llm_report_html")
     if config.getini("llm_report_json"):
         cfg.report_json = config.getini("llm_report_json")
+    if config.getini("llm_report_max_retries") is not None:
+        try:
+            cfg.llm_max_retries = int(config.getini("llm_report_max_retries"))
+        except (ValueError, TypeError):
+            pass
 
     # Override with CLI options
     if config.option.llm_report_html:
@@ -270,6 +279,8 @@ def load_config(config: "pytest.Config") -> Config:
         cfg.report_dependency_snapshot = config.option.llm_dependency_snapshot
     if config.option.llm_requests_per_minute is not None:
         cfg.llm_requests_per_minute = config.option.llm_requests_per_minute
+    if config.option.llm_max_retries is not None:
+        cfg.llm_max_retries = config.option.llm_max_retries
 
     # Aggregation options
     if config.option.llm_aggregate_dir:

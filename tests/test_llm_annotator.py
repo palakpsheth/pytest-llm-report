@@ -166,6 +166,6 @@ def test_annotate_tests_reports_progress(monkeypatch, tmp_path):
 
     assert messages[0] == "pytest-llm-report: Starting LLM annotations for 1 test(s)"
     assert messages[1] == (
-        "pytest-llm-report: LLM annotation progress 1/1: "
+        "pytest-llm-report: LLM annotation 1/1 (litellm): "
         "tests/test_progress.py::test_case"
     )

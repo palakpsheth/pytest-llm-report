@@ -77,6 +77,13 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         default=None,
         help="Maximum LLM requests per minute (default: 5)",
     )
+    group.addoption(
+        "--llm-max-retries",
+        dest="llm_max_retries",
+        type=int,
+        default=None,
+        help="Maximum LLM retries for transient errors (default: 3)",
+    )
 
     # Aggregation options
     group.addoption(
@@ -136,6 +143,12 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         "llm_report_html",
         default="",
         help="Default path for HTML report output",
+    )
+    parser.addini(
+        "llm_report_max_retries",
+        default=3,
+        type="int",
+        help="Maximum LLM retries for transient errors",
     )
     parser.addini(
         "llm_report_json",

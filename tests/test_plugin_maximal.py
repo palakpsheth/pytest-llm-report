@@ -81,6 +81,7 @@ class TestPluginLoadConfig:
         mock_config.option.llm_aggregate_policy = None
         mock_config.option.llm_aggregate_run_id = None
         mock_config.option.llm_aggregate_group_id = None
+        mock_config.option.llm_max_retries = None
         mock_config.rootpath = Path("/project")
 
         cfg = load_config(mock_config)
@@ -168,6 +169,7 @@ class TestPluginConfigure:
         mock_config.option.llm_aggregate_policy = None
         mock_config.option.llm_aggregate_run_id = None
         mock_config.option.llm_aggregate_group_id = None
+        mock_config.option.llm_max_retries = None
         mock_config.rootpath = Path("/project")
         mock_config.stash = {}
 
@@ -198,6 +200,8 @@ class TestPluginConfigure:
         mock_config.option.llm_aggregate_policy = None
         mock_config.option.llm_aggregate_run_id = None
         mock_config.option.llm_aggregate_group_id = None
+        mock_config.option.llm_max_retries = None
+        mock_config.option.llm_max_retries = None
         mock_config.rootpath = Path("/project")
         mock_config.stash = {}
 

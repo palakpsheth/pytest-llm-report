@@ -51,7 +51,7 @@ class OllamaProvider(LlmProvider):
 
         from pytest_llm_report.llm.base import SYSTEM_PROMPT
 
-        max_retries = 3
+        max_retries = self.config.llm_max_retries
         last_error = None
 
         for attempt in range(max_retries):
