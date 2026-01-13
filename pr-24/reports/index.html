@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Report &bull; 323 tests</title>
+    <title>Test Report &bull; 374 tests</title>
     <!-- Optional: Inter font from rsms.me CDN. Falls back to system fonts if unavailable. -->
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
     <style>
@@ -563,14 +563,14 @@ document.addEventListener('DOMContentLoaded', function () {
             <div>
                 <h1>Test Report</h1>
                 <div class="meta">
-                    Run ID: 20941188328-py3.13 &bull;
-                    Generated: 2026-01-13 01:28:01 &bull;
-                    Duration: 15.43s<br>
+                    Run ID: 20941884908-py3.13 &bull;
+                    Generated: 2026-01-13 02:02:03 &bull;
+                    Duration: 15.54s<br>
                     <strong>Plugin:</strong> v0.1.0
                         (2f498263985a34902252c53c11fb820445bd8f21)
 [dirty]<br>
                     <strong>Repo:</strong> v0.1.0
-                        (95ce3b454ffa910b8ccc5a5f2044950146cb8bc9)
+                        (8cf80714469b570f4a7a02d5d11010f614c10c88)
 <br>
                     <strong>LLM:</strong> ollama / llama3.2:1b
                         (complete context,
@@ -579,7 +579,7 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
             <div style="text-align: right">
                 <div style="font-size: 2rem; font-weight: 700; color: var(--primary-color)">
-                    88.88%
+                    91.46%
                 </div>
                 <div class="meta">Total Coverage</div>
             </div>
@@ -588,11 +588,11 @@ document.addEventListener('DOMContentLoaded', function () {
         <!-- Summary Cards -->
         <div class="summary">
             <div class="summary-card">
-                <div class="count">323</div>
+                <div class="count">374</div>
                 <div class="label">Total Tests</div>
             </div>
             <div class="summary-card passed">
-                <div class="count">323</div>
+                <div class="count">374</div>
                 <div class="label">Passed</div>
             </div>
             <div class="summary-card failed">
@@ -1408,7 +1408,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_annotator_maximal.py::TestAnnotatorAdvanced::test_annotate_tests_provider_unavailable</span>
                         <div class="test-meta">
-                            <span>1ms</span>
+                            <span>2ms</span>
                             <span title="Covered file count">🛡️ 4</span>
                         </div>
                     </summary>
@@ -2060,9 +2060,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 <details>
                     <summary class="test-header">
                         <span class="status-badge status-passed">PASSED</span>
-                        <span class="test-name">tests/test_collector_maximal.py::TestCollectorMaximal::test_capture_output_on_failure</span>
+                        <span class="test-name">tests/test_collector_maximal.py::TestCollectorInternals::test_capture_output_disabled_via_handle_report</span>
                         <div class="test-meta">
-                            <span>1ms</span>
+                            <span>2ms</span>
                             <span title="Covered file count">🛡️ 3</span>
                         </div>
                     </summary>
@@ -2075,7 +2075,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <div class="coverage-list">
                                 <div class="coverage-item" style="padding: 0.5rem 1rem;">
                                     <span>src/pytest_llm_report/collector.py</span>
-                                    <span style="color: var(--text-secondary)">42 lines (ranges: 90, 93-94, 96, 99, 110-112, 114-118, 124, 127-128, 130, 140-141, 155-159, 163, 167, 171, 209-210, 227-228, 230-233, 235-236, 261, 264-265, 268-269)</span>
+                                    <span style="color: var(--text-secondary)">36 lines (ranges: 90, 93-94, 96, 99, 110-112, 114-118, 124, 127-128, 130, 140, 155-159, 163, 167, 171, 209-210, 227-228, 230-234, 238)</span>
                                 </div>
                                 <div class="coverage-item" style="padding: 0.5rem 1rem;">
                                     <span>src/pytest_llm_report/options.py</span>
@@ -2094,7 +2094,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <details>
                     <summary class="test-header">
                         <span class="status-badge status-passed">PASSED</span>
-                        <span class="test-name">tests/test_collector_maximal.py::TestCollectorMaximal::test_extract_error_loop_coverage</span>
+                        <span class="test-name">tests/test_collector_maximal.py::TestCollectorInternals::test_capture_output_stderr</span>
                         <div class="test-meta">
                             <span>1ms</span>
                             <span title="Covered file count">🛡️ 3</span>
@@ -2109,7 +2109,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <div class="coverage-list">
                                 <div class="coverage-item" style="padding: 0.5rem 1rem;">
                                     <span>src/pytest_llm_report/collector.py</span>
-                                    <span style="color: var(--text-secondary)">24 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210, 227-228, 230-236, 238)</span>
+                                    <span style="color: var(--text-secondary)">18 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210, 261, 264, 268-269)</span>
                                 </div>
                                 <div class="coverage-item" style="padding: 0.5rem 1rem;">
                                     <span>src/pytest_llm_report/options.py</span>
@@ -2128,7 +2128,279 @@ document.addEventListener('DOMContentLoaded', function () {
                 <details>
                     <summary class="test-header">
                         <span class="status-badge status-passed">PASSED</span>
-                        <span class="test-name">tests/test_collector_maximal.py::TestCollectorMaximal::test_handle_collection_report_failure</span>
+                        <span class="test-name">tests/test_collector_maximal.py::TestCollectorInternals::test_capture_output_stdout</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 3</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">18 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210, 261, 264-265, 268)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_collector_maximal.py::TestCollectorInternals::test_capture_output_truncated</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 3</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">18 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210, 261, 264-265, 268)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_collector_maximal.py::TestCollectorInternals::test_create_result_with_item_markers</span>
+                        <div class="test-meta">
+                            <span>2ms</span>
+                            <span title="Covered file count">🛡️ 3</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">35 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 155-159, 163-164, 167-169, 171, 181-182, 185-189, 198-200, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_collector_maximal.py::TestCollectorInternals::test_extract_error_repr_crash</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 3</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">22 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210, 227-228, 230-234, 238)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_collector_maximal.py::TestCollectorInternals::test_extract_error_string</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 3</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">22 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210, 227-228, 230-234, 238)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_collector_maximal.py::TestCollectorInternals::test_extract_skip_reason_fallback</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 3</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">16 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210, 250, 252)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_collector_maximal.py::TestCollectorInternals::test_extract_skip_reason_string</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 3</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">16 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210, 250-251)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_collector_maximal.py::TestCollectorInternals::test_extract_skip_reason_tuple</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 3</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">16 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210, 250-251)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_collector_maximal.py::TestCollectorReportHandling::test_handle_collection_report_failure</span>
                         <div class="test-meta">
                             <span>1ms</span>
                             <span title="Covered file count">🛡️ 3</span>
@@ -2162,77 +2434,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 <details>
                     <summary class="test-header">
                         <span class="status-badge status-passed">PASSED</span>
-                        <span class="test-name">tests/test_collector_maximal.py::TestCollectorMaximal::test_handle_runtest_skipped_in_call</span>
+                        <span class="test-name">tests/test_collector_maximal.py::TestCollectorReportHandling::test_handle_runtest_rerun</span>
                         <div class="test-meta">
-                            <span>1ms</span>
-                            <span title="Covered file count">🛡️ 3</span>
-                        </div>
-                    </summary>
-
-                    <div class="test-details">
-
-
-                        <div class="detail-section">
-                            <div class="detail-title">Coverage</div>
-                            <div class="coverage-list">
-                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
-                                    <span>src/pytest_llm_report/collector.py</span>
-                                    <span style="color: var(--text-secondary)">31 lines (ranges: 90, 93-94, 96, 99, 110-112, 114-116, 119, 121-122, 124, 127-128, 130, 140, 155-159, 163, 167, 171, 209-210, 250-251)</span>
-                                </div>
-                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
-                                    <span>src/pytest_llm_report/options.py</span>
-                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
-                                </div>
-                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
-                                    <span>src/pytest_llm_report/plugin.py</span>
-                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </details>
-            </div>
-            <div class="test-row outcome-passed" data-status="passed">
-                <details>
-                    <summary class="test-header">
-                        <span class="status-badge status-passed">PASSED</span>
-                        <span class="test-name">tests/test_collector_maximal.py::TestCollectorMaximal::test_handle_teardown_failure</span>
-                        <div class="test-meta">
-                            <span>1ms</span>
-                            <span title="Covered file count">🛡️ 3</span>
-                        </div>
-                    </summary>
-
-                    <div class="test-details">
-
-
-                        <div class="detail-section">
-                            <div class="detail-title">Coverage</div>
-                            <div class="coverage-list">
-                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
-                                    <span>src/pytest_llm_report/collector.py</span>
-                                    <span style="color: var(--text-secondary)">38 lines (ranges: 90, 93-94, 96, 99, 110-112, 114-115, 124, 127-128, 130, 132-133, 135-137, 140, 155-159, 163, 167, 171, 209-210, 227-228, 230-233, 235-236)</span>
-                                </div>
-                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
-                                    <span>src/pytest_llm_report/options.py</span>
-                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
-                                </div>
-                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
-                                    <span>src/pytest_llm_report/plugin.py</span>
-                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </details>
-            </div>
-            <div class="test-row outcome-passed" data-status="passed">
-                <details>
-                    <summary class="test-header">
-                        <span class="status-badge status-passed">PASSED</span>
-                        <span class="test-name">tests/test_collector_maximal.py::TestCollectorMaximal::test_rerun_count_coverage</span>
-                        <div class="test-meta">
-                            <span>1ms</span>
+                            <span>2ms</span>
                             <span title="Covered file count">🛡️ 3</span>
                         </div>
                     </summary>
@@ -2246,6 +2450,74 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <div class="coverage-item" style="padding: 0.5rem 1rem;">
                                     <span>src/pytest_llm_report/collector.py</span>
                                     <span style="color: var(--text-secondary)">36 lines (ranges: 90, 93-94, 96, 99, 110-112, 114-118, 124, 127-128, 130, 140, 155-159, 163, 167, 171, 209-210, 227-228, 230-234, 238)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_collector_maximal.py::TestCollectorReportHandling::test_handle_runtest_setup_failure</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 3</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">36 lines (ranges: 90, 93-94, 96, 99-103, 109-112, 114-115, 124, 127, 140, 155-159, 163, 167, 171, 209-210, 227-228, 230-234, 238)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_collector_maximal.py::TestCollectorReportHandling::test_handle_runtest_teardown_failure</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 3</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">38 lines (ranges: 90, 93-94, 96, 99, 110-112, 114-115, 124, 127-128, 130, 132-133, 135-137, 140, 155-159, 163, 167, 171, 209-210, 227-228, 230-234, 238)</span>
                                 </div>
                                 <div class="coverage-item" style="padding: 0.5rem 1rem;">
                                     <span>src/pytest_llm_report/options.py</span>
@@ -3004,6 +3276,206 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <div class="coverage-item" style="padding: 0.5rem 1rem;">
                                     <span>src/pytest_llm_report/util/ranges.py</span>
                                     <span style="color: var(--text-secondary)">14 lines (ranges: 29, 33, 35-37, 39-40, 45-47, 50, 52, 65-66)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_errors_maximal.py::TestMakeWarning::test_make_warning_known_code</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 3</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/errors.py</span>
+                                    <span style="color: var(--text-secondary)">4 lines (ranges: 139-142)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_errors_maximal.py::TestMakeWarning::test_make_warning_unknown_code</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 3</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/errors.py</span>
+                                    <span style="color: var(--text-secondary)">4 lines (ranges: 139-142)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_errors_maximal.py::TestMakeWarning::test_make_warning_with_detail</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 3</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/errors.py</span>
+                                    <span style="color: var(--text-secondary)">4 lines (ranges: 139-142)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_errors_maximal.py::TestWarningCodes::test_codes_are_strings</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 2</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_errors_maximal.py::TestWarningDataClass::test_warning_to_dict_no_detail</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 3</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/errors.py</span>
+                                    <span style="color: var(--text-secondary)">5 lines (ranges: 70-72, 74, 76)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_errors_maximal.py::TestWarningDataClass::test_warning_to_dict_with_detail</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 3</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/errors.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 70-72, 74-76)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
                                 </div>
                             </div>
                         </div>
@@ -3840,7 +4312,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_hashing.py::TestGetDependencySnapshot::test_includes_pytest</span>
                         <div class="test-meta">
-                            <span>79ms</span>
+                            <span>75ms</span>
                             <span title="Covered file count">🛡️ 3</span>
                         </div>
                     </summary>
@@ -3874,7 +4346,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_hashing.py::TestGetDependencySnapshot::test_returns_dict</span>
                         <div class="test-meta">
-                            <span>107ms</span>
+                            <span>102ms</span>
                             <span title="Covered file count">🛡️ 3</span>
                         </div>
                     </summary>
@@ -4260,7 +4732,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_integration_gate.py::TestFullPipeline::test_deterministic_output</span>
                         <div class="test-meta">
-                            <span>6ms</span>
+                            <span>5ms</span>
                             <span title="Covered file count">🛡️ 5</span>
                         </div>
                     </summary>
@@ -4344,7 +4816,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_integration_gate.py::TestFullPipeline::test_html_report_generation</span>
                         <div class="test-meta">
-                            <span>32ms</span>
+                            <span>30ms</span>
                             <span title="Covered file count">🛡️ 5</span>
                         </div>
                     </summary>
@@ -6418,6 +6890,304 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <div class="coverage-item" style="padding: 0.5rem 1rem;">
                                     <span>src/pytest_llm_report/llm/ollama.py</span>
                                     <span style="color: var(--text-secondary)">5 lines (ranges: 40-44)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_llm_providers.py::TestOllamaProvider::test_annotate_success_full_flow</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 6</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/llm/base.py</span>
+                                    <span style="color: var(--text-secondary)">26 lines (ranges: 52-53, 72, 75, 80, 165, 167, 175, 186-187, 190-191, 194-195, 198-200, 203, 205, 207, 212, 214-218)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/llm/ollama.py</span>
+                                    <span style="color: var(--text-secondary)">29 lines (ranges: 40-41, 47, 50, 52, 54-55, 57-60, 62-63, 114, 116-123, 127-130, 132, 134-135)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/llm/schemas.py</span>
+                                    <span style="color: var(--text-secondary)">7 lines (ranges: 38, 42-43, 50-53)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_llm_providers.py::TestOllamaProvider::test_call_ollama_success</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 5</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/llm/base.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 52-53)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/llm/ollama.py</span>
+                                    <span style="color: var(--text-secondary)">16 lines (ranges: 114, 116-123, 127-130, 132, 134-135)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_llm_providers.py::TestOllamaProvider::test_call_ollama_uses_default_model</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 5</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/llm/base.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 52-53)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/llm/ollama.py</span>
+                                    <span style="color: var(--text-secondary)">16 lines (ranges: 114, 116-123, 127-130, 132, 134-135)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_llm_providers.py::TestOllamaProvider::test_check_availability_failure</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 5</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/llm/base.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 52-53)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/llm/ollama.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 87-88, 90-91, 93-94)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_llm_providers.py::TestOllamaProvider::test_check_availability_non_200</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 5</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/llm/base.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 52-53)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/llm/ollama.py</span>
+                                    <span style="color: var(--text-secondary)">5 lines (ranges: 87-88, 90-92)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_llm_providers.py::TestOllamaProvider::test_check_availability_success</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 5</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/llm/base.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 52-53)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/llm/ollama.py</span>
+                                    <span style="color: var(--text-secondary)">5 lines (ranges: 87-88, 90-92)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_llm_providers.py::TestOllamaProvider::test_is_local_returns_true</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 5</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/llm/base.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 52-53)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/llm/ollama.py</span>
+                                    <span style="color: var(--text-secondary)">1 lines (ranges: 102)</span>
                                 </div>
                                 <div class="coverage-item" style="padding: 0.5rem 1rem;">
                                     <span>src/pytest_llm_report/options.py</span>
@@ -9018,7 +9788,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <details>
                     <summary class="test-header">
                         <span class="status-badge status-passed">PASSED</span>
-                        <span class="test-name">tests/test_options_maximal.py::test_config_all_fields_accessible</span>
+                        <span class="test-name">tests/test_options_maximal.py::TestConfigDefaults::test_default_exclude_globs</span>
                         <div class="test-meta">
                             <span>1ms</span>
                             <span title="Covered file count">🛡️ 3</span>
@@ -9052,7 +9822,75 @@ document.addEventListener('DOMContentLoaded', function () {
                 <details>
                     <summary class="test-header">
                         <span class="status-badge status-passed">PASSED</span>
-                        <span class="test-name">tests/test_options_maximal.py::test_config_is_llm_enabled</span>
+                        <span class="test-name">tests/test_options_maximal.py::TestConfigDefaults::test_default_redact_patterns</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 3</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_options_maximal.py::TestConfigDefaults::test_default_values</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 3</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">3 lines (ranges: 102, 140, 224)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_options_maximal.py::TestConfigHelpers::test_is_llm_enabled</span>
                         <div class="test-meta">
                             <span>1ms</span>
                             <span title="Covered file count">🛡️ 3</span>
@@ -9086,7 +9924,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <details>
                     <summary class="test-header">
                         <span class="status-badge status-passed">PASSED</span>
-                        <span class="test-name">tests/test_options_maximal.py::test_config_validation_invalid_aggregate_policy</span>
+                        <span class="test-name">tests/test_options_maximal.py::TestConfigValidation::test_validate_invalid_aggregate_policy</span>
                         <div class="test-meta">
                             <span>1ms</span>
                             <span title="Covered file count">🛡️ 3</span>
@@ -9120,7 +9958,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <details>
                     <summary class="test-header">
                         <span class="status-badge status-passed">PASSED</span>
-                        <span class="test-name">tests/test_options_maximal.py::test_config_validation_invalid_context_mode</span>
+                        <span class="test-name">tests/test_options_maximal.py::TestConfigValidation::test_validate_invalid_context_mode</span>
                         <div class="test-meta">
                             <span>1ms</span>
                             <span title="Covered file count">🛡️ 3</span>
@@ -9154,7 +9992,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <details>
                     <summary class="test-header">
                         <span class="status-badge status-passed">PASSED</span>
-                        <span class="test-name">tests/test_options_maximal.py::test_config_validation_invalid_include_phase</span>
+                        <span class="test-name">tests/test_options_maximal.py::TestConfigValidation::test_validate_invalid_include_phase</span>
                         <div class="test-meta">
                             <span>1ms</span>
                             <span title="Covered file count">🛡️ 3</span>
@@ -9188,7 +10026,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <details>
                     <summary class="test-header">
                         <span class="status-badge status-passed">PASSED</span>
-                        <span class="test-name">tests/test_options_maximal.py::test_config_validation_invalid_provider</span>
+                        <span class="test-name">tests/test_options_maximal.py::TestConfigValidation::test_validate_invalid_provider</span>
                         <div class="test-meta">
                             <span>1ms</span>
                             <span title="Covered file count">🛡️ 3</span>
@@ -9222,7 +10060,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <details>
                     <summary class="test-header">
                         <span class="status-badge status-passed">PASSED</span>
-                        <span class="test-name">tests/test_options_maximal.py::test_config_validation_numeric_bounds</span>
+                        <span class="test-name">tests/test_options_maximal.py::TestConfigValidation::test_validate_numeric_bounds</span>
                         <div class="test-meta">
                             <span>1ms</span>
                             <span title="Covered file count">🛡️ 3</span>
@@ -9256,7 +10094,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <details>
                     <summary class="test-header">
                         <span class="status-badge status-passed">PASSED</span>
-                        <span class="test-name">tests/test_options_maximal.py::test_get_default_config</span>
+                        <span class="test-name">tests/test_options_maximal.py::TestConfigValidation::test_validate_valid_config</span>
                         <div class="test-meta">
                             <span>1ms</span>
                             <span title="Covered file count">🛡️ 3</span>
@@ -9275,7 +10113,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 </div>
                                 <div class="coverage-item" style="padding: 0.5rem 1rem;">
                                     <span>src/pytest_llm_report/options.py</span>
-                                    <span style="color: var(--text-secondary)">3 lines (ranges: 102, 140, 224)</span>
+                                    <span style="color: var(--text-secondary)">16 lines (ranges: 102, 140, 168, 171-172, 178-179, 186-187, 194-195, 202, 204, 206, 208, 211)</span>
                                 </div>
                                 <div class="coverage-item" style="padding: 0.5rem 1rem;">
                                     <span>src/pytest_llm_report/plugin.py</span>
@@ -9446,7 +10284,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_plugin_integration.py::TestReportGeneration::test_report_writer_integration</span>
                         <div class="test-meta">
-                            <span>34ms</span>
+                            <span>30ms</span>
                             <span title="Covered file count">🛡️ 6</span>
                         </div>
                     </summary>
@@ -9480,6 +10318,292 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <div class="coverage-item" style="padding: 0.5rem 1rem;">
                                     <span>src/pytest_llm_report/report_writer.py</span>
                                     <span style="color: var(--text-secondary)">131 lines (ranges: 55, 67-74, 76-81, 83-84, 98-99, 102, 105-108, 110, 127-128, 130, 156-158, 186, 192-193, 197-198, 202, 211-218, 222-223, 226-227, 230, 233, 254, 256-259, 262-264, 266, 268-275, 277-278, 280-289, 291-294, 296-297, 299-300, 312, 314-315, 317-320, 330, 340, 343-345, 348-349, 352-354, 357, 360-364, 376, 378-379, 382, 385, 388, 391-395, 470-471, 495, 497, 499-501, 503, 506)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_plugin_maximal.py::TestPluginCollectReport::test_pytest_collectreport_disabled</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 2</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">10 lines (ranges: 421-422, 425, 429-431, 442-443, 449-450)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_plugin_maximal.py::TestPluginCollectReport::test_pytest_collectreport_enabled</span>
+                        <div class="test-meta">
+                            <span>2ms</span>
+                            <span title="Covered file count">🛡️ 2</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">12 lines (ranges: 421-422, 425, 429-431, 442-443, 449, 453-455)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_plugin_maximal.py::TestPluginCollectReport::test_pytest_collectreport_no_session</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 2</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">8 lines (ranges: 421-422, 425, 429-431, 442, 446)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_plugin_maximal.py::TestPluginCollectReport::test_pytest_collectreport_session_none</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 2</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">8 lines (ranges: 421-422, 425, 429-431, 442, 446)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_plugin_maximal.py::TestPluginConfigure::test_pytest_configure_llm_enabled_warning</span>
+                        <div class="test-meta">
+                            <span>2ms</span>
+                            <span title="Covered file count">🛡️ 3</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">17 lines (ranges: 102, 140, 168, 171-172, 178-179, 186-187, 194-195, 202, 204, 206, 208, 211, 215)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">48 lines (ranges: 153, 156-162, 164, 166, 170, 172, 174, 176, 178, 180, 184, 186, 188, 190, 194, 196, 208-210, 212-214, 216-218, 222, 226, 229-230, 237-239, 241-242, 246-247, 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_plugin_maximal.py::TestPluginConfigure::test_pytest_configure_validation_errors</span>
+                        <div class="test-meta">
+                            <span>2ms</span>
+                            <span title="Covered file count">🛡️ 3</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">18 lines (ranges: 102, 140, 168, 171-174, 178-179, 186-187, 194-195, 202, 204, 206, 208, 211)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">42 lines (ranges: 153, 156-158, 160, 162, 164, 166, 170, 172, 174, 176, 178, 180, 184, 186, 188, 190, 194, 196, 208-210, 212-214, 216-218, 222, 226, 229-233, 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_plugin_maximal.py::TestPluginConfigure::test_pytest_configure_worker_skip</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 2</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">17 lines (ranges: 208-210, 212-214, 216-218, 222-223, 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_plugin_maximal.py::TestPluginLoadConfig::test_load_config_all_ini_options</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 3</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">31 lines (ranges: 153, 156-167, 170, 172, 174, 176, 178, 180, 184, 186, 188, 190, 194, 196, 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_plugin_maximal.py::TestPluginLoadConfig::test_load_config_cli_overrides_ini</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 3</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">37 lines (ranges: 153, 156, 158, 160, 162, 164-167, 170-181, 184-191, 194, 196, 421-422, 425, 429-431)</span>
                                 </div>
                             </div>
                         </div>
@@ -9526,7 +10650,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_plugin_maximal.py::TestPluginMaximal::test_terminal_summary_disabled</span>
                         <div class="test-meta">
-                            <span>1ms</span>
+                            <span>3ms</span>
                             <span title="Covered file count">🛡️ 2</span>
                         </div>
                     </summary>
@@ -9574,6 +10698,258 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <div class="coverage-item" style="padding: 0.5rem 1rem;">
                                     <span>src/pytest_llm_report/plugin.py</span>
                                     <span style="color: var(--text-secondary)">8 lines (ranges: 272-273, 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_plugin_maximal.py::TestPluginRuntest::test_runtest_makereport_disabled</span>
+                        <div class="test-meta">
+                            <span>2ms</span>
+                            <span title="Covered file count">🛡️ 2</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">7 lines (ranges: 421-422, 425-426, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_plugin_maximal.py::TestPluginRuntest::test_runtest_makereport_enabled</span>
+                        <div class="test-meta">
+                            <span>2ms</span>
+                            <span title="Covered file count">🛡️ 2</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_plugin_maximal.py::TestPluginSessionHooks::test_pytest_collection_finish_disabled</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 2</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">8 lines (ranges: 421-422, 425, 429-431, 465-466)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_plugin_maximal.py::TestPluginSessionHooks::test_pytest_collection_finish_enabled</span>
+                        <div class="test-meta">
+                            <span>2ms</span>
+                            <span title="Covered file count">🛡️ 2</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">10 lines (ranges: 421-422, 425, 429-431, 465, 469-471)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_plugin_maximal.py::TestPluginSessionHooks::test_pytest_sessionstart_disabled</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 2</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">8 lines (ranges: 421-422, 425, 429-431, 482-483)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_plugin_maximal.py::TestPluginSessionHooks::test_pytest_sessionstart_enabled</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 3</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">11 lines (ranges: 421-422, 425, 429-431, 482, 486, 489, 491-492)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_plugin_maximal.py::TestPluginTerminalSummary::test_terminal_summary_no_collector</span>
+                        <div class="test-meta">
+                            <span>2ms</span>
+                            <span title="Covered file count">🛡️ 3</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">16 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210, 277, 285)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">3 lines (ranges: 102, 140, 215)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">45 lines (ranges: 272, 276, 280, 283, 302-303, 305, 307, 310-311, 314-315, 317-318, 321-325, 327, 330-331, 333, 336-337, 365, 371-372, 399-409, 421-422, 425, 429-431)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_plugin_maximal.py::TestPluginTerminalSummary::test_terminal_summary_with_aggregation</span>
+                        <div class="test-meta">
+                            <span>2ms</span>
+                            <span title="Covered file count">🛡️ 3</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">21 lines (ranges: 272, 276, 280, 283-284, 286-287, 290-291, 293, 295-299, 421-422, 425, 429-431)</span>
                                 </div>
                             </div>
                         </div>
@@ -9736,6 +11112,44 @@ document.addEventListener('DOMContentLoaded', function () {
                 <details>
                     <summary class="test-header">
                         <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_prompts.py::TestContextAssemblerComplete::test_complete_mode_includes_coverage</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 4</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/prompts.py</span>
+                                    <span style="color: var(--text-secondary)">34 lines (ranges: 33, 49, 52, 55, 58, 60, 63, 65, 78-79, 82-84, 132, 135-138, 140-141, 144-145, 148, 151-152, 154-155, 158-159, 163, 180, 191-192, 194)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_prompts.py::TestContextAssemblerExcludes::test_excludes_secret_files</span>
                         <div class="test-meta">
                             <span>1ms</span>
@@ -9764,6 +11178,386 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <div class="coverage-item" style="padding: 0.5rem 1rem;">
                                     <span>src/pytest_llm_report/prompts.py</span>
                                     <span style="color: var(--text-secondary)">28 lines (ranges: 33, 49, 52, 55, 58, 60-61, 65, 78-79, 82-84, 132, 135-138, 140-141, 144-145, 148-149, 163, 191-193)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_prompts.py::TestContextAssemblerLimits::test_context_limited_by_file_count</span>
+                        <div class="test-meta">
+                            <span>2ms</span>
+                            <span title="Covered file count">🛡️ 4</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/prompts.py</span>
+                                    <span style="color: var(--text-secondary)">33 lines (ranges: 33, 49, 52, 55, 58, 60-61, 65, 78-79, 82-84, 132, 135-138, 140-141, 144-145, 148, 151-152, 154-155, 158-159, 163, 191-192, 194)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_prompts.py::TestContextAssemblerLimits::test_context_skips_nonexistent_files</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 4</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/prompts.py</span>
+                                    <span style="color: var(--text-secondary)">34 lines (ranges: 33, 49, 52, 55, 58, 60-61, 65, 78-79, 82-84, 132, 135-138, 140-141, 144-146, 148, 151-152, 154-155, 158-159, 163, 191-192, 194)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_prompts.py::TestContextAssemblerLimits::test_context_truncated_at_max_bytes</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 4</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/prompts.py</span>
+                                    <span style="color: var(--text-secondary)">34 lines (ranges: 33, 49, 52, 55, 58, 60-61, 65, 78-79, 82-84, 132, 135-138, 140-141, 144-145, 148, 151-152, 154-156, 158-159, 163, 191-192, 194)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_prompts.py::TestContextAssemblerRepoRoot::test_uses_config_repo_root</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 4</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/prompts.py</span>
+                                    <span style="color: var(--text-secondary)">25 lines (ranges: 33, 49, 52, 55, 58-59, 65, 78-79, 82-83, 86-87, 92, 94, 98-101, 103-107, 116)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_prompts.py::TestContextAssemblerRepoRoot::test_uses_cwd_if_no_repo_root</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 4</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/prompts.py</span>
+                                    <span style="color: var(--text-secondary)">25 lines (ranges: 33, 49, 52, 55, 58-59, 65, 78-79, 82-83, 86-87, 92, 94, 98-101, 103-107, 116)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_prompts.py::TestContextAssemblerSource::test_get_test_source_class_method</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 4</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/prompts.py</span>
+                                    <span style="color: var(--text-secondary)">30 lines (ranges: 33, 49, 52, 55, 58-59, 65, 78-79, 82-83, 86-87, 92, 94, 98-101, 103-112, 116)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_prompts.py::TestContextAssemblerSource::test_get_test_source_empty_nodeid</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 4</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/prompts.py</span>
+                                    <span style="color: var(--text-secondary)">15 lines (ranges: 33, 49, 52, 55, 58-59, 65, 78-79, 82-83, 86-89)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_prompts.py::TestContextAssemblerSource::test_get_test_source_nonexistent_file</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 4</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/prompts.py</span>
+                                    <span style="color: var(--text-secondary)">12 lines (ranges: 33, 49, 52, 55, 58-59, 65, 78-79, 82-84)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_prompts.py::TestContextAssemblerSource::test_get_test_source_parametrized</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 4</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/prompts.py</span>
+                                    <span style="color: var(--text-secondary)">31 lines (ranges: 33, 49, 52, 55, 58-59, 65, 78-79, 82-83, 86-87, 92, 94-95, 98-101, 103-112, 116)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+            </div>
+            <div class="test-row outcome-passed" data-status="passed">
+                <details>
+                    <summary class="test-header">
+                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="test-name">tests/test_prompts.py::TestContextAssemblerSource::test_get_test_source_simple</span>
+                        <div class="test-meta">
+                            <span>1ms</span>
+                            <span title="Covered file count">🛡️ 4</span>
+                        </div>
+                    </summary>
+
+                    <div class="test-details">
+
+
+                        <div class="detail-section">
+                            <div class="detail-title">Coverage</div>
+                            <div class="coverage-list">
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/collector.py</span>
+                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/options.py</span>
+                                    <span style="color: var(--text-secondary)">2 lines (ranges: 102, 140)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/plugin.py</span>
+                                    <span style="color: var(--text-secondary)">6 lines (ranges: 421-422, 425, 429-431)</span>
+                                </div>
+                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                    <span>src/pytest_llm_report/prompts.py</span>
+                                    <span style="color: var(--text-secondary)">30 lines (ranges: 33, 49, 52, 55, 58-59, 65, 78-79, 82-83, 86-87, 92, 94, 98-101, 103-112, 116)</span>
                                 </div>
                             </div>
                         </div>
@@ -10592,7 +12386,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_report_writer.py::TestReportWriter::test_build_run_meta</span>
                         <div class="test-meta">
-                            <span>5ms</span>
+                            <span>4ms</span>
                             <span title="Covered file count">🛡️ 4</span>
                         </div>
                     </summary>
@@ -10744,7 +12538,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_report_writer.py::TestReportWriter::test_write_report_assembles_tests</span>
                         <div class="test-meta">
-                            <span>5ms</span>
+                            <span>4ms</span>
                             <span title="Covered file count">🛡️ 4</span>
                         </div>
                     </summary>
@@ -10782,7 +12576,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_report_writer.py::TestReportWriter::test_write_report_includes_coverage_percent</span>
                         <div class="test-meta">
-                            <span>6ms</span>
+                            <span>5ms</span>
                             <span title="Covered file count">🛡️ 4</span>
                         </div>
                     </summary>
@@ -10820,7 +12614,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_report_writer.py::TestReportWriter::test_write_report_includes_source_coverage</span>
                         <div class="test-meta">
-                            <span>5ms</span>
+                            <span>4ms</span>
                             <span title="Covered file count">🛡️ 4</span>
                         </div>
                     </summary>
@@ -10858,7 +12652,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_report_writer.py::TestReportWriter::test_write_report_merges_coverage</span>
                         <div class="test-meta">
-                            <span>5ms</span>
+                            <span>4ms</span>
                             <span title="Covered file count">🛡️ 4</span>
                         </div>
                     </summary>
@@ -10896,7 +12690,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_report_writer.py::TestReportWriterWithFiles::test_atomic_write_fallback</span>
                         <div class="test-meta">
-                            <span>6ms</span>
+                            <span>5ms</span>
                             <span title="Covered file count">🛡️ 5</span>
                         </div>
                     </summary>
@@ -10938,7 +12732,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_report_writer.py::TestReportWriterWithFiles::test_creates_directory_if_missing</span>
                         <div class="test-meta">
-                            <span>6ms</span>
+                            <span>5ms</span>
                             <span title="Covered file count">🛡️ 5</span>
                         </div>
                     </summary>
@@ -11052,7 +12846,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_report_writer.py::TestReportWriterWithFiles::test_write_html_creates_file</span>
                         <div class="test-meta">
-                            <span>34ms</span>
+                            <span>29ms</span>
                             <span title="Covered file count">🛡️ 5</span>
                         </div>
                     </summary>
@@ -11094,7 +12888,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_report_writer.py::TestReportWriterWithFiles::test_write_html_includes_xfail_summary</span>
                         <div class="test-meta">
-                            <span>31ms</span>
+                            <span>29ms</span>
                             <span title="Covered file count">🛡️ 5</span>
                         </div>
                     </summary>
@@ -11178,7 +12972,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_report_writer.py::TestReportWriterWithFiles::test_write_pdf_creates_file</span>
                         <div class="test-meta">
-                            <span>35ms</span>
+                            <span>33ms</span>
                             <span title="Covered file count">🛡️ 5</span>
                         </div>
                     </summary>
@@ -11326,7 +13120,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_smoke_pytester.py::TestBasicReportGeneration::test_html_report_created</span>
                         <div class="test-meta">
-                            <span>83ms</span>
+                            <span>73ms</span>
                             <span title="Covered file count">🛡️ 7</span>
                         </div>
                     </summary>
@@ -11376,7 +13170,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_smoke_pytester.py::TestBasicReportGeneration::test_html_summary_counts_all_statuses</span>
                         <div class="test-meta">
-                            <span>94ms</span>
+                            <span>89ms</span>
                             <span title="Covered file count">🛡️ 7</span>
                         </div>
                     </summary>
@@ -11426,7 +13220,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_smoke_pytester.py::TestBasicReportGeneration::test_json_report_created</span>
                         <div class="test-meta">
-                            <span>61ms</span>
+                            <span>59ms</span>
                             <span title="Covered file count">🛡️ 7</span>
                         </div>
                     </summary>
@@ -11476,7 +13270,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_smoke_pytester.py::TestBasicReportGeneration::test_llm_annotations_in_report</span>
                         <div class="test-meta">
-                            <span>53ms</span>
+                            <span>52ms</span>
                             <span title="Covered file count">🛡️ 13</span>
                         </div>
                     </summary>
@@ -11550,7 +13344,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_smoke_pytester.py::TestBasicReportGeneration::test_llm_error_is_reported</span>
                         <div class="test-meta">
-                            <span>82ms</span>
+                            <span>74ms</span>
                             <span title="Covered file count">🛡️ 12</span>
                         </div>
                     </summary>
@@ -11620,7 +13414,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_smoke_pytester.py::TestMarkers::test_llm_opt_out_marker</span>
                         <div class="test-meta">
-                            <span>51ms</span>
+                            <span>48ms</span>
                             <span title="Covered file count">🛡️ 7</span>
                         </div>
                     </summary>
@@ -11670,7 +13464,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_smoke_pytester.py::TestMarkers::test_requirement_marker</span>
                         <div class="test-meta">
-                            <span>56ms</span>
+                            <span>49ms</span>
                             <span title="Covered file count">🛡️ 7</span>
                         </div>
                     </summary>
@@ -11720,7 +13514,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_smoke_pytester.py::TestOutcomes::test_multiple_xfail_outcomes</span>
                         <div class="test-meta">
-                            <span>57ms</span>
+                            <span>60ms</span>
                             <span title="Covered file count">🛡️ 7</span>
                         </div>
                     </summary>
@@ -11770,7 +13564,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_smoke_pytester.py::TestOutcomes::test_skip_outcome</span>
                         <div class="test-meta">
-                            <span>51ms</span>
+                            <span>48ms</span>
                             <span title="Covered file count">🛡️ 7</span>
                         </div>
                     </summary>
@@ -11820,7 +13614,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_smoke_pytester.py::TestOutcomes::test_xfail_outcome</span>
                         <div class="test-meta">
-                            <span>55ms</span>
+                            <span>50ms</span>
                             <span title="Covered file count">🛡️ 7</span>
                         </div>
                     </summary>
@@ -11870,7 +13664,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_smoke_pytester.py::TestParametrization::test_parametrized_tests</span>
                         <div class="test-meta">
-                            <span>55ms</span>
+                            <span>52ms</span>
                             <span title="Covered file count">🛡️ 7</span>
                         </div>
                     </summary>
@@ -11920,7 +13714,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_smoke_pytester.py::TestPluginRegistration::test_help_contains_examples</span>
                         <div class="test-meta">
-                            <span>45ms</span>
+                            <span>42ms</span>
                             <span title="Covered file count">🛡️ 3</span>
                         </div>
                     </summary>
@@ -11954,7 +13748,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_smoke_pytester.py::TestPluginRegistration::test_markers_registered</span>
                         <div class="test-meta">
-                            <span>37ms</span>
+                            <span>34ms</span>
                             <span title="Covered file count">🛡️ 3</span>
                         </div>
                     </summary>
@@ -11988,7 +13782,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_smoke_pytester.py::TestPluginRegistration::test_plugin_registered</span>
                         <div class="test-meta">
-                            <span>48ms</span>
+                            <span>44ms</span>
                             <span title="Covered file count">🛡️ 3</span>
                         </div>
                     </summary>
@@ -12022,7 +13816,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_smoke_pytester.py::TestSpecialCharacters::test_special_chars_in_nodeid</span>
                         <div class="test-meta">
-                            <span>79ms</span>
+                            <span>76ms</span>
                             <span title="Covered file count">🛡️ 7</span>
                         </div>
                     </summary>
@@ -12623,8 +14417,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     <span>2</span>
                     <span>109</span>
                     <span>98.2%</span>
-                    <span class="source-lines">19, 21-22, 24, 26-27, 33-34, 45-50, 52, 58, 60-62, 69, 78-79, 81, 90, 93-94, 96, 99-104, 106-107, 109-112, 114-119, 121-122, 124, 127-128, 130, 132-133, 135-137, 140-141, 143, 155, 163-164, 167-169, 171, 173, 181-182, 185-189, 191, 198-200, 202, 209-210, 212-214, 216, 218, 227-228, 230-236, 238, 241, 250-251, 254, 261, 264-265, 268-269, 271, 277, 279, 285</span>
-                    <span class="source-lines">239, 252</span>
+                    <span class="source-lines">19, 21-22, 24, 26-27, 33-34, 45-50, 52, 58, 60-62, 69, 78-79, 81, 90, 93-94, 96, 99-104, 106-107, 109-112, 114-119, 121-122, 124, 127-128, 130, 132-133, 135-137, 140, 143, 155, 163-164, 167-169, 171, 173, 181-182, 185-189, 191, 198-200, 202, 209-210, 212-214, 216, 218, 227-228, 230-236, 238, 241, 250-252, 254, 261, 264-265, 268-269, 271, 277, 279, 285</span>
+                    <span class="source-lines">141, 239</span>
                 </div>
                 <div class="source-coverage-row">
                     <span class="source-path">src/pytest_llm_report/coverage_map.py</span>
@@ -12638,11 +14432,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 <div class="source-coverage-row">
                     <span class="source-path">src/pytest_llm_report/errors.py</span>
                     <span>35</span>
-                    <span>4</span>
-                    <span>31</span>
-                    <span>88.57%</span>
-                    <span class="source-lines">8-9, 12, 25-28, 31-36, 39-42, 45-46, 49-51, 54-55, 64-66, 68, 80, 129, 139</span>
-                    <span class="source-lines">70, 74-76</span>
+                    <span>0</span>
+                    <span>35</span>
+                    <span>100.0%</span>
+                    <span class="source-lines">8-9, 12, 25-28, 31-36, 39-42, 45-46, 49-51, 54-55, 64-66, 68, 70, 74-76, 80, 129, 139</span>
+                    <span class="source-lines">-</span>
                 </div>
                 <div class="source-coverage-row">
                     <span class="source-path">src/pytest_llm_report/llm/__init__.py</span>
@@ -12701,11 +14495,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 <div class="source-coverage-row">
                     <span class="source-path">src/pytest_llm_report/llm/ollama.py</span>
                     <span>43</span>
-                    <span>14</span>
-                    <span>29</span>
-                    <span>67.44%</span>
-                    <span class="source-lines">7, 9, 11-12, 18, 24, 40-41, 47, 50, 52, 54-55, 57-60, 62-63, 66-67, 71-72, 74-75, 77, 81, 96, 104</span>
-                    <span class="source-lines">69, 87-88, 90-92, 102, 114, 116-117, 127, 132, 134-135</span>
+                    <span>1</span>
+                    <span>42</span>
+                    <span>97.67%</span>
+                    <span class="source-lines">7, 9, 11-12, 18, 24, 40-41, 47, 50, 52, 54-55, 57-60, 62-63, 66-67, 71-72, 74-75, 77, 81, 87-88, 90-92, 96, 102, 104, 114, 116-117, 127, 132, 134-135</span>
+                    <span class="source-lines">69</span>
                 </div>
                 <div class="source-coverage-row">
                     <span class="source-path">src/pytest_llm_report/llm/schemas.py</span>
@@ -12737,20 +14531,20 @@ document.addEventListener('DOMContentLoaded', function () {
                 <div class="source-coverage-row">
                     <span class="source-path">src/pytest_llm_report/plugin.py</span>
                     <span>186</span>
-                    <span>66</span>
-                    <span>120</span>
-                    <span>64.52%</span>
-                    <span class="source-lines">40, 43, 49, 55, 61, 67, 73, 82, 88, 94, 100, 108, 113, 118, 123, 129, 134, 153, 156-164, 166, 170-181, 184-191, 194, 196, 208, 212, 216, 222, 226, 229-230, 237-238, 246-247, 272-273, 276-277, 280, 283, 302-303, 310-311, 314-315, 317-318, 321-325, 327, 330-331, 333, 336-337, 365, 371-374, 377, 379, 382-387, 389, 391, 399-400, 421-422, 425, 429-431, 442, 446, 465, 469-471, 482, 486, 489, 491-492</span>
-                    <span class="source-lines">13, 15-17, 19-20, 22, 28-31, 34, 141, 165, 167, 199, 223, 231, 250, 284, 286-287, 290-291, 293, 295-299, 305, 307, 338-339, 341, 343-348, 351-353, 356-357, 361-362, 366-368, 413-414, 426, 434, 443, 449-450, 453-455, 458, 466, 474-475, 483</span>
+                    <span>40</span>
+                    <span>146</span>
+                    <span>78.49%</span>
+                    <span class="source-lines">40, 43, 49, 55, 61, 67, 73, 82, 88, 94, 100, 108, 113, 118, 123, 129, 134, 153, 156-167, 170-181, 184-191, 194, 196, 208, 212, 216, 222-223, 226, 229-231, 237-238, 246-247, 272-273, 276-277, 280, 283-284, 286-287, 290-291, 293, 295-299, 302-303, 305, 307, 310-311, 314-315, 317-318, 321-325, 327, 330-331, 333, 336-337, 365, 371-374, 377, 379, 382-387, 389, 391, 399-400, 421-422, 425-426, 429-431, 442-443, 446, 449-450, 453-455, 465-466, 469-471, 482-483, 486, 489, 491-492</span>
+                    <span class="source-lines">13, 15-17, 19-20, 22, 28-31, 34, 141, 199, 250, 338-339, 341, 343-348, 351-353, 356-357, 361-362, 366-368, 413-414, 434, 458, 474-475</span>
                 </div>
                 <div class="source-coverage-row">
                     <span class="source-path">src/pytest_llm_report/prompts.py</span>
                     <span>75</span>
-                    <span>9</span>
-                    <span>66</span>
-                    <span>88.0%</span>
-                    <span class="source-lines">13, 15-17, 24, 27, 33, 35, 49, 52, 55, 58-61, 65, 67, 78-79, 82-84, 86-87, 92, 94, 98-101, 103-109, 111-112, 116, 118, 132-133, 135-138, 140-141, 144-145, 148-149, 151-152, 154-155, 158-159, 163, 165, 182, 191-194</span>
-                    <span class="source-lines">63, 80, 95, 110, 114, 142, 146, 156, 180</span>
+                    <span>3</span>
+                    <span>72</span>
+                    <span>96.0%</span>
+                    <span class="source-lines">13, 15-17, 24, 27, 33, 35, 49, 52, 55, 58-61, 63, 65, 67, 78-79, 82-84, 86-87, 92, 94-95, 98-101, 103-112, 116, 118, 132-133, 135-138, 140-141, 144-146, 148-149, 151-152, 154-156, 158-159, 163, 165, 180, 182, 191-194</span>
+                    <span class="source-lines">80, 114, 142</span>
                 </div>
                 <div class="source-coverage-row">
                     <span class="source-path">src/pytest_llm_report/render.py</span>
