@@ -165,6 +165,9 @@ jobs:
           path: collected-reports/
           merge-multiple: true
 
+      - name: Debug - List collected reports
+        run: ls -R collected-reports/
+
       - name: Generate aggregated report
         run: |
           mkdir -p site/reports

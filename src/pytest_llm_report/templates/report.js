@@ -34,11 +34,13 @@ document.addEventListener('DOMContentLoaded', function () {
         document.documentElement.dataset.theme = 'dark';
     }
 
+    // Default: expand all details
+    document.querySelectorAll('details').forEach(details => {
+        details.setAttribute('open', '');
+    });
+
     const params = new URLSearchParams(window.location.search);
     if (params.get('pdf') === '1') {
         document.body.classList.add('pdf-mode');
-        document.querySelectorAll('details').forEach(details => {
-            details.setAttribute('open', '');
-        });
     }
 });
