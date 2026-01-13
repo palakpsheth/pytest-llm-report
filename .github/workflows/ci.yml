@@ -65,7 +65,7 @@ jobs:
           fi
           uv run pytest tests \
             -o "addopts=--cov=src/pytest_llm_report --cov-branch --cov-context=test --cov-report=" \
-            -o llm_report_provider=noop \
+            -o llm_report_provider=none \
             --llm-report-json="${json_report}" \
             --llm-pdf="${pdf_report}" \
             --llm-aggregate-run-id="${{ github.run_id }}-py${{ matrix.python-version }}" \
@@ -193,8 +193,8 @@ jobs:
           clean: ${{ github.ref == 'refs/heads/main' }}
           clean-exclude: |
             pr-*
-          # Target folder: root for main, 'pr-{id}' for PRs
-          target-folder: ${{ github.ref == 'refs/heads/main' && '.' || format('pr-{0}', github.event.number) }}
+          # Target folder: root for main (empty = root), 'pr-{id}' for PRs
+          target-folder: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.number) || '' }}
 
       - name: Post Report Link to PR
         uses: actions/github-script@v7
