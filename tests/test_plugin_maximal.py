@@ -8,9 +8,9 @@ import pytest
 class TestPluginMaximal:
     """Targeted unit tests for plugin.py to reach maximal coverage."""
 
-    def test_load_config_from_pytest(self):
+    def testload_config(self):
         """Test config loading from pytest objects (CLI + INI)."""
-        from pytest_llm_report.plugin import _load_config_from_pytest
+        from pytest_llm_report.options import load_config
 
         mock_config = MagicMock()
         mock_config.option.llm_report_html = "out.html"
@@ -19,7 +19,7 @@ class TestPluginMaximal:
         mock_config.getini.side_effect = lambda key: None
         mock_config.rootpath = "/root"
 
-        cfg = _load_config_from_pytest(mock_config)
+        cfg = load_config(mock_config)
         assert cfg.report_html == "out.html"
 
     def test_terminal_summary_worker_skip(self):
@@ -52,11 +52,11 @@ class TestPluginMaximal:
 
 
 class TestPluginLoadConfig:
-    """Tests for _load_config_from_pytest with all option variations."""
+    """Tests for load_config with all option variations."""
 
     def test_load_config_all_ini_options(self):
         """Test loading all INI options."""
-        from pytest_llm_report.plugin import _load_config_from_pytest
+        from pytest_llm_report.options import load_config
 
         mock_config = MagicMock()
         # Set up INI values
@@ -83,7 +83,7 @@ class TestPluginLoadConfig:
         mock_config.option.llm_aggregate_group_id = None
         mock_config.rootpath = Path("/project")
 
-        cfg = _load_config_from_pytest(mock_config)
+        cfg = load_config(mock_config)
 
         assert cfg.provider == "ollama"
         assert cfg.model == "llama3.2"
@@ -94,7 +94,7 @@ class TestPluginLoadConfig:
 
     def test_load_config_cli_overrides_ini(self):
         """Test CLI options override INI options."""
-        from pytest_llm_report.plugin import _load_config_from_pytest
+        from pytest_llm_report.options import load_config
 
         mock_config = MagicMock()
         # INI values
@@ -117,7 +117,7 @@ class TestPluginLoadConfig:
         mock_config.option.llm_aggregate_group_id = "group-abc"
         mock_config.rootpath = Path("/project")
 
-        cfg = _load_config_from_pytest(mock_config)
+        cfg = load_config(mock_config)
 
         assert cfg.report_html == "cli.html"
         assert cfg.report_json == "cli.json"

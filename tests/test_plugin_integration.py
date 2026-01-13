@@ -3,8 +3,7 @@
 
 import pytest
 
-from pytest_llm_report.options import Config
-from pytest_llm_report.plugin import _load_config_from_pytest
+from pytest_llm_report.options import Config, load_config
 
 
 class TestPluginConfigLoading:
@@ -12,7 +11,7 @@ class TestPluginConfigLoading:
 
     def test_config_defaults(self, pytestconfig):
         """Config should have safe defaults."""
-        cfg = _load_config_from_pytest(pytestconfig)
+        cfg = load_config(pytestconfig)
         assert isinstance(cfg, Config)
         # Can't check exact values since pytest may not have our options registered
 

@@ -144,66 +144,6 @@ def pytest_addoption(parser: pytest.Parser) -> None:
     )
 
 
-def _load_config_from_pytest(config: pytest.Config) -> Config:
-    """Load Config from pytest options and ini file.
-
-    CLI options take precedence over ini file options.
-
-    Args:
-        config: pytest configuration object.
-
-    Returns:
-        Populated Config instance.
-    """
-    # Start with defaults
-    cfg = Config()
-
-    # Load from ini (pyproject.toml [tool.pytest.ini_options])
-    if config.getini("llm_report_provider"):
-        cfg.provider = config.getini("llm_report_provider")
-    if config.getini("llm_report_model"):
-        cfg.model = config.getini("llm_report_model")
-    if config.getini("llm_report_context_mode"):
-        cfg.llm_context_mode = config.getini("llm_report_context_mode")
-    if config.getini("llm_report_requests_per_minute") is not None:
-        cfg.llm_requests_per_minute = config.getini("llm_report_requests_per_minute")
-    if config.getini("llm_report_html"):
-        cfg.report_html = config.getini("llm_report_html")
-    if config.getini("llm_report_json"):
-        cfg.report_json = config.getini("llm_report_json")
-
-    # Override with CLI options
-    if config.option.llm_report_html:
-        cfg.report_html = config.option.llm_report_html
-    if config.option.llm_report_json:
-        cfg.report_json = config.option.llm_report_json
-    if config.option.llm_report_pdf:
-        cfg.report_pdf = config.option.llm_report_pdf
-    if config.option.llm_evidence_bundle:
-        cfg.report_evidence_bundle = config.option.llm_evidence_bundle
-    if config.option.llm_dependency_snapshot:
-        cfg.report_dependency_snapshot = config.option.llm_dependency_snapshot
-    if config.option.llm_requests_per_minute is not None:
-        cfg.llm_requests_per_minute = config.option.llm_requests_per_minute
-
-    # Aggregation options
-    if config.option.llm_aggregate_dir:
-        cfg.aggregate_dir = config.option.llm_aggregate_dir
-    if config.option.llm_aggregate_policy:
-        cfg.aggregate_policy = config.option.llm_aggregate_policy
-    if config.option.llm_aggregate_run_id:
-        cfg.aggregate_run_id = config.option.llm_aggregate_run_id
-    if config.option.llm_aggregate_group_id:
-        cfg.aggregate_group_id = config.option.llm_aggregate_group_id
-    if config.option.llm_coverage_source:
-        cfg.llm_coverage_source = config.option.llm_coverage_source
-
-    # Set repo root
-    cfg.repo_root = config.rootpath
-
-    return cfg
-
-
 def pytest_configure(config: pytest.Config) -> None:
     """Configure the plugin.
 
@@ -231,7 +171,12 @@ def pytest_configure(config: pytest.Config) -> None:
         return
 
     # Load configuration
-    cfg = _load_config_from_pytest(config)
+    cfg = Config.load(config) if hasattr(Config, "load") else None
+    if not cfg:
+        # Fallback if I messed up the import in my thought process, but better to import explicitly
+        from pytest_llm_report.options import load_config
+
+        cfg = load_config(config)
 
     # Validate configuration
     errors = cfg.validate()
