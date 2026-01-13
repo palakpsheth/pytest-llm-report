@@ -64,7 +64,7 @@ jobs:
             )
           fi
           uv run pytest \
-            --cov=pytest_llm_report \
+            --cov=src/pytest_llm_report \
             --cov-context=test \
             --cov-report=xml \
             --cov-fail-under=90 \
