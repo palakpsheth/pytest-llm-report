@@ -746,6 +746,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#llm-traceability-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LLM Traceability Fields
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -987,6 +998,17 @@
     <span class="md-ellipsis">
       
         Aggregation Fields
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#llm-traceability-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LLM Traceability Fields
       
     </span>
   </a>
@@ -1299,6 +1321,49 @@
 <td><code>source_reports</code></td>
 <td>array</td>
 <td>Source report paths and hashes</td>
+</tr>
+</tbody>
+</table>
+<h3 id="llm-traceability-fields">LLM Traceability Fields</h3>
+<p>When LLM annotations are enabled:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>llm_provider</code></td>
+<td>string</td>
+<td>LLM provider (e.g., "ollama", "gemini")</td>
+</tr>
+<tr>
+<td><code>llm_model</code></td>
+<td>string</td>
+<td>Model name/version (e.g., "llama3.2:1b")</td>
+</tr>
+<tr>
+<td><code>llm_context_mode</code></td>
+<td>string</td>
+<td>Context mode (minimal, balanced, complete)</td>
+</tr>
+<tr>
+<td><code>llm_annotations_enabled</code></td>
+<td>boolean</td>
+<td>Whether LLM annotations were enabled</td>
+</tr>
+<tr>
+<td><code>llm_annotations_count</code></td>
+<td>integer</td>
+<td>Number of tests annotated</td>
+</tr>
+<tr>
+<td><code>llm_annotations_errors</code></td>
+<td>integer</td>
+<td>Number of annotation errors</td>
 </tr>
 </tbody>
 </table>
