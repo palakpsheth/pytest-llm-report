@@ -310,15 +310,8 @@ def pytest_terminal_summary(
                 coverage_pct = cov.report(file=out)
                 coverage_percent = round(coverage_pct, 2)
                 source_coverage = mapper.map_source_coverage(cov)
-                if source_coverage:
-                    total_statements = sum(
-                        entry.statements for entry in source_coverage
-                    )
-                    total_covered = sum(entry.covered for entry in source_coverage)
-                    if total_statements:
-                        coverage_percent = round(
-                            (total_covered / total_statements) * 100, 2
-                        )
+                # Note: coverage_percent is from cov.report() above for consistency
+                # with coverage command line. source_coverage is for display only.
         except (ImportError, OSError, ValueError) as e:
             warnings.warn(
                 f"Failed to compute coverage percentage from .coverage file: {e}",

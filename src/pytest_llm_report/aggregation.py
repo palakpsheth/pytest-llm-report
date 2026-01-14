@@ -265,10 +265,11 @@ class Aggregator:
             mapper = CoverageMapper(self.config)
             entries = mapper.map_source_coverage(cov)
 
-            # Calculate total
-            total_stmt = sum(e.statements for e in entries)
-            total_cov = sum(e.covered for e in entries)
-            percent = round((total_cov / total_stmt * 100), 2) if total_stmt else 0.0
+            # Calculate total using cov.report() for consistency with CLI
+            import io
+
+            out = io.StringIO()
+            percent = round(cov.report(file=out), 2)
 
             return entries, percent
 
