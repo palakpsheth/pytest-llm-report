@@ -82,7 +82,7 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         dest="llm_max_retries",
         type=int,
         default=None,
-        help="Maximum LLM retries for transient errors (default: 3)",
+        help="Maximum LLM retries for transient errors (default: 10)",
     )
 
     # Aggregation options
@@ -146,7 +146,7 @@ def pytest_addoption(parser: pytest.Parser) -> None:
     )
     parser.addini(
         "llm_report_max_retries",
-        default=3,
+        default=10,
         type="int",
         help="Maximum LLM retries for transient errors",
     )
