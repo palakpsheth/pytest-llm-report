@@ -127,7 +127,7 @@ class Config:
     llm_max_concurrency: int = 1
     llm_requests_per_minute: int = 5
     llm_timeout_seconds: int = 30
-    llm_max_retries: int = 3
+    llm_max_retries: int = 10
     llm_cache_ttl_seconds: int = 86400  # 24 hours
     cache_dir: str = ".pytest_llm_cache"
 
