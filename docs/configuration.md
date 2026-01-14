@@ -11,7 +11,7 @@ Complete configuration reference for pytest-llm-report.
 | `--llm-pdf PATH` | PDF report output (requires Playwright) | None |
 | `--llm-evidence-bundle PATH` | Evidence bundle zip output | None |
 | `--llm-requests-per-minute N` | LLM request rate limit (also used as a cap for Gemini auto limits) | 5 |
-| `--llm-max-retries N` | Maximum retries for transient errors | 3 |
+| `--llm-max-retries N` | Maximum retries for transient errors | 10 |
 | `--llm-aggregate-dir DIR` | Directory with reports to [aggregate](aggregation.md) | None |
 | `--llm-aggregate-policy POLICY` | Aggregation policy: latest, merge, all | latest |
 | `--llm-aggregate-run-id ID` | Unique run ID | Auto-generated |
@@ -42,8 +42,8 @@ llm_max_tests = 50
 # Lower this if experiencing timeouts or system instability with local LLM
 llm_max_concurrency = 1
 
-# Maximum retries for transient errors (default: 3)
-llm_report_max_retries = 3
+# Maximum retries for transient errors (default: 10)
+llm_report_max_retries = 10
 
 # Tip: Local providers (like "ollama") skip rate limiting automatically
 # so you can increase concurrency to speed up annotations.

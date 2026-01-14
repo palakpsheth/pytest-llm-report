@@ -12,7 +12,7 @@ class TestConfig:
         assert cfg.provider == "none"
         assert cfg.llm_context_mode == "minimal"
         assert cfg.llm_max_tests == 0
-        assert cfg.llm_max_retries == 3
+        assert cfg.llm_max_retries == 10
         # Additional defaults
         assert cfg.llm_context_bytes == 32000
         assert cfg.llm_context_file_limit == 10
@@ -152,8 +152,8 @@ class TestLoadConfig:
         }
         mock_pytest_config.getini.side_effect = lambda key: ini_values.get(key)
         cfg = load_config(mock_pytest_config)
-        # Should fallback to default 3 or not crash
-        assert cfg.llm_max_retries == 3
+        # Should fallback to default 10 or not crash
+        assert cfg.llm_max_retries == 10
 
     def test_load_from_cli_overrides_ini(self, mock_pytest_config):
         """Test that CLI options override ini options."""
