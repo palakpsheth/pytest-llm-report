@@ -23,7 +23,7 @@ Human-friendly pytest test reports with optional LLM annotations.
 - Dark mode support (auto-detects system preference)
 - Optional PDF generation
 - **Detailed Versioning**: Reports include exact plugin and repository versions (plus Git SHA/dirty status) for reproducibility
-- Aggregation across multiple test runs (see [Aggregation](docs/aggregation.md))
+- Aggregation across multiple test runs (see [Aggregation](https://palakpsheth.github.io/pytest-llm-report/aggregation/))
 
 ## Installation
 
