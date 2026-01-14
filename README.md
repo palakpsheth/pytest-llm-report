@@ -1,7 +1,7 @@
 # pytest-llm-report
 
 [![CI](https://github.com/palakpsheth/pytest-llm-report/actions/workflows/ci.yml/badge.svg)](https://github.com/palakpsheth/pytest-llm-report/actions/workflows/ci.yml)
-[![Docs](https://github.com/palakpsheth/pytest-llm-report/actions/workflows/docs.yml/badge.svg)](https://github.com/palakpsheth/pytest-llm-report/actions/workflows/docs.yml)
+[![Docs](https://img.shields.io/badge/docs-online-blue?logo=github)](https://palakpsheth.github.io/pytest-llm-report/)
 [![codecov](https://codecov.io/gh/palakpsheth/pytest-llm-report/branch/main/graph/badge.svg)](https://codecov.io/gh/palakpsheth/pytest-llm-report)
 [![PyPI](https://img.shields.io/pypi/v/pytest-llm-report)](https://pypi.org/project/pytest-llm-report/)
 [![Python Versions](https://img.shields.io/badge/python-3.11%7C3.12%7C3.13-blue?logo=python&logoColor=white)](https://pypi.org/project/pytest-llm-report/)
