@@ -760,7 +760,7 @@ class TestOllamaProvider:
         monkeypatch.setattr(provider, "_call_ollama", fake_call)
         annotation = provider.annotate(test, "def test_case(): assert True")
 
-        assert annotation.error == "Failed after 3 retries. Last error: boom"
+        assert annotation.error == "Failed after 10 retries. Last error: boom"
 
     def test_parse_response_json_in_code_fence(self):
         """Ollama provider extracts JSON from markdown code fences."""
