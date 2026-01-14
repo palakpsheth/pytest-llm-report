@@ -29,7 +29,13 @@ The report uses the same pytest-llm-report plugin that this documentation descri
 
 - Search tests by name
 - Filter by test status (passed, failed, skipped, etc.)
+- **Failures Only**: Quickly filter to show only failed/error tests
 - Toggle visibility of passed tests
+
+### Test Organization
+
+- **Table of Contents**: Quick navigation to Source Coverage and Test Details
+- **Group by File**: Tests are grouped by their source file for better overview
 
 ### Coverage Details
 

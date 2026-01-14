@@ -81,6 +81,45 @@
             </div>
         </div>
 
+        <!-- Table of Contents -->
+        <nav class="toc">
+            <ul>
+                {% if report.source_coverage %}
+                <li><a href="#source-coverage">Source Coverage</a></li>
+                {% endif %}
+                <li><a href="#test-list">Per Test Details</a></li>
+                <li><a onclick="showFailuresOnly()">Failures Only</a></li>
+            </ul>
+        </nav>
+
+        {% if report.source_coverage %}
+        <section class="source-coverage" id="source-coverage">
+            <h2>Source Coverage</h2>
+            <div class="source-coverage-table">
+                <div class="source-coverage-header">
+                    <span>File</span>
+                    <span>Stmts</span>
+                    <span>Miss</span>
+                    <span>Cover</span>
+                    <span>%</span>
+                    <span>Covered Lines</span>
+                    <span>Missed Lines</span>
+                </div>
+                {% for entry in report.source_coverage %}
+                <div class="source-coverage-row">
+                    <span class="source-path">{{ entry.file_path }}</span>
+                    <span>{{ entry.statements }}</span>
+                    <span>{{ entry.missed }}</span>
+                    <span>{{ entry.covered }}</span>
+                    <span>{{ entry.coverage_percent }}%</span>
+                    <span class="source-lines">{{ entry.covered_ranges or "-" }}</span>
+                    <span class="source-lines">{{ entry.missed_ranges or "-" }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
         <!-- Filters -->
         <div class="filters">
             <input type="text" id="searchInput" class="filter-input" placeholder="Search tests..." onkeyup="filterTests()">
@@ -113,102 +152,82 @@
         </div>
 
         <!-- Test List -->
-        <div class="test-list">
-            {% for test in report.tests %}
-            <div class="test-row {{ test.outcome | outcome_class }}" data-status="{{ test.outcome }}">
-                <details open>
-                    <summary class="test-header">
-                        <span class="status-badge status-{{ test.outcome }}">{{ test.outcome | upper }}</span>
-                        <span class="test-name">{{ test.nodeid }}</span>
-                        <div class="test-meta">
-                            <span>{{ test.duration | duration }}</span>
+        <div class="test-list" id="test-list">
+            {% for file_path, tests in report.tests | groupby('file_path') %}
+            <div class="test-file-group">
+                <div class="test-file-header">
+                    <span>📄 {{ file_path }}</span>
+                    <span style="font-size: 0.9rem; font-weight: 400; color: var(--text-secondary)">{{ tests | length }} tests</span>
+                </div>
+                {% for test in tests %}
+                <div class="test-row {{ test.outcome | outcome_class }}" data-status="{{ test.outcome }}">
+                    <details open>
+                        <summary class="test-header">
+                            <span class="status-badge status-{{ test.outcome }}">{{ test.outcome | upper }}</span>
+                            <span class="test-name">{{ test.nodeid }}</span>
+                            <div class="test-meta">
+                                <span>{{ test.duration | duration }}</span>
+                                {% if test.coverage %}
+                                <span title="Covered file count">🛡️ {{ test.coverage | length }}</span>
+                                {% endif %}
+                            </div>
+                        </summary>
+
+                        <div class="test-details">
+                            {% if test.error_message %}
+                            <div class="detail-section">
+                                <div class="detail-title">Error</div>
+                                <div class="error-message">{{ test.error_message }}</div>
+                            </div>
+                            {% endif %}
+
+                            {% if test.llm_annotation and (test.llm_annotation.scenario or test.llm_annotation.error) %}
+                            <div class="detail-section">
+                                <div class="detail-title">AI Assessment</div>
+                                <div class="llm-annotation">
+                                    {% if test.llm_annotation.scenario %}
+                                    <p><strong>Scenario:</strong> {{ test.llm_annotation.scenario }}</p>
+                                    {% endif %}
+                                    {% if test.llm_annotation.why_needed %}
+                                    <p><strong>Why Needed:</strong> {{ test.llm_annotation.why_needed }}</p>
+                                    {% endif %}
+                                    {% if test.llm_annotation.key_assertions %}
+                                    <div class="key-assertions">
+                                        <strong>Key Assertions:</strong>
+                                        <ul>
+                                            {% for assertion in test.llm_annotation.key_assertions %}
+                                            <li>{{ assertion }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    {% endif %}
+                                    {% if test.llm_annotation.error %}
+                                    <p><strong>LLM error:</strong> {{ test.llm_annotation.error }}</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endif %}
+
                             {% if test.coverage %}
-                            <span title="Covered file count">🛡️ {{ test.coverage | length }}</span>
+                            <div class="detail-section">
+                                <div class="detail-title">Coverage</div>
+                                <div class="coverage-list">
+                                    {% for cov in test.coverage %}
+                                    <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                        <span>{{ cov.file_path }}</span>
+                                        <span style="color: var(--text-secondary)">{{ cov.line_count }} lines (ranges: {{ cov.line_ranges }})</span>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
                             {% endif %}
                         </div>
-                    </summary>
-
-                    <div class="test-details">
-                        {% if test.error_message %}
-                        <div class="detail-section">
-                            <div class="detail-title">Error</div>
-                            <div class="error-message">{{ test.error_message }}</div>
-                        </div>
-                        {% endif %}
-
-                        {% if test.llm_annotation and (test.llm_annotation.scenario or test.llm_annotation.error) %}
-                        <div class="detail-section">
-                            <div class="detail-title">AI Assessment</div>
-                            <div class="llm-annotation">
-                                {% if test.llm_annotation.scenario %}
-                                <p><strong>Scenario:</strong> {{ test.llm_annotation.scenario }}</p>
-                                {% endif %}
-                                {% if test.llm_annotation.why_needed %}
-                                <p><strong>Why Needed:</strong> {{ test.llm_annotation.why_needed }}</p>
-                                {% endif %}
-                                {% if test.llm_annotation.key_assertions %}
-                                <div class="key-assertions">
-                                    <strong>Key Assertions:</strong>
-                                    <ul>
-                                        {% for assertion in test.llm_annotation.key_assertions %}
-                                        <li>{{ assertion }}</li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                                {% endif %}
-                                {% if test.llm_annotation.error %}
-                                <p><strong>LLM error:</strong> {{ test.llm_annotation.error }}</p>
-                                {% endif %}
-                            </div>
-                        </div>
-                        {% endif %}
-
-                        {% if test.coverage %}
-                        <div class="detail-section">
-                            <div class="detail-title">Coverage</div>
-                            <div class="coverage-list">
-                                {% for cov in test.coverage %}
-                                <div class="coverage-item" style="padding: 0.5rem 1rem;">
-                                    <span>{{ cov.file_path }}</span>
-                                    <span style="color: var(--text-secondary)">{{ cov.line_count }} lines (ranges: {{ cov.line_ranges }})</span>
-                                </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                        {% endif %}
-                    </div>
-                </details>
-            </div>
-            {% endfor %}
-        </div>
-
-        {% if report.source_coverage %}
-        <section class="source-coverage">
-            <h2>Source Coverage</h2>
-            <div class="source-coverage-table">
-                <div class="source-coverage-header">
-                    <span>File</span>
-                    <span>Stmts</span>
-                    <span>Miss</span>
-                    <span>Cover</span>
-                    <span>%</span>
-                    <span>Covered Lines</span>
-                    <span>Missed Lines</span>
-                </div>
-                {% for entry in report.source_coverage %}
-                <div class="source-coverage-row">
-                    <span class="source-path">{{ entry.file_path }}</span>
-                    <span>{{ entry.statements }}</span>
-                    <span>{{ entry.missed }}</span>
-                    <span>{{ entry.covered }}</span>
-                    <span>{{ entry.coverage_percent }}%</span>
-                    <span class="source-lines">{{ entry.covered_ranges or "-" }}</span>
-                    <span class="source-lines">{{ entry.missed_ranges or "-" }}</span>
+                    </details>
                 </div>
                 {% endfor %}
             </div>
-        </section>
-        {% endif %}
+            {% endfor %}
+        </div>
     </div>
 </body>
 </html>

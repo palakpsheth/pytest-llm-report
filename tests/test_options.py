@@ -130,7 +130,7 @@ class TestLoadConfig:
             "llm_report_model": "llama3",
             "llm_report_context_mode": "balanced",
             "llm_report_requests_per_minute": 10,
-            "llm_report_max_retries": 5,
+            "llm_report_max_retries": 2,
             "llm_report_html": "report.html",
             "llm_report_json": "report.json",
         }
@@ -141,7 +141,7 @@ class TestLoadConfig:
         assert cfg.model == "llama3"
         assert cfg.llm_context_mode == "balanced"
         assert cfg.llm_requests_per_minute == 10
-        assert cfg.llm_max_retries == 5
+        assert cfg.llm_max_retries == 2
         assert cfg.report_html == "report.html"
         assert cfg.report_json == "report.json"
 
@@ -175,9 +175,9 @@ class TestLoadConfig:
 
     def test_load_from_cli_retries(self, mock_pytest_config):
         """Test loading retries from CLI."""
-        mock_pytest_config.option.llm_max_retries = 9
+        mock_pytest_config.option.llm_max_retries = 2
         cfg = load_config(mock_pytest_config)
-        assert cfg.llm_max_retries == 9
+        assert cfg.llm_max_retries == 2
 
     def test_load_aggregation_options(self, mock_pytest_config):
         """Test loading aggregation options."""

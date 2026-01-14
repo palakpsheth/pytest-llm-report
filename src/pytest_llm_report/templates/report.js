@@ -14,6 +14,25 @@ function filterTests() {
     });
 }
 
+// Show only failures and scroll to list
+function showFailuresOnly() {
+    document.querySelectorAll('.filter-chip input').forEach(cb => {
+        const s = cb.dataset.status;
+        if (s === 'failed' || s === 'error') {
+            cb.checked = true;
+            activeStatuses.add(s);
+        } else {
+            cb.checked = false;
+            activeStatuses.delete(s);
+        }
+    });
+    filterTests();
+    const testList = document.getElementById('test-list');
+    if (testList) {
+        testList.scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
 // Toggle visibility of status filters
 function toggleStatus(checkbox) {
     const status = checkbox.dataset.status;
