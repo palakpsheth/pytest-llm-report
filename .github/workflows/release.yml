@@ -32,6 +32,8 @@ jobs:
     environment: pypi
 
     steps:
+      - uses: actions/checkout@v6
+
       - name: Download dists
         uses: actions/download-artifact@v7
         with:
