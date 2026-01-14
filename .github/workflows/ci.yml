@@ -52,6 +52,7 @@ jobs:
         id: pytest
         continue-on-error: true
         run: |
+          set +e  # Disable immediate exit on error so we can capture exit codes
           mkdir -p reports
           json_report="reports/pytest_llm_report-py${{ matrix.python-version }}.json"
           pdf_report="reports/pytest_llm_report-py${{ matrix.python-version }}.pdf"

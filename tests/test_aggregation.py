@@ -322,6 +322,8 @@ class TestAggregator:
         ):
             mock_cov = MagicMock()
             mock_cov_cls.return_value = mock_cov
+            # Mock cov.report() to return the coverage percentage
+            mock_cov.report.return_value = 80.0
 
             mock_mapper = MagicMock()
             mock_mapper_cls.return_value = mock_mapper
@@ -344,6 +346,7 @@ class TestAggregator:
             # Verify interactions
             mock_cov_cls.assert_called_with(data_file=".coverage")
             mock_cov.load.assert_called_once()
+            mock_cov.report.assert_called_once()  # Verify cov.report() was called
             mock_mapper.map_source_coverage.assert_called_with(mock_cov)
 
             # Verify result
