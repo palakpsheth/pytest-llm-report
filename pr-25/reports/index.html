@@ -565,14 +565,14 @@ document.addEventListener('DOMContentLoaded', function () {
             <div>
                 <h1>Test Report</h1>
                 <div class="meta">
-                    Run ID: 20979610916-py3.12 &bull;
-                    Generated: 2026-01-14 02:02:50 &bull;
-                    Duration: 34.68s<br>
+                    Run ID: 20979898712-py3.12 &bull;
+                    Generated: 2026-01-14 02:19:50 &bull;
+                    Duration: 202.64s<br>
                     <strong>Plugin:</strong> v0.1.0
                         (2f498263985a34902252c53c11fb820445bd8f21)
 [dirty]<br>
                     <strong>Repo:</strong> v0.1.1
-                        (4c6e671652afc827721c5c0e2c6bb28a42ffe962)
+                        (ff184364a76796239f73d695e6a0a6549d9eac1e)
                 </div>
             </div>
             <div style="text-align: right">
@@ -590,11 +590,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 <div class="label">Total Tests</div>
             </div>
             <div class="summary-card passed">
-                <div class="count">387</div>
+                <div class="count">386</div>
                 <div class="label">Passed</div>
             </div>
             <div class="summary-card failed">
-                <div class="count">0</div>
+                <div class="count">1</div>
                 <div class="label">Failed</div>
             </div>
             <div class="summary-card skipped">
@@ -4698,7 +4698,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_gemini_coverage_v2.py::test_gemini_provider_rpm_cooldown</span>
                         <div class="test-meta">
-                            <span>623ms</span>
+                            <span>554ms</span>
                             <span title="Covered file count">🛡️ 6</span>
                         </div>
                     </summary>
@@ -5210,7 +5210,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_hashing.py::TestGetDependencySnapshot::test_includes_pytest</span>
                         <div class="test-meta">
-                            <span>81ms</span>
+                            <span>80ms</span>
                             <span title="Covered file count">🛡️ 3</span>
                         </div>
                     </summary>
@@ -5244,7 +5244,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_hashing.py::TestGetDependencySnapshot::test_returns_dict</span>
                         <div class="test-meta">
-                            <span>83ms</span>
+                            <span>82ms</span>
                             <span title="Covered file count">🛡️ 3</span>
                         </div>
                     </summary>
@@ -5756,7 +5756,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_integration_gate.py::TestFullPipeline::test_json_report_generation</span>
                         <div class="test-meta">
-                            <span>56ms</span>
+                            <span>57ms</span>
                             <span title="Covered file count">🛡️ 7</span>
                         </div>
                     </summary>
@@ -7590,7 +7590,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_llm_providers.py::TestLiteLLMProvider::test_annotate_handles_completion_error</span>
                         <div class="test-meta">
-                            <span>6.00s</span>
+                            <span>90.00s</span>
                             <span title="Covered file count">🛡️ 5</span>
                         </div>
                     </summary>
@@ -7632,7 +7632,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_llm_providers.py::TestLiteLLMProvider::test_annotate_invalid_key_assertions</span>
                         <div class="test-meta">
-                            <span>6.00s</span>
+                            <span>90.00s</span>
                             <span title="Covered file count">🛡️ 6</span>
                         </div>
                     </summary>
@@ -7848,18 +7848,22 @@ document.addEventListener('DOMContentLoaded', function () {
                     </div>
                 </details>
             </div>
-            <div class="test-row outcome-passed" data-status="passed">
+            <div class="test-row outcome-failed" data-status="failed">
                 <details open>
                     <summary class="test-header">
-                        <span class="status-badge status-passed">PASSED</span>
+                        <span class="status-badge status-failed">FAILED</span>
                         <span class="test-name">tests/test_llm_providers.py::TestOllamaProvider::test_annotate_handles_call_error</span>
                         <div class="test-meta">
-                            <span>1ms</span>
+                            <span>2ms</span>
                             <span title="Covered file count">🛡️ 5</span>
                         </div>
                     </summary>
 
                     <div class="test-details">
+                        <div class="detail-section">
+                            <div class="detail-title">Error</div>
+                            <div class="error-message">      AssertionError: assert 'Failed after...t error: boom' == 'Failed after...t error: boom'</div>
+                        </div>
 
 
                         <div class="detail-section">
@@ -7867,7 +7871,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <div class="coverage-list">
                                 <div class="coverage-item" style="padding: 0.5rem 1rem;">
                                     <span>src/pytest_llm_report/collector.py</span>
-                                    <span style="color: var(--text-secondary)">14 lines (ranges: 90, 93, 96, 99, 110-112, 114-115, 124, 127, 140, 209-210)</span>
+                                    <span style="color: var(--text-secondary)">25 lines (ranges: 90, 93, 96, 99, 110-112, 114, 116-118, 124, 127, 140, 209-210, 227-228, 230-236)</span>
                                 </div>
                                 <div class="coverage-item" style="padding: 0.5rem 1rem;">
                                     <span>src/pytest_llm_report/llm/base.py</span>
@@ -10904,7 +10908,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_plugin_integration.py::TestReportGeneration::test_report_writer_integration</span>
                         <div class="test-meta">
-                            <span>34ms</span>
+                            <span>33ms</span>
                             <span title="Covered file count">🛡️ 6</span>
                         </div>
                     </summary>
@@ -12818,7 +12822,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_report_writer.py::TestReportWriter::test_build_run_meta</span>
                         <div class="test-meta">
-                            <span>5ms</span>
+                            <span>6ms</span>
                             <span title="Covered file count">🛡️ 4</span>
                         </div>
                     </summary>
@@ -12970,7 +12974,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_report_writer.py::TestReportWriter::test_write_report_assembles_tests</span>
                         <div class="test-meta">
-                            <span>5ms</span>
+                            <span>6ms</span>
                             <span title="Covered file count">🛡️ 4</span>
                         </div>
                     </summary>
@@ -13046,7 +13050,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_report_writer.py::TestReportWriter::test_write_report_includes_source_coverage</span>
                         <div class="test-meta">
-                            <span>5ms</span>
+                            <span>6ms</span>
                             <span title="Covered file count">🛡️ 4</span>
                         </div>
                     </summary>
@@ -13320,7 +13324,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_report_writer.py::TestReportWriterWithFiles::test_write_html_includes_xfail_summary</span>
                         <div class="test-meta">
-                            <span>34ms</span>
+                            <span>33ms</span>
                             <span title="Covered file count">🛡️ 5</span>
                         </div>
                     </summary>
@@ -13404,7 +13408,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_report_writer.py::TestReportWriterWithFiles::test_write_pdf_creates_file</span>
                         <div class="test-meta">
-                            <span>35ms</span>
+                            <span>36ms</span>
                             <span title="Covered file count">🛡️ 5</span>
                         </div>
                     </summary>
@@ -13446,7 +13450,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_report_writer.py::TestReportWriterWithFiles::test_write_pdf_missing_playwright_warns</span>
                         <div class="test-meta">
-                            <span>6ms</span>
+                            <span>7ms</span>
                             <span title="Covered file count">🛡️ 4</span>
                         </div>
                     </summary>
@@ -13522,7 +13526,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_report_writer_coverage_v2.py::test_report_writer_metadata_skips</span>
                         <div class="test-meta">
-                            <span>10ms</span>
+                            <span>11ms</span>
                             <span title="Covered file count">🛡️ 5</span>
                         </div>
                     </summary>
@@ -13632,7 +13636,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_smoke_pytester.py::TestBasicReportGeneration::test_html_report_created</span>
                         <div class="test-meta">
-                            <span>88ms</span>
+                            <span>84ms</span>
                             <span title="Covered file count">🛡️ 7</span>
                         </div>
                     </summary>
@@ -13682,7 +13686,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_smoke_pytester.py::TestBasicReportGeneration::test_html_summary_counts_all_statuses</span>
                         <div class="test-meta">
-                            <span>124ms</span>
+                            <span>120ms</span>
                             <span title="Covered file count">🛡️ 7</span>
                         </div>
                     </summary>
@@ -13732,7 +13736,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_smoke_pytester.py::TestBasicReportGeneration::test_json_report_created</span>
                         <div class="test-meta">
-                            <span>75ms</span>
+                            <span>64ms</span>
                             <span title="Covered file count">🛡️ 7</span>
                         </div>
                     </summary>
@@ -13782,7 +13786,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_smoke_pytester.py::TestBasicReportGeneration::test_llm_annotations_in_report</span>
                         <div class="test-meta">
-                            <span>86ms</span>
+                            <span>87ms</span>
                             <span title="Covered file count">🛡️ 13</span>
                         </div>
                     </summary>
@@ -13976,7 +13980,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_smoke_pytester.py::TestMarkers::test_requirement_marker</span>
                         <div class="test-meta">
-                            <span>60ms</span>
+                            <span>58ms</span>
                             <span title="Covered file count">🛡️ 7</span>
                         </div>
                     </summary>
@@ -14026,7 +14030,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_smoke_pytester.py::TestOutcomes::test_multiple_xfail_outcomes</span>
                         <div class="test-meta">
-                            <span>66ms</span>
+                            <span>65ms</span>
                             <span title="Covered file count">🛡️ 7</span>
                         </div>
                     </summary>
@@ -14076,7 +14080,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_smoke_pytester.py::TestOutcomes::test_skip_outcome</span>
                         <div class="test-meta">
-                            <span>60ms</span>
+                            <span>57ms</span>
                             <span title="Covered file count">🛡️ 7</span>
                         </div>
                     </summary>
@@ -14126,7 +14130,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_smoke_pytester.py::TestOutcomes::test_xfail_outcome</span>
                         <div class="test-meta">
-                            <span>61ms</span>
+                            <span>60ms</span>
                             <span title="Covered file count">🛡️ 7</span>
                         </div>
                     </summary>
@@ -14260,7 +14264,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_smoke_pytester.py::TestPluginRegistration::test_markers_registered</span>
                         <div class="test-meta">
-                            <span>48ms</span>
+                            <span>46ms</span>
                             <span title="Covered file count">🛡️ 3</span>
                         </div>
                     </summary>
@@ -14294,7 +14298,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         <span class="status-badge status-passed">PASSED</span>
                         <span class="test-name">tests/test_smoke_pytester.py::TestPluginRegistration::test_plugin_registered</span>
                         <div class="test-meta">
-                            <span>54ms</span>
+                            <span>53ms</span>
                             <span title="Covered file count">🛡️ 3</span>
                         </div>
                     </summary>
