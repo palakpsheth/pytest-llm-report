@@ -661,7 +661,7 @@ class TestGeminiProvider:
         test = CaseResult(nodeid="tests/test.py::test_foo", outcome="passed")
 
         annotation = provider.annotate(test, "def test_foo(): pass")
-        assert "Context too long" in annotation.error
+        assert "Context too large" in annotation.error
         assert "400" in annotation.error
 
     def test_fetch_available_models_error(
@@ -755,7 +755,7 @@ class TestOllamaProvider:
         monkeypatch.setitem(__import__("sys").modules, "httpx", SimpleNamespace())
 
         def fake_call(prompt: str, system_prompt: str) -> str:
-            raise RuntimeError("boom")
+            raise Exception("boom")
 
         monkeypatch.setattr(provider, "_call_ollama", fake_call)
         annotation = provider.annotate(test, "def test_case(): assert True")

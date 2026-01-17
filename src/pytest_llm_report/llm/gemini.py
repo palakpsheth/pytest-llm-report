@@ -223,12 +223,16 @@ class GeminiProvider(LlmProvider):
                         limiter.record_tokens(tokens_used)
 
                     annotation = self._parse_response(response)
-                    if not annotation.error:
+                    if annotation.error:
+                        # If "context too long", fail immediately so base class can fallback
+                        if "context too long" in annotation.error.lower():
+                            return annotation
+
+                        # Fail immediately on other parsing errors.
+                        # Retrying with the same prompt won't help with bad JSON.
                         return annotation
 
-                    # If "context too long", fail immediately so base class can fallback
-                    if "context too long" in annotation.error.lower():
-                        return annotation
+                    return annotation
 
                 except _GeminiRateLimitExceeded as exc:
                     if exc.limit_type == "requests_per_day":
@@ -242,6 +246,8 @@ class GeminiProvider(LlmProvider):
                         self._cooldowns[model] = time.monotonic() + retry_after
                         break  # Try next model
                     raise
+                except (RuntimeError, ValueError, AttributeError) as e:
+                    return LlmAnnotation(error=str(e))
                 except Exception as e:
                     msg = str(e)
                     if "400" in msg or "too large" in msg.lower():
