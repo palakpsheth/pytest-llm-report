@@ -143,6 +143,9 @@ class Aggregator:
                             if isinstance(ann_data, dict):
                                 t_data["llm_annotation"] = LlmAnnotation(**ann_data)
 
+                        # Remove computed property 'file_path' - it's derived from nodeid
+                        t_data.pop("file_path", None)
+
                         tests.append(TestCaseResult(**t_data))
 
                     reports.append(
