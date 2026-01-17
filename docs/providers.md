@@ -62,6 +62,56 @@ Cloud LLMs via [LiteLLM](https://github.com/BerriAI/litellm).
 - Anthropic: `claude-3-haiku-20240307`, `claude-3-5-sonnet-20241022`
 - Many more via LiteLLM
 
+### Using a LiteLLM Proxy Server
+
+For corporate environments with a LiteLLM AI proxy:
+
+```toml
+[tool.pytest_llm_report]
+provider = "litellm"
+model = "gpt-4o-mini"
+litellm_api_base = "https://proxy.corp.com/v1"
+litellm_api_key = "your-static-key"  # Optional, if not using env var
+```
+
+### Dynamic Token Refresh
+
+If your proxy requires tokens that expire (e.g., OIDC/Okta tokens):
+
+```toml
+[tool.pytest_llm_report]
+provider = "litellm"
+model = "gpt-4o-mini"
+litellm_api_base = "https://proxy.corp.com/v1"
+litellm_token_refresh_command = "your-token-cli get-token"
+litellm_token_refresh_interval = 3300  # Refresh before 60m expiry
+```
+
+#### Configuration Options
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `litellm_api_base` | None | Custom proxy URL |
+| `litellm_api_key` | None | Static API key override |
+| `litellm_token_refresh_command` | None | CLI command to get fresh token |
+| `litellm_token_refresh_interval` | 3300 | Seconds before token refresh (55 min) |
+| `litellm_token_output_format` | `"text"` | Output parsing: `"text"` or `"json"` |
+| `litellm_token_json_key` | `"token"` | JSON key when format is `"json"` |
+
+#### Token Command Requirements
+
+- Output token to **stdout** (logs can go to stderr)
+- Exit code 0 on success
+- For `"text"` format: last non-empty line is the token
+- For `"json"` format: stdout is JSON, token extracted from specified key
+
+#### Automatic 401 Retry
+
+If a request fails with 401 (expired token), the plugin automatically:
+1. Invalidates the cached token
+2. Fetches a new token using the refresh command
+3. Retries the request once
+
 ## Provider: gemini
 
 Cloud LLMs via the Gemini API.

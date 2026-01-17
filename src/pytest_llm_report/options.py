@@ -38,6 +38,14 @@ class Config:
         model: Model name for LLM provider.
         ollama_host: Ollama server URL.
 
+        # LiteLLM-specific settings
+        litellm_api_base: Custom API base URL for LiteLLM proxy.
+        litellm_api_key: Static API key override for LiteLLM.
+        litellm_token_refresh_command: CLI command to get fresh token.
+        litellm_token_refresh_interval: Seconds before token expires.
+        litellm_token_output_format: How to parse token output ("text" or "json").
+        litellm_token_json_key: JSON key for token when format is "json".
+
         # LLM context controls
         llm_context_mode: Context mode ("minimal", "balanced", "complete").
         llm_context_bytes: Maximum bytes for LLM context.
@@ -97,6 +105,14 @@ class Config:
     provider: str = "none"
     model: str = ""
     ollama_host: str = "http://127.0.0.1:11434"
+
+    # LiteLLM-specific settings
+    litellm_api_base: str | None = None
+    litellm_api_key: str | None = None
+    litellm_token_refresh_command: str | None = None
+    litellm_token_refresh_interval: int = 3300  # 55 minutes
+    litellm_token_output_format: str = "text"  # "text" or "json"
+    litellm_token_json_key: str = "token"
 
     # LLM context controls
     llm_context_mode: str = "minimal"
@@ -205,6 +221,18 @@ class Config:
                 f"Must be one of: {valid_phases}"
             )
 
+        # Validate LiteLLM token output format
+        valid_output_formats = ("text", "json")
+        if self.litellm_token_output_format not in valid_output_formats:
+            errors.append(
+                f"Invalid litellm_token_output_format '{self.litellm_token_output_format}'. "
+                f"Must be one of: {valid_output_formats}"
+            )
+
+        # Validate token refresh interval
+        if self.litellm_token_refresh_interval < 60:
+            errors.append("litellm_token_refresh_interval must be at least 60 seconds")
+
         # Validate numeric ranges
         if self.llm_context_bytes < 1000:
             errors.append("llm_context_bytes must be at least 1000")
@@ -265,6 +293,29 @@ def load_config(config: "pytest.Config") -> Config:
             cfg.llm_max_retries = int(config.getini("llm_report_max_retries"))
         except (ValueError, TypeError):
             pass
+
+    # Load LiteLLM-specific options from ini
+    if config.getini("llm_report_litellm_api_base"):
+        cfg.litellm_api_base = config.getini("llm_report_litellm_api_base")
+    if config.getini("llm_report_litellm_api_key"):
+        cfg.litellm_api_key = config.getini("llm_report_litellm_api_key")
+    if config.getini("llm_report_litellm_token_refresh_command"):
+        cfg.litellm_token_refresh_command = config.getini(
+            "llm_report_litellm_token_refresh_command"
+        )
+    if config.getini("llm_report_litellm_token_refresh_interval") is not None:
+        try:
+            cfg.litellm_token_refresh_interval = int(
+                config.getini("llm_report_litellm_token_refresh_interval")
+            )
+        except (ValueError, TypeError):
+            pass
+    if config.getini("llm_report_litellm_token_output_format"):
+        cfg.litellm_token_output_format = config.getini(
+            "llm_report_litellm_token_output_format"
+        )
+    if config.getini("llm_report_litellm_token_json_key"):
+        cfg.litellm_token_json_key = config.getini("llm_report_litellm_token_json_key")
 
     # Override with CLI options
     if config.option.llm_report_html:

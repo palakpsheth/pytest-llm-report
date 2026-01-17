@@ -156,6 +156,39 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         help="Default path for JSON report output",
     )
 
+    # LiteLLM-specific ini options
+    parser.addini(
+        "llm_report_litellm_api_base",
+        default="",
+        help="Custom API base URL for LiteLLM proxy",
+    )
+    parser.addini(
+        "llm_report_litellm_api_key",
+        default="",
+        help="Static API key override for LiteLLM",
+    )
+    parser.addini(
+        "llm_report_litellm_token_refresh_command",
+        default="",
+        help="CLI command to get fresh bearer token",
+    )
+    parser.addini(
+        "llm_report_litellm_token_refresh_interval",
+        default=3300,
+        type="int",
+        help="Seconds before token expires (default: 3300 = 55 min)",
+    )
+    parser.addini(
+        "llm_report_litellm_token_output_format",
+        default="text",
+        help="Token output format: text or json",
+    )
+    parser.addini(
+        "llm_report_litellm_token_json_key",
+        default="token",
+        help="JSON key for token when format is json",
+    )
+
 
 def pytest_configure(config: pytest.Config) -> None:
     """Configure the plugin.
