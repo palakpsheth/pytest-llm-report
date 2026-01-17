@@ -103,7 +103,7 @@ jobs:
 
       - name: Upload report artifact
         if: matrix.python-version == '3.12'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: report-py${{ matrix.python-version }}
           path: |
@@ -159,7 +159,7 @@ jobs:
         run: uv tool run --from mkdocs-material --with mkdocs-git-revision-date-localized-plugin mkdocs build
 
       - name: Download all report artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           pattern: report-py*
           path: collected-reports/
@@ -198,7 +198,7 @@ jobs:
           target-folder: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.number) || '' }}
 
       - name: Post Report Link to PR
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         if: github.event_name == 'pull_request'
         with:
           script: |
