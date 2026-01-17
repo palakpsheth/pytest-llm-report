@@ -99,10 +99,11 @@ class LiteLLMProvider(LlmProvider):
 
         for attempt in range(max_retries):
             try:
-                annotation = self._make_request(litellm, prompt, SYSTEM_PROMPT)
-                if annotation is not None:
-                    return annotation
-                # If None returned, it means parsing failed but we should continue
+                # _make_request handles the API call and response parsing.
+                # It returns an LlmAnnotation on success or for non-retriable
+                # parsing errors. We can return this directly. The surrounding
+                # retry loop is for transient API errors caught as exceptions.
+                return self._make_request(litellm, prompt, SYSTEM_PROMPT)
 
             except Exception as e:
                 # Check if this is an authentication error (401)
@@ -116,11 +117,9 @@ class LiteLLMProvider(LlmProvider):
                         # Force refresh and retry once
                         self._token_refresher.invalidate()
                         try:
-                            annotation = self._make_request(
+                            return self._make_request(
                                 litellm, prompt, SYSTEM_PROMPT, force_refresh=True
                             )
-                            if annotation is not None:
-                                return annotation
                         except Exception as retry_e:
                             last_error = f"Auth retry failed: {retry_e}"
                     else:
@@ -146,7 +145,7 @@ class LiteLLMProvider(LlmProvider):
         prompt: str,
         system_prompt: str,
         force_refresh: bool = False,
-    ) -> LlmAnnotation | None:
+    ) -> LlmAnnotation:
         """Make a single request to LiteLLM.
 
         Args:

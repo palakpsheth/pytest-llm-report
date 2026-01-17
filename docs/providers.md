@@ -96,7 +96,7 @@ litellm_token_refresh_interval = 3300  # Refresh before 60m expiry
 > 1. Create `get_token.sh` (and `chmod +x` it):
 >    ```bash
 >    #!/bin/bash
->    # Get raw token and extract specific field using jq or grep
+>    # Example: Get a raw token and remove the trailing newline
 >    gcloud auth print-access-token | tr -d '\n'
 >    ```
 >
