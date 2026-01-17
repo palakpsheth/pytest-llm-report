@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import os
 from types import SimpleNamespace
 
 import pytest
@@ -200,13 +201,15 @@ class TestLiteLLMProvider:
         monkeypatch.setitem(__import__("sys").modules, "litellm", fake_litellm)
 
         config = Config(
-            provider="litellm", model="gpt-4o", litellm_api_key="static-key-123"
+            provider="litellm",
+            model="gpt-4o",
+            litellm_api_key=os.getenv("TEST_KEY", "static-key-placeholder"),
         )
         provider = LiteLLMProvider(config)
         test = CaseResult(nodeid="tests/test.py::test_case", outcome="passed")
         provider.annotate(test, "def test_case(): pass")
 
-        assert captured["api_key"] == "static-key-123"
+        assert captured["api_key"] == "static-key-placeholder"
 
     def test_token_refresh_integration(self, monkeypatch: pytest.MonkeyPatch):
         """LiteLLM provider uses TokenRefresher for dynamic tokens."""
