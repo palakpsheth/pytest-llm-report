@@ -295,14 +295,18 @@ def load_config(config: "pytest.Config") -> Config:
             pass
 
     # Load LiteLLM-specific options from ini
-    if config.getini("llm_report_litellm_api_base"):
-        cfg.litellm_api_base = config.getini("llm_report_litellm_api_base")
-    if config.getini("llm_report_litellm_api_key"):
-        cfg.litellm_api_key = config.getini("llm_report_litellm_api_key")
-    if config.getini("llm_report_litellm_token_refresh_command"):
-        cfg.litellm_token_refresh_command = config.getini(
-            "llm_report_litellm_token_refresh_command"
-        )
+    str_options = [
+        "litellm_api_base",
+        "litellm_api_key",
+        "litellm_token_refresh_command",
+        "litellm_token_output_format",
+        "litellm_token_json_key",
+    ]
+    for option in str_options:
+        value = config.getini(f"llm_report_{option}")
+        if value:
+            setattr(cfg, option, value)
+
     if config.getini("llm_report_litellm_token_refresh_interval") is not None:
         try:
             cfg.litellm_token_refresh_interval = int(
@@ -310,12 +314,6 @@ def load_config(config: "pytest.Config") -> Config:
             )
         except (ValueError, TypeError):
             pass
-    if config.getini("llm_report_litellm_token_output_format"):
-        cfg.litellm_token_output_format = config.getini(
-            "llm_report_litellm_token_output_format"
-        )
-    if config.getini("llm_report_litellm_token_json_key"):
-        cfg.litellm_token_json_key = config.getini("llm_report_litellm_token_json_key")
 
     # Override with CLI options
     if config.option.llm_report_html:
