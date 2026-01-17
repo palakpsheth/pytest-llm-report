@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Report &bull; 0 tests</title>
+    <!-- Optional: Inter font from rsms.me CDN. Falls back to system fonts if unavailable. -->
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <style>
+/* Modern Color Palette */
+:root {
+    --bg-color: #f8fafc;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --border-color: #e2e8f0;
+    --card-bg: #ffffff;
+    --surface-muted: #f1f5f9;
+    --primary-color: #3b82f6;
+    color-scheme: light dark;
+
+    /* Status Colors */
+    --passed-bg: #dcfce7;
+    --passed-text: #166534;
+    --failed-bg: #fee2e2;
+    --failed-text: #991b1b;
+    --skipped-bg: #fef9c3;
+    --skipped-text: #854d0e;
+    --xfailed-bg: #ffedd5;
+    --xfailed-text: #9a3412;
+    --xpassed-bg: #f3e8ff;
+    --xpassed-text: #6b21a8;
+    --error-bg: #fee2e2;
+    --error-text: #991b1b;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Header */
+header {
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+h1 {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.meta {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+/* Summary Grid */
+.summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.summary-card {
+    background: var(--card-bg);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    text-align: center;
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s;
+}
+
+.summary-card:hover {
+    transform: translateY(-2px);
+}
+
+.summary-card .count {
+    font-size: 2.25rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.summary-card .label {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+}
+
+/* Status Colors for Summary */
+.summary-card.passed .count {
+    color: var(--passed-text);
+}
+
+.summary-card.failed .count {
+    color: var(--failed-text);
+}
+
+.summary-card.skipped .count {
+    color: var(--skipped-text);
+}
+
+.summary-card.xfailed .count {
+    color: var(--xfailed-text);
+}
+
+.summary-card.xpassed .count {
+    color: var(--xpassed-text);
+}
+
+.summary-card.coverage .count {
+    color: var(--primary-color);
+}
+
+/* Filters */
+.filters {
+    background: var(--card-bg);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--border-color);
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.filter-input {
+    flex: 1;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    background: var(--card-bg);
+    color: var(--text-primary);
+}
+
+.filter-input::placeholder {
+    color: var(--text-secondary);
+}
+
+.filter-statuses {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    border: 1px solid var(--border-color);
+    background: var(--surface-muted);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.filter-chip input {
+    margin: 0;
+}
+
+.filter-chip.passed {
+    background: var(--passed-bg);
+    color: var(--passed-text);
+}
+
+.filter-chip.failed {
+    background: var(--failed-bg);
+    color: var(--failed-text);
+}
+
+.filter-chip.skipped {
+    background: var(--skipped-bg);
+    color: var(--skipped-text);
+}
+
+.filter-chip.xfailed {
+    background: var(--xfailed-bg);
+    color: var(--xfailed-text);
+}
+
+.filter-chip.xpassed {
+    background: var(--xpassed-bg);
+    color: var(--xpassed-text);
+}
+
+.filter-chip.error {
+    background: var(--error-bg);
+    color: var(--error-text);
+}
+
+/* Test List */
+.test-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.test-row {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.test-header {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    background: var(--card-bg);
+}
+
+.test-header:hover {
+    background: var(--surface-muted);
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-passed {
+    background: var(--passed-bg);
+    color: var(--passed-text);
+}
+
+.status-failed {
+    background: var(--failed-bg);
+    color: var(--failed-text);
+}
+
+.status-skipped {
+    background: var(--skipped-bg);
+    color: var(--skipped-text);
+}
+
+.status-xfailed {
+    background: var(--xfailed-bg);
+    color: var(--xfailed-text);
+}
+
+.status-xpassed {
+    background: var(--xpassed-bg);
+    color: var(--xpassed-text);
+}
+
+.status-error {
+    background: var(--error-bg);
+    color: var(--error-text);
+}
+
+.test-name {
+    flex: 1;
+    font-family: monospace;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    word-break: break-all;
+}
+
+.test-meta {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+/* Details Section */
+.test-details {
+    padding: 0 1rem 1rem 1rem;
+    border-top: 1px solid var(--border-color);
+    background: var(--surface-muted);
+}
+
+.detail-section {
+    margin-top: 1rem;
+}
+
+.detail-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.coverage-item {
+    font-family: monospace;
+    font-size: 0.85rem;
+    padding: 0.25rem 0;
+    border-bottom: 1px solid var(--border-color);
+    display: grid;
+    grid-template-columns: minmax(200px, 2fr) minmax(120px, 1fr);
+    gap: 1rem;
+}
+
+.coverage-list {
+    background: var(--card-bg);
+    border-radius: 0.375rem;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.source-coverage {
+    margin-top: 2rem;
+}
+
+.source-coverage h2 {
+    margin: 0 0 1rem;
+    font-size: 1.5rem;
+}
+
+.source-coverage-table {
+    display: grid;
+    gap: 0.35rem;
+}
+
+.source-coverage-header,
+.source-coverage-row {
+    display: grid;
+    grid-template-columns: minmax(200px, 2fr) repeat(4, minmax(60px, 0.5fr)) minmax(
+            140px,
+            1fr
+        ) minmax(140px, 1fr);
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+}
+
+.source-coverage-header {
+    background: var(--surface-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-secondary);
+}
+
+.source-coverage-row {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    font-size: 0.85rem;
+}
+
+.source-path {
+    font-family: monospace;
+    word-break: break-word;
+}
+
+.source-lines {
+    font-family: monospace;
+    color: var(--text-secondary);
+    word-break: break-word;
+}
+
+.llm-annotation {
+    background: var(--card-bg);
+    padding: 1rem;
+    border-radius: 0.375rem;
+    border: 1px solid var(--border-color);
+}
+
+.llm-annotation p {
+    margin: 0 0 0.5rem 0;
+}
+
+.llm-annotation p:last-child {
+    margin-bottom: 0;
+}
+
+.llm-annotation ul {
+    margin: 0.5rem 0 0;
+    padding-left: 1.25rem;
+}
+
+.llm-annotation li {
+    margin-bottom: 0.25rem;
+}
+
+.error-message {
+    font-family: monospace;
+    color: var(--failed-text);
+    background: var(--card-bg);
+    padding: 1rem;
+    border-radius: 0.375rem;
+    border: 1px solid var(--failed-bg);
+    white-space: pre-wrap;
+    overflow-x: auto;
+}
+
+/* HTML5 Progress Bar for Coverage */
+progress {
+    width: 60px;
+}
+
+/* Utility: Hidden state for filtering */
+.hidden {
+    display: none !important;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color: #0f172a;
+        --text-primary: #f1f5f9;
+        --text-secondary: #94a3b8;
+        --border-color: #334155;
+        --card-bg: #1e293b;
+        --surface-muted: #0b1220;
+        --primary-color: #60a5fa;
+
+        /* Status Colors - Adjusted for dark mode */
+        --passed-bg: #14532d;
+        --passed-text: #86efac;
+        --failed-bg: #7f1d1d;
+        --failed-text: #fca5a5;
+        --skipped-bg: #713f12;
+        --skipped-text: #fde047;
+        --xfailed-bg: #7c2d12;
+        --xfailed-text: #fdba74;
+        --error-bg: #7f1d1d;
+        --error-text: #fca5a5;
+    }
+
+    /* Adjust box shadows for dark mode */
+    .summary-card {
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+    }
+}
+
+@media print {
+    body {
+        background: #ffffff;
+        color: #0f172a;
+    }
+
+    .container {
+        max-width: none;
+        padding: 1rem 1.5rem;
+    }
+
+    header {
+        border-bottom: 2px solid var(--border-color);
+    }
+
+    .filters {
+        display: none;
+    }
+
+    .summary-card,
+    .test-row {
+        box-shadow: none;
+    }
+
+    .test-header {
+        background: #ffffff;
+    }
+
+    .test-row {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    .test-details {
+        background: #ffffff;
+    }
+
+    .llm-annotation {
+        background: var(--surface-muted);
+    }
+
+    progress {
+        width: 80px;
+    }
+}
+
+body.pdf-mode .filters {
+    display: none;
+}
+
+body.pdf-mode .test-row {
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
+/* TOC Styling */
+.toc {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+}
+.toc ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+.toc a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+.toc a:hover {
+    text-decoration: underline;
+}
+
+/* File Group Styling */
+.test-file-group {
+    margin-bottom: 2rem;
+}
+.test-file-header {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}    </style>
+    <script>
+// pytest-llm-report interactive features
+
+// Global state for filters
+const activeStatuses = new Set(['passed', 'failed', 'skipped', 'xfailed', 'xpassed', 'error']);
+
+// Filter tests based on search input and outcome filters
+function filterTests() {
+    const query = document.getElementById('searchInput').value.toLowerCase();
+    document.querySelectorAll('.test-row').forEach(row => {
+        const nodeid = row.querySelector('.test-name').textContent.toLowerCase();
+        const statusMatch = row.dataset.status ? activeStatuses.has(row.dataset.status) : false;
+        const matchesSearch = nodeid.includes(query);
+        row.classList.toggle('hidden', !matchesSearch || !statusMatch);
+    });
+}
+
+// Show only failures and scroll to list
+function showFailuresOnly() {
+    document.querySelectorAll('.filter-chip input').forEach(cb => {
+        const s = cb.dataset.status;
+        if (s === 'failed' || s === 'error') {
+            cb.checked = true;
+            activeStatuses.add(s);
+        } else {
+            cb.checked = false;
+            activeStatuses.delete(s);
+        }
+    });
+    filterTests();
+    const testList = document.getElementById('test-list');
+    if (testList) {
+        testList.scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
+// Toggle visibility of status filters
+function toggleStatus(checkbox) {
+    const status = checkbox.dataset.status;
+    if (checkbox.checked) {
+        activeStatuses.add(status);
+    } else {
+        activeStatuses.delete(status);
+    }
+    filterTests();
+}
+
+// Initialize interactive features after DOM is ready
+document.addEventListener('DOMContentLoaded', function () {
+    'use strict';
+
+    // Toggle dark mode on preference
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.dataset.theme = 'dark';
+    }
+
+    // Default: expand all details
+    document.querySelectorAll('details').forEach(details => {
+        details.setAttribute('open', '');
+    });
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('pdf') === '1') {
+        document.body.classList.add('pdf-mode');
+    }
+});    </script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>Test Report</h1>
+                <div class="meta">
+                    Run ID: N/A &bull;
+                    Generated: 2026-01-17 20:49:43 &bull;
+                    Duration: 1.36s<br>
+                    <strong>Plugin:</strong> v0.1.0
+                        (b7a157f6cb9189cc50a17c846484c8454deeac61)
+[dirty]<br>
+                    <strong>Repo:</strong> v0.1.1
+                        (3c45a903a7097f307589ecc22fb541dad170f001)
+<br>
+                    <strong>LLM:</strong> ollama / llama3.2:1b
+                        (minimal context,
+                         0 annotated)
+                </div>
+            </div>
+            <div style="text-align: right">
+                <div style="font-size: 2rem; font-weight: 700; color: var(--primary-color)">
+                    26.51%
+                </div>
+                <div class="meta">Total Coverage</div>
+            </div>
+        </header>
+
+        <!-- Summary Cards -->
+        <div class="summary">
+            <div class="summary-card">
+                <div class="count">0</div>
+                <div class="label">Total Tests</div>
+            </div>
+            <div class="summary-card passed">
+                <div class="count">0</div>
+                <div class="label">Passed</div>
+            </div>
+            <div class="summary-card failed">
+                <div class="count">0</div>
+                <div class="label">Failed</div>
+            </div>
+            <div class="summary-card skipped">
+                <div class="count">0</div>
+                <div class="label">Skipped</div>
+            </div>
+            <div class="summary-card xfailed">
+                <div class="count">0</div>
+                <div class="label">XFailed</div>
+            </div>
+            <div class="summary-card xpassed">
+                <div class="count">0</div>
+                <div class="label">XPassed</div>
+            </div>
+            <div class="summary-card failed">
+                <div class="count">0</div>
+                <div class="label">Errors</div>
+            </div>
+        </div>
+
+        <!-- Table of Contents -->
+        <nav class="toc">
+            <ul>
+                <li><a href="#source-coverage">Source Coverage</a></li>
+                <li><a href="#test-list">Per Test Details</a></li>
+                <li><a onclick="showFailuresOnly()">Failures Only</a></li>
+            </ul>
+        </nav>
+
+        <section class="source-coverage" id="source-coverage">
+            <h2>Source Coverage</h2>
+            <div class="source-coverage-table">
+                <div class="source-coverage-header">
+                    <span>File</span>
+                    <span>Stmts</span>
+                    <span>Miss</span>
+                    <span>Cover</span>
+                    <span>%</span>
+                    <span>Covered Lines</span>
+                    <span>Missed Lines</span>
+                </div>
+                <div class="source-coverage-row">
+                    <span class="source-path">src/pytest_llm_report/_git_info.py</span>
+                    <span>2</span>
+                    <span>2</span>
+                    <span>0</span>
+                    <span>0.0%</span>
+                    <span class="source-lines">-</span>
+                    <span class="source-lines">2-3</span>
+                </div>
+                <div class="source-coverage-row">
+                    <span class="source-path">src/pytest_llm_report/aggregation.py</span>
+                    <span>116</span>
+                    <span>101</span>
+                    <span>15</span>
+                    <span>12.93%</span>
+                    <span class="source-lines">13, 15-19, 21, 35, 38, 46, 103, 172, 196, 205, 237</span>
+                    <span class="source-lines">44, 52-53, 55-57, 59, 61-64, 66, 69, 73-74, 77-80, 84, 87-91, 93, 109-111, 113-117, 119-120, 125, 127-128, 130-131, 134-135, 141-144, 146, 148, 162, 164, 168, 170, 182, 184-188, 190-192, 194, 203, 217, 219-233, 235, 245-246, 248-249, 251, 253-255, 259, 262-263, 265-266, 269, 271-272, 274, 276-277, 281</span>
+                </div>
+                <div class="source-coverage-row">
+                    <span class="source-path">src/pytest_llm_report/cache.py</span>
+                    <span>47</span>
+                    <span>33</span>
+                    <span>14</span>
+                    <span>29.79%</span>
+                    <span class="source-lines">13, 15-19, 21, 27, 33, 43, 78, 107, 123, 144</span>
+                    <span class="source-lines">39-41, 53, 55-56, 58, 60-62, 64-65, 68-69, 86, 88, 90, 92, 94, 97, 103, 118-119, 121, 129-130, 132-136, 141, 153</span>
+                </div>
+                <div class="source-coverage-row">
+                    <span class="source-path">src/pytest_llm_report/collector.py</span>
+                    <span>111</span>
+                    <span>83</span>
+                    <span>28</span>
+                    <span>25.23%</span>
+                    <span class="source-lines">19, 21-22, 24, 26-27, 33-34, 45-50, 52, 69, 78-79, 81, 143, 173, 191, 202, 218, 241, 254, 271, 279</span>
+                    <span class="source-lines">58, 60-62, 90, 93-94, 96, 99-104, 106-107, 109-112, 114-119, 121-122, 124, 127-128, 130, 132-133, 135-137, 140-141, 155, 163-164, 167-169, 171, 181-182, 185-189, 198-200, 209-210, 212-214, 216, 227-228, 230-236, 238-239, 250-252, 261, 264-265, 268-269, 277, 285</span>
+                </div>
+                <div class="source-coverage-row">
+                    <span class="source-path">src/pytest_llm_report/coverage_map.py</span>
+                    <span>135</span>
+                    <span>119</span>
+                    <span>16</span>
+                    <span>11.85%</span>
+                    <span class="source-lines">13, 15-17, 19-22, 30, 38, 47, 64, 116, 204, 241, 302</span>
+                    <span class="source-lines">44-45, 58-60, 62, 72-73, 83, 86, 88-90, 92, 94-96, 98, 101-104, 106-108, 114, 118, 121-123, 125, 127-128, 131-135, 137-140, 144-146, 148, 150, 152-153, 156-157, 160-162, 165, 167-168, 173, 176, 178-184, 187-189, 191, 196, 199-200, 202, 216-217, 220-221, 224-225, 228-234, 236, 239, 243-244, 246-254, 257, 259-260, 263-264, 271, 273-274, 276-279, 281-283, 285, 299-300, 308</span>
+                </div>
+                <div class="source-coverage-row">
+                    <span class="source-path">src/pytest_llm_report/errors.py</span>
+                    <span>35</span>
+                    <span>5</span>
+                    <span>30</span>
+                    <span>85.71%</span>
+                    <span class="source-lines">8-9, 12, 25-28, 31-36, 39-42, 45-46, 49-51, 54-55, 64-66, 68, 80, 129</span>
+                    <span class="source-lines">70, 74-76, 139</span>
+                </div>
+                <div class="source-coverage-row">
+                    <span class="source-path">src/pytest_llm_report/llm/__init__.py</span>
+                    <span>3</span>
+                    <span>0</span>
+                    <span>3</span>
+                    <span>100.0%</span>
+                    <span class="source-lines">4-5, 7</span>
+                    <span class="source-lines">-</span>
+                </div>
+                <div class="source-coverage-row">
+                    <span class="source-path">src/pytest_llm_report/llm/annotator.py</span>
+                    <span>110</span>
+                    <span>91</span>
+                    <span>19</span>
+                    <span>17.27%</span>
+                    <span class="source-lines">4, 6-10, 12-15, 21-22, 25-28, 31, 142, 206</span>
+                    <span class="source-lines">45-46, 48-50, 54, 56-57, 59, 61-62, 64, 66-68, 71-72, 74-82, 87, 97-98, 100, 102, 104-105, 115, 127, 129-132, 137-139, 165-168, 170-171, 176, 178, 180-183, 185-190, 192-193, 198-201, 203, 229-232, 234, 236-237, 239-240, 245-246, 248-253, 255-256, 261-264, 266</span>
+                </div>
+                <div class="source-coverage-row">
+                    <span class="source-path">src/pytest_llm_report/llm/base.py</span>
+                    <span>78</span>
+                    <span>57</span>
+                    <span>21</span>
+                    <span>26.92%</span>
+                    <span class="source-lines">13, 15-18, 26, 40, 46, 55, 101, 122, 130, 138, 149, 177, 224-225, 228-230, 233</span>
+                    <span class="source-lines">52-53, 72, 75-76, 78, 80, 107-108, 110-111, 128, 136, 147, 165, 167-173, 175, 186-187, 190-192, 194-195, 198-200, 203-208, 212, 214, 220-221, 245, 247, 249-250, 252-253, 255, 257-258, 260, 262-263, 265, 267</span>
+                </div>
+                <div class="source-coverage-row">
+                    <span class="source-path">src/pytest_llm_report/llm/gemini.py</span>
+                    <span>278</span>
+                    <span>237</span>
+                    <span>41</span>
+                    <span>14.75%</span>
+                    <span class="source-lines">7, 9-13, 15-16, 23-27, 30-31, 37-38, 44, 57, 65, 72, 75, 80, 91, 99, 121-122, 125, 128, 144, 266, 279, 285, 309, 351, 363, 386, 390, 395, 422, 433</span>
+                    <span class="source-lines">32-34, 39-42, 45-46, 48-50, 52, 58-63, 66-70, 73, 76-78, 81-85, 87-89, 92-97, 100-117, 134, 136-139, 141-142, 160-161, 167-169, 171-172, 174, 176-184, 186-188, 190-191, 193, 196, 199-208, 210-211, 213-215, 217-223, 225-226, 228-229, 233, 235, 237-243, 246-254, 256, 258-259, 262, 272-273, 275, 280-283, 286-289, 292-293, 298-299, 306-307, 321, 323-324, 328, 333, 336-338, 341-349, 352, 354, 358-361, 366-380, 387-388, 391-393, 397-398, 402-408, 411, 414-416, 418-420, 423-427, 434, 436-440, 443-453</span>
+                </div>
+                <div class="source-coverage-row">
+                    <span class="source-path">src/pytest_llm_report/llm/litellm_provider.py</span>
+                    <span>34</span>
+                    <span>27</span>
+                    <span>7</span>
+                    <span>20.59%</span>
+                    <span class="source-lines">7, 9, 11-12, 18, 21, 93</span>
+                    <span class="source-lines">37-38, 44, 46, 49, 51-52, 54-56, 66-67, 69, 71-72, 76, 78, 80, 82-84, 86-87, 89, 99-100, 102</span>
+                </div>
+                <div class="source-coverage-row">
+                    <span class="source-path">src/pytest_llm_report/llm/noop.py</span>
+                    <span>13</span>
+                    <span>4</span>
+                    <span>9</span>
+                    <span>69.23%</span>
+                    <span class="source-lines">8, 10, 12-13, 20, 26, 34, 52, 60</span>
+                    <span class="source-lines">32, 50, 58, 66</span>
+                </div>
+                <div class="source-coverage-row">
+                    <span class="source-path">src/pytest_llm_report/llm/ollama.py</span>
+                    <span>45</span>
+                    <span>36</span>
+                    <span>9</span>
+                    <span>20.0%</span>
+                    <span class="source-lines">7, 9, 11-12, 18, 24, 86, 101, 109</span>
+                    <span class="source-lines">40-41, 47, 50, 52, 54-55, 57-60, 62, 64-65, 69, 71, 73, 75-77, 79-80, 82, 92-93, 95-97, 107, 119, 121-122, 132, 137, 139-140</span>
+                </div>
+                <div class="source-coverage-row">
+                    <span class="source-path">src/pytest_llm_report/llm/schemas.py</span>
+                    <span>36</span>
+                    <span>19</span>
+                    <span>17</span>
+                    <span>47.22%</span>
+                    <span class="source-lines">8, 10-12, 16, 22, 58-59, 62-65, 67-68, 84, 102, 130</span>
+                    <span class="source-lines">38-39, 42-44, 46-47, 50-53, 55, 77, 90, 94-98</span>
+                </div>
+                <div class="source-coverage-row">
+                    <span class="source-path">src/pytest_llm_report/models.py</span>
+                    <span>243</span>
+                    <span>105</span>
+                    <span>138</span>
+                    <span>56.79%</span>
+                    <span class="source-lines">17-18, 21, 24-25, 34-36, 38, 47-48, 61-67, 69, 82-83, 95-100, 102, 118-119, 141-157, 159-160, 164, 199-200, 208-209, 211, 219-220, 229-231, 233, 244-245, 254-256, 258, 267-268, 277-279, 281, 292-293, 330-359, 361-366, 368, 428-429, 443-451, 453, 470-471, 488-498, 500</span>
+                    <span class="source-lines">40, 71, 104, 109-115, 162, 166, 173-196, 213, 235, 239-241, 260, 283, 287-289, 370, 388-411, 413-425, 455, 465-467, 506, 508, 514-528</span>
+                </div>
+                <div class="source-coverage-row">
+                    <span class="source-path">src/pytest_llm_report/options.py</span>
+                    <span>117</span>
+                    <span>66</span>
+                    <span>51</span>
+                    <span>43.59%</span>
+                    <span class="source-lines">106, 146, 175, 178-179, 185-186, 193-194, 201-202, 209, 211, 213, 215, 217, 220, 224, 248, 251-259, 261, 263-265, 270-274, 276, 278, 280, 282, 286-290, 292, 294-295, 298, 300</span>
+                    <span class="source-lines">13-15, 21-22, 90-94, 97-99, 102-105, 122-123, 126-132, 135-137, 140-142, 145, 156-160, 163-164, 167, 169, 180, 187, 195, 203, 210, 212, 214, 216, 218, 222, 227, 233, 236, 260, 262, 266-267, 275, 277, 279, 281, 283, 291, 293</span>
+                </div>
+                <div class="source-coverage-row">
+                    <span class="source-path">src/pytest_llm_report/plugin.py</span>
+                    <span>151</span>
+                    <span>126</span>
+                    <span>25</span>
+                    <span>16.56%</span>
+                    <span class="source-lines">169, 173, 177, 183, 187-188, 190, 192, 195-196, 203-204, 212-213, 401, 405, 424, 428-430, 441, 445, 448, 450-451</span>
+                    <span class="source-lines">13, 15-17, 19-20, 22, 28-31, 34, 40, 43, 49, 55, 61, 67, 73, 80, 89, 95, 101, 107, 113, 121, 126, 131, 136, 142, 147, 153, 160, 184, 197, 216, 238-239, 242-243, 246, 249-250, 252-253, 256-257, 259, 261-265, 268-269, 271, 273, 276-277, 280-281, 283-284, 287-291, 293, 296-297, 299, 302-305, 307, 309-312, 315-316, 320-321, 324-327, 330-333, 336, 338, 341-346, 348, 350, 358-359, 372-373, 380-381, 384-385, 388-390, 393, 402, 408-409, 412-414, 417, 425, 433-434, 442</span>
+                </div>
+                <div class="source-coverage-row">
+                    <span class="source-path">src/pytest_llm_report/prompts.py</span>
+                    <span>75</span>
+                    <span>64</span>
+                    <span>11</span>
+                    <span>14.67%</span>
+                    <span class="source-lines">13, 15-17, 24, 27, 35, 67, 118, 165, 182</span>
+                    <span class="source-lines">33, 49, 52, 55, 58-61, 63, 65, 78-80, 82-84, 86-87, 92, 94-95, 98-101, 103-112, 114, 116, 132-133, 135-138, 140-142, 144-146, 148-149, 151-152, 154-156, 158-159, 163, 180, 191-194</span>
+                </div>
+                <div class="source-coverage-row">
+                    <span class="source-path">src/pytest_llm_report/render.py</span>
+                    <span>50</span>
+                    <span>40</span>
+                    <span>10</span>
+                    <span>20.0%</span>
+                    <span class="source-lines">13, 15-16, 18, 24, 34, 56, 70, 90, 110</span>
+                    <span class="source-lines">30-31, 40, 42, 50-51, 53, 65-67, 79, 87, 99, 101-102, 107, 121-124, 126-129, 131-134, 141-143, 145, 158-163, 177, 196</span>
+                </div>
+                <div class="source-coverage-row">
+                    <span class="source-path">src/pytest_llm_report/report_writer.py</span>
+                    <span>167</span>
+                    <span>137</span>
+                    <span>30</span>
+                    <span>17.96%</span>
+                    <span class="source-lines">13, 15-25, 27-29, 46, 58, 89, 116, 142, 150, 160, 235, 303, 332, 368, 399, 447, 464, 488</span>
+                    <span class="source-lines">55, 67-68, 76, 83-84, 98-100, 102, 105-108, 110, 113, 127-128, 130, 135-137, 156-158, 186-189, 192, 197-199, 202-203, 211, 222-223, 226-227, 230-231, 233, 254, 256-259, 262-264, 266, 268, 312, 314-315, 317-328, 330, 340, 343-345, 348-349, 352-354, 357, 360, 376, 378-379, 382, 385, 388, 391, 401-402, 408, 410, 412, 414-425, 432, 434-435, 437-439, 448-451, 453, 455, 458, 461-462, 470-474, 480-481, 495, 497, 499-501, 503, 506-507, 509, 515-516</span>
+                </div>
+                <div class="source-coverage-row">
+                    <span class="source-path">src/pytest_llm_report/util/fs.py</span>
+                    <span>34</span>
+                    <span>27</span>
+                    <span>7</span>
+                    <span>20.59%</span>
+                    <span class="source-lines">11, 13-14, 17, 45, 70, 82</span>
+                    <span class="source-lines">30, 33, 36, 39-40, 42, 55-56, 58-60, 63-65, 67, 79, 100, 103, 111-113, 116-117, 119-121, 123</span>
+                </div>
+                <div class="source-coverage-row">
+                    <span class="source-path">src/pytest_llm_report/util/hashing.py</span>
+                    <span>36</span>
+                    <span>25</span>
+                    <span>11</span>
+                    <span>30.56%</span>
+                    <span class="source-lines">12, 14-17, 23, 35, 51, 64, 86, 107</span>
+                    <span class="source-lines">32, 44-48, 61, 73-74, 76-78, 80-81, 96, 103-104, 113-114, 116-121</span>
+                </div>
+                <div class="source-coverage-row">
+                    <span class="source-path">src/pytest_llm_report/util/ranges.py</span>
+                    <span>33</span>
+                    <span>29</span>
+                    <span>4</span>
+                    <span>12.12%</span>
+                    <span class="source-lines">12, 15, 55, 70</span>
+                    <span class="source-lines">29-30, 33, 35-37, 39-40, 42, 45-47, 50, 52, 65-67, 81-82, 84-91, 93, 95</span>
+                </div>
+                <div class="source-coverage-row">
+                    <span class="source-path">src/pytest_llm_report/util/time.py</span>
+                    <span>16</span>
+                    <span>11</span>
+                    <span>5</span>
+                    <span>31.25%</span>
+                    <span class="source-lines">4, 6, 9, 18, 30</span>
+                    <span class="source-lines">15, 27, 39-44, 46-48</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filters -->
+        <div class="filters">
+            <input type="text" id="searchInput" class="filter-input" placeholder="Search tests..." onkeyup="filterTests()">
+            <div class="filter-statuses" aria-label="Filter by status">
+                <label class="filter-chip passed">
+                    <input type="checkbox" data-status="passed" checked onchange="toggleStatus(this)">
+                    Passed
+                </label>
+                <label class="filter-chip failed">
+                    <input type="checkbox" data-status="failed" checked onchange="toggleStatus(this)">
+                    Failed
+                </label>
+                <label class="filter-chip skipped">
+                    <input type="checkbox" data-status="skipped" checked onchange="toggleStatus(this)">
+                    Skipped
+                </label>
+                <label class="filter-chip xfailed">
+                    <input type="checkbox" data-status="xfailed" checked onchange="toggleStatus(this)">
+                    XFailed
+                </label>
+                <label class="filter-chip xpassed">
+                    <input type="checkbox" data-status="xpassed" checked onchange="toggleStatus(this)">
+                    XPassed
+                </label>
+                <label class="filter-chip error">
+                    <input type="checkbox" data-status="error" checked onchange="toggleStatus(this)">
+                    Error
+                </label>
+            </div>
+        </div>
+
+        <!-- Test List -->
+        <div class="test-list" id="test-list">
+        </div>
+    </div>
+</body>
+</html>

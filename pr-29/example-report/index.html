@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Report &bull; 4 tests</title>
+    <!-- Optional: Inter font from rsms.me CDN. Falls back to system fonts if unavailable. -->
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <style>
+/* Modern Color Palette */
+:root {
+    --bg-color: #f8fafc;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --border-color: #e2e8f0;
+    --card-bg: #ffffff;
+    --surface-muted: #f1f5f9;
+    --primary-color: #3b82f6;
+    color-scheme: light dark;
+
+    /* Status Colors */
+    --passed-bg: #dcfce7;
+    --passed-text: #166534;
+    --failed-bg: #fee2e2;
+    --failed-text: #991b1b;
+    --skipped-bg: #fef9c3;
+    --skipped-text: #854d0e;
+    --xfailed-bg: #ffedd5;
+    --xfailed-text: #9a3412;
+    --xpassed-bg: #f3e8ff;
+    --xpassed-text: #6b21a8;
+    --error-bg: #fee2e2;
+    --error-text: #991b1b;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Header */
+header {
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+h1 {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.meta {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+/* Summary Grid */
+.summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.summary-card {
+    background: var(--card-bg);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    text-align: center;
+    border: 1px solid var(--border-color);
+    transition: transform 0.2s;
+}
+
+.summary-card:hover {
+    transform: translateY(-2px);
+}
+
+.summary-card .count {
+    font-size: 2.25rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.summary-card .label {
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+}
+
+/* Status Colors for Summary */
+.summary-card.passed .count {
+    color: var(--passed-text);
+}
+
+.summary-card.failed .count {
+    color: var(--failed-text);
+}
+
+.summary-card.skipped .count {
+    color: var(--skipped-text);
+}
+
+.summary-card.xfailed .count {
+    color: var(--xfailed-text);
+}
+
+.summary-card.xpassed .count {
+    color: var(--xpassed-text);
+}
+
+.summary-card.coverage .count {
+    color: var(--primary-color);
+}
+
+/* Filters */
+.filters {
+    background: var(--card-bg);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--border-color);
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.filter-input {
+    flex: 1;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    background: var(--card-bg);
+    color: var(--text-primary);
+}
+
+.filter-input::placeholder {
+    color: var(--text-secondary);
+}
+
+.filter-statuses {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    border: 1px solid var(--border-color);
+    background: var(--surface-muted);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.filter-chip input {
+    margin: 0;
+}
+
+.filter-chip.passed {
+    background: var(--passed-bg);
+    color: var(--passed-text);
+}
+
+.filter-chip.failed {
+    background: var(--failed-bg);
+    color: var(--failed-text);
+}
+
+.filter-chip.skipped {
+    background: var(--skipped-bg);
+    color: var(--skipped-text);
+}
+
+.filter-chip.xfailed {
+    background: var(--xfailed-bg);
+    color: var(--xfailed-text);
+}
+
+.filter-chip.xpassed {
+    background: var(--xpassed-bg);
+    color: var(--xpassed-text);
+}
+
+.filter-chip.error {
+    background: var(--error-bg);
+    color: var(--error-text);
+}
+
+/* Test List */
+.test-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.test-row {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.test-header {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    background: var(--card-bg);
+}
+
+.test-header:hover {
+    background: var(--surface-muted);
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-passed {
+    background: var(--passed-bg);
+    color: var(--passed-text);
+}
+
+.status-failed {
+    background: var(--failed-bg);
+    color: var(--failed-text);
+}
+
+.status-skipped {
+    background: var(--skipped-bg);
+    color: var(--skipped-text);
+}
+
+.status-xfailed {
+    background: var(--xfailed-bg);
+    color: var(--xfailed-text);
+}
+
+.status-xpassed {
+    background: var(--xpassed-bg);
+    color: var(--xpassed-text);
+}
+
+.status-error {
+    background: var(--error-bg);
+    color: var(--error-text);
+}
+
+.test-name {
+    flex: 1;
+    font-family: monospace;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    word-break: break-all;
+}
+
+.test-meta {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+/* Details Section */
+.test-details {
+    padding: 0 1rem 1rem 1rem;
+    border-top: 1px solid var(--border-color);
+    background: var(--surface-muted);
+}
+
+.detail-section {
+    margin-top: 1rem;
+}
+
+.detail-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.coverage-item {
+    font-family: monospace;
+    font-size: 0.85rem;
+    padding: 0.25rem 0;
+    border-bottom: 1px solid var(--border-color);
+    display: grid;
+    grid-template-columns: minmax(200px, 2fr) minmax(120px, 1fr);
+    gap: 1rem;
+}
+
+.coverage-list {
+    background: var(--card-bg);
+    border-radius: 0.375rem;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.source-coverage {
+    margin-top: 2rem;
+}
+
+.source-coverage h2 {
+    margin: 0 0 1rem;
+    font-size: 1.5rem;
+}
+
+.source-coverage-table {
+    display: grid;
+    gap: 0.35rem;
+}
+
+.source-coverage-header,
+.source-coverage-row {
+    display: grid;
+    grid-template-columns: minmax(200px, 2fr) repeat(4, minmax(60px, 0.5fr)) minmax(
+            140px,
+            1fr
+        ) minmax(140px, 1fr);
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+}
+
+.source-coverage-header {
+    background: var(--surface-muted);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-secondary);
+}
+
+.source-coverage-row {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    font-size: 0.85rem;
+}
+
+.source-path {
+    font-family: monospace;
+    word-break: break-word;
+}
+
+.source-lines {
+    font-family: monospace;
+    color: var(--text-secondary);
+    word-break: break-word;
+}
+
+.llm-annotation {
+    background: var(--card-bg);
+    padding: 1rem;
+    border-radius: 0.375rem;
+    border: 1px solid var(--border-color);
+}
+
+.llm-annotation p {
+    margin: 0 0 0.5rem 0;
+}
+
+.llm-annotation p:last-child {
+    margin-bottom: 0;
+}
+
+.llm-annotation ul {
+    margin: 0.5rem 0 0;
+    padding-left: 1.25rem;
+}
+
+.llm-annotation li {
+    margin-bottom: 0.25rem;
+}
+
+.error-message {
+    font-family: monospace;
+    color: var(--failed-text);
+    background: var(--card-bg);
+    padding: 1rem;
+    border-radius: 0.375rem;
+    border: 1px solid var(--failed-bg);
+    white-space: pre-wrap;
+    overflow-x: auto;
+}
+
+/* HTML5 Progress Bar for Coverage */
+progress {
+    width: 60px;
+}
+
+/* Utility: Hidden state for filtering */
+.hidden {
+    display: none !important;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-color: #0f172a;
+        --text-primary: #f1f5f9;
+        --text-secondary: #94a3b8;
+        --border-color: #334155;
+        --card-bg: #1e293b;
+        --surface-muted: #0b1220;
+        --primary-color: #60a5fa;
+
+        /* Status Colors - Adjusted for dark mode */
+        --passed-bg: #14532d;
+        --passed-text: #86efac;
+        --failed-bg: #7f1d1d;
+        --failed-text: #fca5a5;
+        --skipped-bg: #713f12;
+        --skipped-text: #fde047;
+        --xfailed-bg: #7c2d12;
+        --xfailed-text: #fdba74;
+        --error-bg: #7f1d1d;
+        --error-text: #fca5a5;
+    }
+
+    /* Adjust box shadows for dark mode */
+    .summary-card {
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+    }
+}
+
+@media print {
+    body {
+        background: #ffffff;
+        color: #0f172a;
+    }
+
+    .container {
+        max-width: none;
+        padding: 1rem 1.5rem;
+    }
+
+    header {
+        border-bottom: 2px solid var(--border-color);
+    }
+
+    .filters {
+        display: none;
+    }
+
+    .summary-card,
+    .test-row {
+        box-shadow: none;
+    }
+
+    .test-header {
+        background: #ffffff;
+    }
+
+    .test-row {
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    .test-details {
+        background: #ffffff;
+    }
+
+    .llm-annotation {
+        background: var(--surface-muted);
+    }
+
+    progress {
+        width: 80px;
+    }
+}
+
+body.pdf-mode .filters {
+    display: none;
+}
+
+body.pdf-mode .test-row {
+    page-break-inside: avoid;
+    break-inside: avoid;
+}
+
+/* TOC Styling */
+.toc {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+}
+.toc ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+.toc a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+.toc a:hover {
+    text-decoration: underline;
+}
+
+/* File Group Styling */
+.test-file-group {
+    margin-bottom: 2rem;
+}
+.test-file-header {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}    </style>
+    <script>
+// pytest-llm-report interactive features
+
+// Global state for filters
+const activeStatuses = new Set(['passed', 'failed', 'skipped', 'xfailed', 'xpassed', 'error']);
+
+// Filter tests based on search input and outcome filters
+function filterTests() {
+    const query = document.getElementById('searchInput').value.toLowerCase();
+    document.querySelectorAll('.test-row').forEach(row => {
+        const nodeid = row.querySelector('.test-name').textContent.toLowerCase();
+        const statusMatch = row.dataset.status ? activeStatuses.has(row.dataset.status) : false;
+        const matchesSearch = nodeid.includes(query);
+        row.classList.toggle('hidden', !matchesSearch || !statusMatch);
+    });
+}
+
+// Show only failures and scroll to list
+function showFailuresOnly() {
+    document.querySelectorAll('.filter-chip input').forEach(cb => {
+        const s = cb.dataset.status;
+        if (s === 'failed' || s === 'error') {
+            cb.checked = true;
+            activeStatuses.add(s);
+        } else {
+            cb.checked = false;
+            activeStatuses.delete(s);
+        }
+    });
+    filterTests();
+    const testList = document.getElementById('test-list');
+    if (testList) {
+        testList.scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
+// Toggle visibility of status filters
+function toggleStatus(checkbox) {
+    const status = checkbox.dataset.status;
+    if (checkbox.checked) {
+        activeStatuses.add(status);
+    } else {
+        activeStatuses.delete(status);
+    }
+    filterTests();
+}
+
+// Initialize interactive features after DOM is ready
+document.addEventListener('DOMContentLoaded', function () {
+    'use strict';
+
+    // Toggle dark mode on preference
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.dataset.theme = 'dark';
+    }
+
+    // Default: expand all details
+    document.querySelectorAll('details').forEach(details => {
+        details.setAttribute('open', '');
+    });
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('pdf') === '1') {
+        document.body.classList.add('pdf-mode');
+    }
+});    </script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>Test Report</h1>
+                <div class="meta">
+                    Run ID: N/A &bull;
+                    Generated: 2026-01-14 04:36:34 &bull;
+                    Duration: 51ms<br>
+                    <strong>Plugin:</strong> v0.1.0
+                        (b7a157f6cb9189cc50a17c846484c8454deeac61)
+[dirty]<br>
+                    <strong>Repo:</strong> v0.1.0
+                        (b7a157f6cb9189cc50a17c846484c8454deeac61)
+[dirty]<br>
+                    <strong>LLM:</strong> ollama / llama3.2
+                        (complete context,
+                         4 annotated)
+                </div>
+            </div>
+            <div style="text-align: right">
+                <div style="font-size: 2rem; font-weight: 700; color: var(--primary-color)">
+                    100.0%
+                </div>
+                <div class="meta">Total Coverage</div>
+            </div>
+        </header>
+
+        <!-- Summary Cards -->
+        <div class="summary">
+            <div class="summary-card">
+                <div class="count">4</div>
+                <div class="label">Total Tests</div>
+            </div>
+            <div class="summary-card passed">
+                <div class="count">4</div>
+                <div class="label">Passed</div>
+            </div>
+            <div class="summary-card failed">
+                <div class="count">0</div>
+                <div class="label">Failed</div>
+            </div>
+            <div class="summary-card skipped">
+                <div class="count">0</div>
+                <div class="label">Skipped</div>
+            </div>
+            <div class="summary-card xfailed">
+                <div class="count">0</div>
+                <div class="label">XFailed</div>
+            </div>
+            <div class="summary-card xpassed">
+                <div class="count">0</div>
+                <div class="label">XPassed</div>
+            </div>
+            <div class="summary-card failed">
+                <div class="count">0</div>
+                <div class="label">Errors</div>
+            </div>
+        </div>
+
+        <!-- Table of Contents -->
+        <nav class="toc">
+            <ul>
+                <li><a href="#source-coverage">Source Coverage</a></li>
+                <li><a href="#test-list">Per Test Details</a></li>
+                <li><a onclick="showFailuresOnly()">Failures Only</a></li>
+            </ul>
+        </nav>
+
+        <section class="source-coverage" id="source-coverage">
+            <h2>Source Coverage</h2>
+            <div class="source-coverage-table">
+                <div class="source-coverage-header">
+                    <span>File</span>
+                    <span>Stmts</span>
+                    <span>Miss</span>
+                    <span>Cover</span>
+                    <span>%</span>
+                    <span>Covered Lines</span>
+                    <span>Missed Lines</span>
+                </div>
+                <div class="source-coverage-row">
+                    <span class="source-path">example_pkg/calculator.py</span>
+                    <span>6</span>
+                    <span>0</span>
+                    <span>6</span>
+                    <span>100.0%</span>
+                    <span class="source-lines">1, 3, 6, 8-10</span>
+                    <span class="source-lines">-</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filters -->
+        <div class="filters">
+            <input type="text" id="searchInput" class="filter-input" placeholder="Search tests..." onkeyup="filterTests()">
+            <div class="filter-statuses" aria-label="Filter by status">
+                <label class="filter-chip passed">
+                    <input type="checkbox" data-status="passed" checked onchange="toggleStatus(this)">
+                    Passed
+                </label>
+                <label class="filter-chip failed">
+                    <input type="checkbox" data-status="failed" checked onchange="toggleStatus(this)">
+                    Failed
+                </label>
+                <label class="filter-chip skipped">
+                    <input type="checkbox" data-status="skipped" checked onchange="toggleStatus(this)">
+                    Skipped
+                </label>
+                <label class="filter-chip xfailed">
+                    <input type="checkbox" data-status="xfailed" checked onchange="toggleStatus(this)">
+                    XFailed
+                </label>
+                <label class="filter-chip xpassed">
+                    <input type="checkbox" data-status="xpassed" checked onchange="toggleStatus(this)">
+                    XPassed
+                </label>
+                <label class="filter-chip error">
+                    <input type="checkbox" data-status="error" checked onchange="toggleStatus(this)">
+                    Error
+                </label>
+            </div>
+        </div>
+
+        <!-- Test List -->
+        <div class="test-list" id="test-list">
+            <div class="test-file-group">
+                <div class="test-file-header">
+                    <span>📄 tests/test_calculator.py</span>
+                    <span style="font-size: 0.9rem; font-weight: 400; color: var(--text-secondary)">4 tests</span>
+                </div>
+                <div class="test-row outcome-passed" data-status="passed">
+                    <details open>
+                        <summary class="test-header">
+                            <span class="status-badge status-passed">PASSED</span>
+                            <span class="test-name">tests/test_calculator.py::test_add_basic</span>
+                            <div class="test-meta">
+                                <span>0ms</span>
+                                <span title="Covered file count">🛡️ 1</span>
+                            </div>
+                        </summary>
+
+                        <div class="test-details">
+
+                            <div class="detail-section">
+                                <div class="detail-title">AI Assessment</div>
+                                <div class="llm-annotation">
+                                    <p><strong>Scenario:</strong> This test verifies that the `add` function returns the correct result for basic addition operations.</p>
+                                    <p><strong>Why Needed:</strong> This test prevents bugs related to incorrect implementation or missing edge cases in the `add` function, ensuring it behaves as expected for simple arithmetic operations.</p>
+                                    <div class="key-assertions">
+                                        <strong>Key Assertions:</strong>
+                                        <ul>
+                                            <li>The test checks if the `add` function returns the correct result for positive numbers (e.g., `add(1, 2)`).</li>
+                                            <li>It verifies that the `add` function handles single-digit inputs correctly (e.g., `add(5, 3)`).</li>
+                                            <li>This test also ensures the `add` function behaves as expected with zero input (e.g., `add(0, 4)`).</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="detail-section">
+                                <div class="detail-title">Coverage</div>
+                                <div class="coverage-list">
+                                    <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                        <span>example_pkg/calculator.py</span>
+                                        <span style="color: var(--text-secondary)">1 lines (ranges: 3)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+                <div class="test-row outcome-passed" data-status="passed">
+                    <details open>
+                        <summary class="test-header">
+                            <span class="status-badge status-passed">PASSED</span>
+                            <span class="test-name">tests/test_calculator.py::test_add_negative</span>
+                            <div class="test-meta">
+                                <span>0ms</span>
+                                <span title="Covered file count">🛡️ 1</span>
+                            </div>
+                        </summary>
+
+                        <div class="test-details">
+
+                            <div class="detail-section">
+                                <div class="detail-title">AI Assessment</div>
+                                <div class="llm-annotation">
+                                    <p><strong>Scenario:</strong> This test verifies that the addition function correctly handles negative numbers.</p>
+                                    <p><strong>Why Needed:</strong> This test prevents bugs where incorrect results are produced when adding two negative numbers, potentially leading to incorrect calculations or errors in downstream code.</p>
+                                    <div class="key-assertions">
+                                        <strong>Key Assertions:</strong>
+                                        <ul>
+                                            <li>The test checks if the result of add(-1, -1) is equal to -2</li>
+                                            <li>It ensures that the function handles both negative inputs correctly</li>
+                                            <li>The test also implicitly verifies that the function does not produce a division by zero error when given two negative numbers</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="detail-section">
+                                <div class="detail-title">Coverage</div>
+                                <div class="coverage-list">
+                                    <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                        <span>example_pkg/calculator.py</span>
+                                        <span style="color: var(--text-secondary)">1 lines (ranges: 3)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+                <div class="test-row outcome-passed" data-status="passed">
+                    <details open>
+                        <summary class="test-header">
+                            <span class="status-badge status-passed">PASSED</span>
+                            <span class="test-name">tests/test_calculator.py::test_divide_success</span>
+                            <div class="test-meta">
+                                <span>0ms</span>
+                                <span title="Covered file count">🛡️ 1</span>
+                            </div>
+                        </summary>
+
+                        <div class="test-details">
+
+                            <div class="detail-section">
+                                <div class="detail-title">AI Assessment</div>
+                                <div class="llm-annotation">
+                                    <p><strong>Scenario:</strong> This test verifies that the 'divide' function returns the correct result when dividing two non-zero numbers.</p>
+                                    <p><strong>Why Needed:</strong> This test prevents division by zero errors, ensuring the calculator module handles this edge case correctly and provides informative error messages.</p>
+                                    <div class="key-assertions">
+                                        <strong>Key Assertions:</strong>
+                                        <ul>
+                                            <li>The 'divide' function raises a ValueError with a descriptive message when attempting to divide by zero.</li>
+                                            <li>The 'divide' function returns the correct result (5) for dividing 10 by 2.</li>
+                                            <li>The 'divide' function performs integer division (not floating-point division) when both inputs are integers.</li>
+                                            <li>The 'divide' function handles negative numbers correctly, returning a positive result as expected.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="detail-section">
+                                <div class="detail-title">Coverage</div>
+                                <div class="coverage-list">
+                                    <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                        <span>example_pkg/calculator.py</span>
+                                        <span style="color: var(--text-secondary)">2 lines (ranges: 8, 10)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+                <div class="test-row outcome-passed" data-status="passed">
+                    <details open>
+                        <summary class="test-header">
+                            <span class="status-badge status-passed">PASSED</span>
+                            <span class="test-name">tests/test_calculator.py::test_divide_zero</span>
+                            <div class="test-meta">
+                                <span>0ms</span>
+                                <span title="Covered file count">🛡️ 1</span>
+                            </div>
+                        </summary>
+
+                        <div class="test-details">
+
+                            <div class="detail-section">
+                                <div class="detail-title">AI Assessment</div>
+                                <div class="llm-annotation">
+                                    <p><strong>Scenario:</strong> This test verifies that the calculator's divide function correctly raises a ValueError when attempting to divide by zero.</p>
+                                    <p><strong>Why Needed:</strong> This test prevents potential bugs caused by silent division or incorrect results due to division by zero, which can lead to unexpected behavior in calculations.</p>
+                                    <div class="key-assertions">
+                                        <strong>Key Assertions:</strong>
+                                        <ul>
+                                            <li>The function `divide` checks if the divisor is zero before performing the division.</li>
+                                            <li>If the divisor is zero, it raises a ValueError with a descriptive error message.</li>
+                                            <li>The test uses pytest's `raises` context manager to verify that the correct exception is raised.</li>
+                                            <li>It ensures that the calculator's divide function behaves as expected in this edge case.</li>
+                                            <li>By testing for division by zero, this test helps catch bugs early on and improves overall code reliability.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="detail-section">
+                                <div class="detail-title">Coverage</div>
+                                <div class="coverage-list">
+                                    <div class="coverage-item" style="padding: 0.5rem 1rem;">
+                                        <span>example_pkg/calculator.py</span>
+                                        <span style="color: var(--text-secondary)">2 lines (ranges: 8-9)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
