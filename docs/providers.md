@@ -87,6 +87,24 @@ litellm_token_refresh_command = "your-token-cli get-token"
 litellm_token_refresh_interval = 3300  # Refresh before 60m expiry
 ```
 
+> [!WARNING]
+> For security reasons, the refresh command is executed directly, **not** via a shell (`shell=False`).
+> This means you **cannot** use pipes (`|`), redirection (`>`), or environment variable expansion (`$VAR`) directly in the command string.
+>
+> If you need complex logic (e.g., piping output), create a wrapper script:
+>
+> 1. Create `get_token.sh` (and `chmod +x` it):
+>    ```bash
+>    #!/bin/bash
+>    # Get raw token and extract specific field using jq or grep
+>    gcloud auth print-access-token | tr -d '\n'
+>    ```
+>
+> 2. Configure the plugin to use it:
+>    ```toml
+>    litellm_token_refresh_command = "./get_token.sh"
+>    ```
+
 #### Configuration Options
 
 | Option | Default | Description |

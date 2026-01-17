@@ -7,6 +7,7 @@ Provides thread-safe, cached token refresh via subprocess execution.
 from __future__ import annotations
 
 import json
+import shlex
 import subprocess
 import threading
 import time
@@ -77,14 +78,21 @@ class TokenRefresher:
             The extracted token string.
 
         Raises:
-            TokenRefreshError: If command fails or parsing fails.
+            TokenRefreshError: If command fails, parsing fails, or command is invalid.
         """
         try:
-            # Use shell=True to support complex commands with pipes, etc.
-            # shlex.split doesn't handle all shell features well
+            # Security: Use shell=False to prevent injection. Use shlex to parse args.
+            try:
+                args = shlex.split(self.command)
+            except ValueError as e:
+                raise TokenRefreshError(f"Invalid command string: {e}") from e
+
+            if not args:
+                raise TokenRefreshError("Command string is empty")
+
             result = subprocess.run(
-                self.command,
-                shell=True,
+                args,
+                shell=False,
                 capture_output=True,
                 text=True,
                 timeout=30,
