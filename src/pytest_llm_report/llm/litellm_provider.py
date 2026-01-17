@@ -66,15 +66,20 @@ class LiteLLMProvider(LlmProvider):
                 content = response.choices[0].message.content
                 annotation = self._parse_response(content)
 
-                if not annotation.error:
+                if annotation.error:
+                    # If "context too long", fail immediately so base class can fallback
+                    if "context too long" in annotation.error.lower():
+                        return annotation
+
+                    # Fail immediately on other parsing errors.
+                    # Retrying with the same prompt won't help with bad JSON.
                     return annotation
 
-                # If "context too long", fail immediately so base class can fallback
-                if "context too long" in annotation.error.lower():
-                    return annotation
+                return annotation
 
-                last_error = annotation.error
-
+            except (RuntimeError, ValueError, AttributeError) as e:
+                # Common errors that are likely not transient (e.g. mock failures, code bugs)
+                return LlmAnnotation(error=str(e))
             except Exception as e:
                 last_error = str(e)
 

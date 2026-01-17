@@ -661,7 +661,7 @@ class TestGeminiProvider:
         test = CaseResult(nodeid="tests/test.py::test_foo", outcome="passed")
 
         annotation = provider.annotate(test, "def test_foo(): pass")
-        assert "Context too long" in annotation.error
+        assert "Context too large" in annotation.error
         assert "400" in annotation.error
 
     def test_fetch_available_models_error(
@@ -749,18 +749,18 @@ class TestOllamaProvider:
         # Mock sleep to avoid waiting during retries
         monkeypatch.setattr("time.sleep", lambda s: None)
 
-        config = Config(provider="ollama")
+        config = Config(provider="ollama", llm_max_retries=2)
         provider = OllamaProvider(config)
         test = CaseResult(nodeid="tests/test_sample.py::test_case", outcome="passed")
         monkeypatch.setitem(__import__("sys").modules, "httpx", SimpleNamespace())
 
         def fake_call(prompt: str, system_prompt: str) -> str:
-            raise RuntimeError("boom")
+            raise Exception("boom")
 
         monkeypatch.setattr(provider, "_call_ollama", fake_call)
         annotation = provider.annotate(test, "def test_case(): assert True")
 
-        assert annotation.error == "Failed after 10 retries. Last error: boom"
+        assert annotation.error == "Failed after 2 retries. Last error: boom"
 
     def test_parse_response_json_in_code_fence(self):
         """Ollama provider extracts JSON from markdown code fences."""

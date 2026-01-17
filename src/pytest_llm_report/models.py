@@ -156,6 +156,11 @@ class TestCaseResult:
     requirements: list[str] = field(default_factory=list)
     __test__: ClassVar[bool] = False
 
+    @property
+    def file_path(self) -> str:
+        """Get the file path portion of the nodeid."""
+        return self.nodeid.split("::")[0]
+
     def to_dict(self) -> dict:
         """Convert to dictionary for JSON serialization."""
         result = {
@@ -163,6 +168,7 @@ class TestCaseResult:
             "outcome": self.outcome,
             "duration": self.duration,
             "phase": self.phase,
+            "file_path": self.file_path,
         }
         if self.error_message:
             result["error_message"] = self.error_message
