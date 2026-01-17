@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import os
 from types import SimpleNamespace
 
 import pytest
@@ -151,6 +152,156 @@ class TestLiteLLMProvider:
         provider = LiteLLMProvider(config)
 
         assert provider.is_available() is True
+
+    def test_api_base_passthrough(self, monkeypatch: pytest.MonkeyPatch):
+        """LiteLLM provider passes api_base to completion call."""
+        captured = {}
+
+        def fake_completion(**kwargs):
+            captured.update(kwargs)
+            response_data = {
+                "scenario": "Test",
+                "why_needed": "Reason",
+                "key_assertions": ["a"],
+            }
+            return FakeLiteLLMResponse(json.dumps(response_data))
+
+        fake_litellm = SimpleNamespace(
+            completion=fake_completion, AuthenticationError=Exception
+        )
+        monkeypatch.setitem(__import__("sys").modules, "litellm", fake_litellm)
+
+        config = Config(
+            provider="litellm",
+            model="gpt-4o",
+            litellm_api_base="https://proxy.corp.com/v1",
+        )
+        provider = LiteLLMProvider(config)
+        test = CaseResult(nodeid="tests/test.py::test_case", outcome="passed")
+        provider.annotate(test, "def test_case(): pass")
+
+        assert captured["api_base"] == "https://proxy.corp.com/v1"
+
+    def test_api_key_passthrough(self, monkeypatch: pytest.MonkeyPatch):
+        """LiteLLM provider passes static api_key to completion call."""
+        captured = {}
+
+        def fake_completion(**kwargs):
+            captured.update(kwargs)
+            response_data = {
+                "scenario": "Test",
+                "why_needed": "Reason",
+                "key_assertions": ["a"],
+            }
+            return FakeLiteLLMResponse(json.dumps(response_data))
+
+        fake_litellm = SimpleNamespace(
+            completion=fake_completion, AuthenticationError=Exception
+        )
+        monkeypatch.setitem(__import__("sys").modules, "litellm", fake_litellm)
+
+        config = Config(
+            provider="litellm",
+            model="gpt-4o",
+            litellm_api_key=os.getenv("TEST_KEY", "static-key-placeholder"),
+        )
+        provider = LiteLLMProvider(config)
+        test = CaseResult(nodeid="tests/test.py::test_case", outcome="passed")
+        provider.annotate(test, "def test_case(): pass")
+
+        assert captured["api_key"] == "static-key-placeholder"
+
+    def test_token_refresh_integration(self, monkeypatch: pytest.MonkeyPatch):
+        """LiteLLM provider uses TokenRefresher for dynamic tokens."""
+        import subprocess
+
+        captured = {}
+
+        def fake_completion(**kwargs):
+            captured.update(kwargs)
+            response_data = {
+                "scenario": "Test",
+                "why_needed": "Reason",
+                "key_assertions": ["a"],
+            }
+            return FakeLiteLLMResponse(json.dumps(response_data))
+
+        def fake_run(*args, **kwargs):
+            return subprocess.CompletedProcess(
+                args=args, returncode=0, stdout="dynamic-token-789", stderr=""
+            )
+
+        fake_litellm = SimpleNamespace(
+            completion=fake_completion, AuthenticationError=Exception
+        )
+        monkeypatch.setitem(__import__("sys").modules, "litellm", fake_litellm)
+        monkeypatch.setattr(subprocess, "run", fake_run)
+
+        config = Config(
+            provider="litellm",
+            model="gpt-4o",
+            litellm_token_refresh_command="get-token",
+            litellm_token_refresh_interval=3600,
+        )
+        provider = LiteLLMProvider(config)
+        test = CaseResult(nodeid="tests/test.py::test_case", outcome="passed")
+        provider.annotate(test, "def test_case(): pass")
+
+        assert captured["api_key"] == "dynamic-token-789"
+
+    def test_401_retry_with_token_refresh(self, monkeypatch: pytest.MonkeyPatch):
+        """LiteLLM provider retries on 401 after refreshing token."""
+        import subprocess
+
+        call_count = 0
+        captured_keys = []
+
+        class FakeAuthError(Exception):
+            pass
+
+        def fake_completion(**kwargs):
+            nonlocal call_count
+            call_count += 1
+            captured_keys.append(kwargs.get("api_key"))
+            if call_count == 1:
+                raise FakeAuthError("401 Unauthorized")
+            response_data = {
+                "scenario": "Test",
+                "why_needed": "Reason",
+                "key_assertions": ["a"],
+            }
+            return FakeLiteLLMResponse(json.dumps(response_data))
+
+        token_count = 0
+
+        def fake_run(*args, **kwargs):
+            nonlocal token_count
+            token_count += 1
+            return subprocess.CompletedProcess(
+                args=args, returncode=0, stdout=f"token-{token_count}", stderr=""
+            )
+
+        fake_litellm = SimpleNamespace(
+            completion=fake_completion, AuthenticationError=FakeAuthError
+        )
+        monkeypatch.setitem(__import__("sys").modules, "litellm", fake_litellm)
+        monkeypatch.setattr(subprocess, "run", fake_run)
+
+        config = Config(
+            provider="litellm",
+            model="gpt-4o",
+            litellm_token_refresh_command="get-token",
+            litellm_token_refresh_interval=3600,
+        )
+        provider = LiteLLMProvider(config)
+        test = CaseResult(nodeid="tests/test.py::test_case", outcome="passed")
+        annotation = provider.annotate(test, "def test_case(): pass")
+
+        assert annotation.error is None
+        assert annotation.scenario == "Test"
+        assert call_count == 2  # First failed, second succeeded
+        assert captured_keys[0] == "token-1"  # First token
+        assert captured_keys[1] == "token-2"  # Refreshed token
 
 
 class TestGeminiProvider:
