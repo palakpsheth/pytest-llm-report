@@ -81,3 +81,147 @@ class TestReportGeneration:
         html = (tmp_path / "report.html").read_text()
         assert "test_a.py" in html
         assert "test_b.py" in html
+
+
+class TestPluginHooksWithPytester:
+    """Pytester-based tests for plugin hooks targeting uncovered lines."""
+
+    def test_session_start_records_time(self, pytester: pytest.Pytester):
+        """Test that pytest_sessionstart records start time (line 394-395)."""
+        pytester.makepyfile(
+            """
+            def test_pass():
+                assert True
+            """
+        )
+
+        report_path = pytester.path / "report.json"
+        pytester.runpytest(f"--llm-report-json={report_path}")
+
+        import json
+
+        data = json.loads(report_path.read_text())
+        assert "start_time" in data["run_meta"]
+        assert data["run_meta"]["start_time"]
+
+    def test_collection_finish_counts_items(self, pytester: pytest.Pytester):
+        """Test that pytest_collection_finish counts items (line 378)."""
+        pytester.makepyfile(
+            """
+            def test_one():
+                pass
+
+            def test_two():
+                pass
+
+            def test_three():
+                pass
+            """
+        )
+
+        report_path = pytester.path / "report.json"
+        pytester.runpytest(f"--llm-report-json={report_path}")
+
+        import json
+
+        data = json.loads(report_path.read_text())
+        assert data["run_meta"]["collected_count"] == 3
+
+    def test_makereport_captures_all_outcomes(self, pytester: pytest.Pytester):
+        """Test pytest_runtest_makereport captures outcomes (line 333-334)."""
+        pytester.makepyfile(
+            """
+            import pytest
+
+            def test_pass():
+                assert True
+
+            def test_fail():
+                assert False
+
+            @pytest.mark.skip
+            def test_skip():
+                pass
+            """
+        )
+
+        report_path = pytester.path / "report.json"
+        pytester.runpytest(f"--llm-report-json={report_path}")
+
+        import json
+
+        data = json.loads(report_path.read_text())
+        outcomes = {t["outcome"] for t in data["tests"]}
+        assert "passed" in outcomes
+        assert "failed" in outcomes
+        assert "skipped" in outcomes
+
+    def test_both_json_and_html_outputs(self, pytester: pytest.Pytester):
+        """Test generating both JSON and HTML reports."""
+        pytester.makepyfile(
+            """
+            def test_simple():
+                assert 1 + 1 == 2
+            """
+        )
+
+        json_path = pytester.path / "report.json"
+        html_path = pytester.path / "report.html"
+        pytester.runpytest(
+            f"--llm-report={html_path}",
+            f"--llm-report-json={json_path}",
+        )
+
+        assert json_path.exists()
+        assert html_path.exists()
+
+    def test_creates_nested_directory(self, pytester: pytest.Pytester):
+        """Test that output directories are created if missing."""
+        pytester.makepyfile(
+            """
+            def test_pass():
+                assert True
+            """
+        )
+
+        report_path = pytester.path / "nested" / "dir" / "report.json"
+        pytester.runpytest(f"--llm-report-json={report_path}")
+
+        assert report_path.exists()
+
+    def test_no_report_when_disabled(self, pytester: pytest.Pytester):
+        """Test that no report is generated when no output specified."""
+        pytester.makepyfile(
+            """
+            def test_pass():
+                assert True
+            """
+        )
+
+        report_path = pytester.path / "report.json"
+        pytester.runpytest()
+
+        assert not report_path.exists()
+
+    def test_fixture_error_captured(self, pytester: pytest.Pytester):
+        """Test that fixture errors are captured in report."""
+        pytester.makepyfile(
+            """
+            import pytest
+
+            @pytest.fixture
+            def broken_fixture():
+                raise RuntimeError("Fixture failed")
+
+            def test_with_broken_fixture(broken_fixture):
+                assert True
+            """
+        )
+
+        report_path = pytester.path / "report.json"
+        pytester.runpytest(f"--llm-report-json={report_path}")
+
+        import json
+
+        data = json.loads(report_path.read_text())
+        assert data["summary"]["error"] == 1
