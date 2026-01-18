@@ -62,13 +62,13 @@ jobs:
           if [ "${{ matrix.python-version }}" = "3.12" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
             llm_provider="ollama"
             llm_args+=(
-              -o llm_report_model=llama3.2:1b
-              -o llm_report_context_mode=minimal
+              --llm-model=llama3.2:1b
+              --llm-context-mode=minimal
             )
           fi
           uv run pytest tests \
             -o "addopts=--cov=src/pytest_llm_report --cov-branch --cov-context=test --cov-report=" \
-            -o "llm_report_provider=${llm_provider}" \
+            --llm-provider="${llm_provider}" \
             --llm-report="${html_report}" \
             --llm-report-json="${json_report}" \
             --llm-pdf="${pdf_report}" \

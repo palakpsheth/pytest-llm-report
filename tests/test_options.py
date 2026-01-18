@@ -110,6 +110,10 @@ class TestLoadConfig:
             "llm_aggregate_group_id",
             "llm_coverage_source",
             "llm_max_retries",
+            # New Core CLI Flags
+            "llm_provider",
+            "llm_model",
+            "llm_context_mode",
         ]:
             setattr(config.option, attr, None)
 
@@ -153,6 +157,10 @@ max_retries = 2
             "llm_aggregate_group_id",
             "llm_coverage_source",
             "llm_max_retries",
+            # New Core CLI Flags
+            "llm_provider",
+            "llm_model",
+            "llm_context_mode",
         ]:
             setattr(mock_pytest_config.option, attr, None)
         mock_pytest_config.rootpath = tmp_path
@@ -182,6 +190,10 @@ max_retries = 2
             "llm_aggregate_group_id",
             "llm_coverage_source",
             "llm_max_retries",
+            # New Core CLI Flags
+            "llm_provider",
+            "llm_model",
+            "llm_context_mode",
         ]:
             setattr(mock_pytest_config.option, attr, None)
         mock_pytest_config.rootpath = tmp_path  # No pyproject.toml here
@@ -227,6 +239,52 @@ provider = "ollama"
         assert cfg.report_html == "cli_report.html"
         # CLI should set values not in pyproject
         assert cfg.llm_requests_per_minute == 100
+
+    def test_load_from_cli_provider_override(self, tmp_path):
+        """Test that CLI provider option overrides pyproject.toml."""
+        from unittest.mock import MagicMock
+
+        # Create pyproject.toml
+        pyproject = tmp_path / "pyproject.toml"
+        pyproject.write_text("""
+[tool.pytest_llm_report]
+provider = "none"
+model = "base"
+""")
+
+        # Mock config
+        mock_pytest_config = MagicMock()
+
+        # Reset other options
+        for attr in [
+            "llm_report_html",
+            "llm_report_json",
+            "llm_report_pdf",
+            "llm_evidence_bundle",
+            "llm_dependency_snapshot",
+            "llm_requests_per_minute",
+            "llm_aggregate_dir",
+            "llm_aggregate_policy",
+            "llm_aggregate_run_id",
+            "llm_aggregate_group_id",
+            "llm_coverage_source",
+            "llm_max_retries",
+            # New Core CLI Flags
+            "llm_provider",
+            "llm_model",
+            "llm_context_mode",
+        ]:
+            setattr(mock_pytest_config.option, attr, None)
+        mock_pytest_config.rootpath = tmp_path
+
+        # Set overrides
+        mock_pytest_config.option.llm_provider = "ollama"
+        mock_pytest_config.option.llm_model = "llama3"
+
+        cfg = load_config(mock_pytest_config)
+
+        assert cfg.provider == "ollama"
+        assert cfg.model == "llama3"
 
     def test_load_from_cli_retries(self, mock_pytest_config):
         """Test loading retries from CLI."""

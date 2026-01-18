@@ -138,7 +138,7 @@ jobs:
           # Use Ollama on main branch for Python 3.12
           if [ "${{ matrix.python-version }}" = "3.12" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
              llm_args+=(
-              -o llm_report_provider=ollama
+              --llm-provider=ollama
               -o llm_report_model=llama3.2:1b
               -o llm_report_context_mode=minimal
             )

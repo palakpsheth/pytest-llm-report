@@ -410,7 +410,17 @@ def load_config(config: "pytest.Config") -> Config:
                     stacklevel=2,
                 )
 
-    # Override with CLI options (CLI takes precedence)
+    # Override with CLI options (CLI commands take precedence over everything)
+    if hasattr(config.option, "llm_provider") and config.option.llm_provider:
+        cfg.provider = config.option.llm_provider
+
+    if hasattr(config.option, "llm_model") and config.option.llm_model:
+        cfg.model = config.option.llm_model
+
+    if hasattr(config.option, "llm_context_mode") and config.option.llm_context_mode:
+        cfg.llm_context_mode = config.option.llm_context_mode
+
+    # Standard overrides (legacy and existing)
     if config.option.llm_report_html:
         cfg.report_html = config.option.llm_report_html
     if config.option.llm_report_json:

@@ -32,6 +32,10 @@ class TestPyprojectLoadingCoverage:
             "llm_aggregate_group_id",
             "llm_coverage_source",
             "llm_max_retries",
+            # New Core CLI Flags
+            "llm_provider",
+            "llm_model",
+            "llm_context_mode",
         ]:
             setattr(mock.option, attr, None)
         mock.rootpath = tmp_path

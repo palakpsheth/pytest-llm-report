@@ -117,6 +117,26 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         help="Path to .coverage file or directory for aggregation enhancement",
     )
 
+    # Core LLM configuration (CLI overrides)
+    group.addoption(
+        "--llm-provider",
+        dest="llm_provider",
+        default=None,
+        help="LLM provider name (e.g. ollama, litellm)",
+    )
+    group.addoption(
+        "--llm-model",
+        dest="llm_model",
+        default=None,
+        help="LLM model name",
+    )
+    group.addoption(
+        "--llm-context-mode",
+        dest="llm_context_mode",
+        default=None,
+        help="LLM context mode (minimal, balanced, complete)",
+    )
+
 
 def pytest_configure(config: pytest.Config) -> None:
     """Configure the plugin.
