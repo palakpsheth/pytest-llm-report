@@ -56,17 +56,18 @@ jobs:
           mkdir -p reports
           json_report="reports/pytest_llm_report-py${{ matrix.python-version }}.json"
           pdf_report="reports/pytest_llm_report-py${{ matrix.python-version }}.pdf"
+          llm_provider="none"
           llm_args=()
           if [ "${{ matrix.python-version }}" = "3.12" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
-             llm_args+=(
-              -o llm_report_provider=ollama
+            llm_provider="ollama"
+            llm_args+=(
               -o llm_report_model=llama3.2:1b
               -o llm_report_context_mode=minimal
             )
           fi
           uv run pytest tests \
             -o "addopts=--cov=src/pytest_llm_report --cov-branch --cov-context=test --cov-report=" \
-            -o llm_report_provider=none \
+            -o "llm_report_provider=${llm_provider}" \
             --llm-report-json="${json_report}" \
             --llm-pdf="${pdf_report}" \
             --llm-aggregate-run-id="${{ github.run_id }}-py${{ matrix.python-version }}" \
