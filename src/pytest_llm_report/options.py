@@ -400,9 +400,15 @@ def load_config(config: "pytest.Config") -> Config:
                 if "hmac_key_file" in tool_config:
                     cfg.hmac_key_file = tool_config["hmac_key_file"]
 
-            except Exception:
-                # If pyproject.toml parsing fails, continue with defaults
-                pass
+            except Exception as e:
+                # If pyproject.toml parsing fails, warn the user and continue with defaults
+                import warnings
+
+                warnings.warn(
+                    f"Could not parse [tool.pytest_llm_report] from pyproject.toml: {e}",
+                    UserWarning,
+                    stacklevel=2,
+                )
 
     # Override with CLI options (CLI takes precedence)
     if config.option.llm_report_html:
