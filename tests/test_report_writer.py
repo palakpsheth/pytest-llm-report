@@ -105,7 +105,7 @@ class TestReportWriter:
 
         assert meta.duration == 60.0
         assert meta.pytest_version  # Should have a value
-        assert meta.plugin_version == "0.1.0"
+        assert meta.plugin_version == "0.2.0"
         assert meta.python_version
 
     def test_write_report_assembles_tests(self):
