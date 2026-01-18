@@ -171,7 +171,9 @@ def pytest_configure(config: pytest.Config) -> None:
 
     # Store config and enable flag using stash (official pytest API)
     config.stash[_config_key] = cfg
-    config.stash[_enabled_key] = bool(cfg.report_html or cfg.report_json)
+    config.stash[_enabled_key] = bool(
+        cfg.report_html or cfg.report_json or cfg.report_pdf
+    )
 
 
 def pytest_terminal_summary(
