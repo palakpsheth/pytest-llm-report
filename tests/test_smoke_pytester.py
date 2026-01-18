@@ -65,12 +65,15 @@ class TestBasicReportGeneration:
                 assert True
             """
         )
-        pytester.makepyfile(
-            litellm="""
+
+        # Create a conftest that patches litellm.completion before it's imported
+        pytester.makeconftest(
+            """
             import json
             from types import SimpleNamespace
+            from unittest.mock import patch
 
-            def completion(**_kwargs):
+            def mock_completion(**_kwargs):
                 payload = {
                     "scenario": "Checks the happy path",
                     "why_needed": "Prevents regressions",
@@ -79,6 +82,10 @@ class TestBasicReportGeneration:
                 return SimpleNamespace(
                     choices=[SimpleNamespace(message=SimpleNamespace(content=json.dumps(payload)))]
                 )
+
+            def pytest_configure(config):
+                import litellm
+                litellm.completion = mock_completion
             """
         )
 
@@ -106,10 +113,16 @@ model = "gpt-4o-mini"
                 assert True
             """
         )
-        pytester.makepyfile(
-            litellm="""
-            def completion(**_kwargs):
+
+        # Create a conftest that patches litellm.completion to raise an error
+        pytester.makeconftest(
+            """
+            def mock_completion(**_kwargs):
                 raise RuntimeError("boom")
+
+            def pytest_configure(config):
+                import litellm
+                litellm.completion = mock_completion
             """
         )
 
