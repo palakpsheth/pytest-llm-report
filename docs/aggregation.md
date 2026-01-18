@@ -33,7 +33,7 @@ pytest --collect-only \
 - **merge**: Groups results by test ID but keeps strictly distinct outcomes (not fully implemented yet, falls back to latest).
 - **all**: Keeps all results as separate entries. Useful for analyzing history.
 
-- **all**: Keeps all results as separate entries. Useful for analyzing history.
+
 
 ### Aggregating with Coverage
 

@@ -70,7 +70,7 @@ uv add "pytest-llm-report[ollama]"  # or gemini, litellm, pdf, all
 Run pytest with coverage contexts enabled:
 
 ```bash
-pytest --cov=your_package --cov-branch --cov-context=test --llm-report=report.html
+pytest --cov=your_package --cov-context=test --llm-report=report.html
 ```
 
 ## Configuration

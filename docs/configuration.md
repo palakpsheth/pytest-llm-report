@@ -23,30 +23,87 @@ Complete configuration reference for pytest-llm-report.
 
 > **Tip**: Run `pytest --help` to see usage examples for each option.
 
-## pyproject.toml Options
+## pyproject.toml Configuration
 
-Configure defaults in `pyproject.toml`:
+Configure the plugin in the `[tool.pytest_llm_report]` section of your `pyproject.toml`.
+
+### General Settings
+
+| Key | Description | Default |
+|-----|-------------|---------|
+| `provider` | LLM provider to use (`none`, `ollama`, `litellm`, `gemini`) | `"none"` |
+| `model` | Model name to use (provider-dependent) | `""` |
+| `ollama_host` | URL of the Ollama server | `"http://127.0.0.1:11434"` |
+| `cache_dir` | Directory for caching LLM responses | `".pytest_llm_cache"` |
+| `metadata_file` | Path to custom metadata file (JSON/YAML) | `None` |
+
+### LiteLLM Settings
+
+Settings specific to the `litellm` provider.
+
+| Key | Description | Default |
+|-----|-------------|---------|
+| `litellm_api_base` | Custom API base URL (e.g., for proxies) | `None` |
+| `litellm_api_key` | Static API key override | `None` |
+| `litellm_token_refresh_command` | CLI command to fetch a fresh auth token | `None` |
+| `litellm_token_refresh_interval` | Refresh interval in seconds (min 60) | `3300` (55 min) |
+| `litellm_token_output_format` | Token command output format (`text` or `json`) | `"text"` |
+| `litellm_token_json_key` | Key to extract token from if format is `json` | `"token"` |
+
+### LLM Execution Control
+
+| Key | Description | Default |
+|-----|-------------|---------|
+| `max_tests` | Maximum number of tests to annotate (0 = unlimited) | `0` |
+| `max_concurrency` | Maximum concurrent LLM requests | `1` |
+| `requests_per_minute` | Rate limit for LLM requests | `5` |
+| `timeout_seconds` | Timeout for each LLM request | `30` |
+| `max_retries` | Maximum retries for transient errors | `10` |
+| `cache_ttl_seconds` | How long to cache responses | `86400` (24h) |
+
+### Context & Content
+
+| Key | Description | Default |
+|-----|-------------|---------|
+| `context_mode` | Context level (`minimal`, `balanced`, `complete`) | `"minimal"` |
+| `context_bytes` | Max bytes for context window | `32000` |
+| `context_file_limit` | Max number of files in context | `10` |
+| `context_include_globs` | List of file patterns to force include | `[]` |
+| `context_exclude_globs` | List of file patterns to exclude | `["*.pyc", "__pycache__/*", ...]` |
+| `include_param_values` | Include test parameter values in validation | `False` |
+| `param_value_max_chars` | Max characters for parameter values | `100` |
+
+### Report & Coverage
+
+| Key | Description | Default |
+|-----|-------------|---------|
+| `omit_tests_from_coverage` | Exclude test files from coverage usage | `True` |
+| `include_phase` | Test phases to include (`run`, `setup`, `teardown`, `all`) | `"run"` |
+| `report_collect_only` | Generate report even for collect-only runs | `True` |
+| `capture_failed_output` | Include stdout/stderr for failed tests | `False` |
+| `capture_output_max_chars` | Max chars for captured output | `4000` |
+| `include_pytest_invocation` | Include pytest CLI command in report | `True` |
+
+### Example Configuration
 
 ```toml
 [tool.pytest_llm_report]
-# LLM provider configuration
-provider = "ollama"              # Options: none, ollama, litellm, gemini
-model = "llama3.2"
-context_mode = "minimal"     # Options: minimal, balanced, complete
-requests_per_minute = 5
+# Provider
+provider = "litellm"
+model = "gpt-4o"
+litellm_api_base = "https://proxy.example.com"
 
-# Execution limits
-max_tests = 50              # Limit number of tests to annotate (0 = no limit)
-max_concurrency = 1         # Max concurrent LLM requests
-max_retries = 10           # Max retries for transient errors
+# Performance
+max_concurrency = 4
+requests_per_minute = 60
 
-# Coverage settings
-omit_tests_from_coverage = true
-include_phase = "run"           # Options: run, setup, teardown, all
+# Context
+context_mode = "balanced"
+context_exclude_globs = ["**/.env*", "**/secrets.py"]
+
+# Report
+capture_failed_output = true
 ```
-
-> [!TIP]
-> Local providers (like `ollama`) skip rate limiting automatically, so you can safely increase `llm_max_concurrency` to speed up annotations.
 
 
 ## LLM Provider Settings

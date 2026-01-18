@@ -144,7 +144,7 @@ jobs:
             )
           fi
           uv run pytest tests \
-            -o "addopts=--cov=src/pytest_llm_report --cov-branch --cov-context=test --cov-report=" \
+            -o "addopts=--cov=src/pytest_llm_report --cov-context=test --cov-report=" \
             --llm-provider="${llm_provider}" \
             --llm-report="${html_report}" \
             --llm-report-json="${json_report}" \
@@ -345,21 +345,24 @@ jobs:
 
 Update version in `src/pytest_llm_report/__about__.py`:
 
-```python
-__version__ = "0.1.0"
-```
+ ```python
+-__version__ = "0.1.0"
++__version__ = "0.2.0"
+ ```
 
-## Release Checklist
+ ## Release Checklist
 
-1. [ ] Update version in `__about__.py`
-2. [ ] Update CHANGELOG.md
-3. [ ] Run full test suite: `uv run pytest`
-4. [ ] Check lint: `uv run ruff check .`
-5. [ ] Build: `uv build`
-6. [ ] Test install: `pip install dist/*.whl`
-7. [ ] Create git tag: `git tag v0.1.0`
-8. [ ] Push tag: `git push origin v0.1.0`
-9. [ ] Create GitHub release
+ 1. [ ] Update version in `__about__.py`
+ 2. [ ] Update CHANGELOG.md
+ 3. [ ] Run full test suite: `uv run pytest`
+ 4. [ ] Check lint: `uv run ruff check .`
+ 5. [ ] Build: `uv build`
+ 6. [ ] Test install: `pip install dist/*.whl`
+-7. [ ] Create git tag: `git tag v0.1.0`
+-8. [ ] Push tag: `git push origin v0.1.0`
++7. [ ] Create git tag: `git tag v0.2.0`
++8. [ ] Push tag: `git push origin v0.2.0`
+ 9. [ ] Create GitHub release
 
 ## Verification
 
