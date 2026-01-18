@@ -59,7 +59,7 @@ llm_context_exclude_globs = [
 
 ```toml
 [tool.pytest_llm_report]
-llm_context_mode = "minimal"  # Only test code, no covered files
+context_mode = "minimal"  # Only test code, no covered files
 ```
 
 ## Recommendations by Environment

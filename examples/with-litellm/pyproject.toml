@@ -26,9 +26,9 @@ addopts = [
 provider = "litellm"
 model = "gpt-4o-mini"
 cache_dir = ".pytest_llm_cache"
-llm_context_mode = "minimal"
-llm_max_tests = 20
-llm_timeout_seconds = 30
+context_mode = "minimal"
+max_tests = 20
+timeout_seconds = 30
 omit_tests_from_coverage = true
 include_phase = "run"
 

@@ -65,12 +65,15 @@ class TestBasicReportGeneration:
                 assert True
             """
         )
-        pytester.makepyfile(
-            litellm="""
+
+        # Create a conftest that patches litellm.completion before it's imported
+        pytester.makeconftest(
+            """
             import json
             from types import SimpleNamespace
+            from unittest.mock import patch
 
-            def completion(**_kwargs):
+            def mock_completion(**_kwargs):
                 payload = {
                     "scenario": "Checks the happy path",
                     "why_needed": "Prevents regressions",
@@ -79,17 +82,25 @@ class TestBasicReportGeneration:
                 return SimpleNamespace(
                     choices=[SimpleNamespace(message=SimpleNamespace(content=json.dumps(payload)))]
                 )
+
+            def pytest_configure(config):
+                import litellm
+                litellm.completion = mock_completion
             """
         )
 
-        report_path = pytester.path / "report.json"
-        pytester.runpytest(
-            "-o",
-            "llm_report_provider=litellm",
-            "-o",
-            "llm_report_model=gpt-4o-mini",
-            f"--llm-report-json={report_path}",
+        # Create pyproject.toml with [tool.pytest_llm_report] configuration
+        pytester.makefile(
+            ".toml",
+            pyproject="""
+[tool.pytest_llm_report]
+provider = "litellm"
+model = "gpt-4o-mini"
+""",
         )
+
+        report_path = pytester.path / "report.json"
+        pytester.runpytest(f"--llm-report-json={report_path}")
 
         data = json.loads(report_path.read_text())
         assert data["tests"][0]["llm_annotation"]["scenario"] == "Checks the happy path"
@@ -102,21 +113,31 @@ class TestBasicReportGeneration:
                 assert True
             """
         )
-        pytester.makepyfile(
-            litellm="""
-            def completion(**_kwargs):
+
+        # Create a conftest that patches litellm.completion to raise an error
+        pytester.makeconftest(
+            """
+            def mock_completion(**_kwargs):
                 raise RuntimeError("boom")
+
+            def pytest_configure(config):
+                import litellm
+                litellm.completion = mock_completion
             """
         )
 
-        report_path = pytester.path / "report.html"
-        pytester.runpytest(
-            "-o",
-            "llm_report_provider=litellm",
-            "-o",
-            "llm_report_model=gpt-4o-mini",
-            f"--llm-report={report_path}",
+        # Create pyproject.toml with [tool.pytest_llm_report] configuration
+        pytester.makefile(
+            ".toml",
+            pyproject="""
+[tool.pytest_llm_report]
+provider = "litellm"
+model = "gpt-4o-mini"
+""",
         )
+
+        report_path = pytester.path / "report.html"
+        pytester.runpytest(f"--llm-report={report_path}")
 
         content = report_path.read_text()
         assert "LLM error" in content

@@ -1,5 +1,4 @@
 # SPDX-License-Identifier: MIT
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -8,16 +7,24 @@ import pytest
 class TestPluginMaximal:
     """Targeted unit tests for plugin.py to reach maximal coverage."""
 
-    def testload_config(self):
-        """Test config loading from pytest objects (CLI + INI)."""
+    def testload_config(self, tmp_path):
+        """Test config loading from pytest objects (CLI)."""
         from pytest_llm_report.options import load_config
 
         mock_config = MagicMock()
         mock_config.option.llm_report_html = "out.html"
         mock_config.option.llm_report_json = "out.json"
-
-        mock_config.getini.side_effect = lambda key: None
-        mock_config.rootpath = "/root"
+        mock_config.option.llm_report_pdf = None
+        mock_config.option.llm_evidence_bundle = None
+        mock_config.option.llm_dependency_snapshot = None
+        mock_config.option.llm_requests_per_minute = None
+        mock_config.option.llm_aggregate_dir = None
+        mock_config.option.llm_aggregate_policy = None
+        mock_config.option.llm_aggregate_run_id = None
+        mock_config.option.llm_aggregate_group_id = None
+        mock_config.option.llm_max_retries = None
+        mock_config.option.llm_coverage_source = None
+        mock_config.rootpath = tmp_path
 
         cfg = load_config(mock_config)
         assert cfg.report_html == "out.html"
@@ -54,22 +61,21 @@ class TestPluginMaximal:
 class TestPluginLoadConfig:
     """Tests for load_config with all option variations."""
 
-    def test_load_config_all_ini_options(self):
-        """Test loading all INI options."""
+    def test_load_config_from_pyproject(self, tmp_path):
+        """Test loading all options from pyproject.toml."""
         from pytest_llm_report.options import load_config
 
-        mock_config = MagicMock()
-        # Set up INI values
-        ini_values = {
-            "llm_report_provider": "ollama",
-            "llm_report_model": "llama3.2",
-            "llm_report_context_mode": "complete",
-            "llm_report_requests_per_minute": 10,
-            "llm_report_html": "ini.html",
-            "llm_report_json": "ini.json",
-        }
-        mock_config.getini.side_effect = lambda key: ini_values.get(key)
+        # Create pyproject.toml
+        pyproject = tmp_path / "pyproject.toml"
+        pyproject.write_text("""
+[tool.pytest_llm_report]
+provider = "ollama"
+model = "llama3.2"
+context_mode = "complete"
+requests_per_minute = 10
+""")
 
+        mock_config = MagicMock()
         # CLI options are None (not set)
         mock_config.option.llm_report_html = None
         mock_config.option.llm_report_json = None
@@ -82,7 +88,8 @@ class TestPluginLoadConfig:
         mock_config.option.llm_aggregate_run_id = None
         mock_config.option.llm_aggregate_group_id = None
         mock_config.option.llm_max_retries = None
-        mock_config.rootpath = Path("/project")
+        mock_config.option.llm_coverage_source = None
+        mock_config.rootpath = tmp_path
 
         cfg = load_config(mock_config)
 
@@ -90,21 +97,19 @@ class TestPluginLoadConfig:
         assert cfg.model == "llama3.2"
         assert cfg.llm_context_mode == "complete"
         assert cfg.llm_requests_per_minute == 10
-        assert cfg.report_html == "ini.html"
-        assert cfg.report_json == "ini.json"
 
-    def test_load_config_cli_overrides_ini(self):
-        """Test CLI options override INI options."""
+    def test_load_config_cli_overrides_pyproject(self, tmp_path):
+        """Test CLI options override pyproject.toml options."""
         from pytest_llm_report.options import load_config
 
-        mock_config = MagicMock()
-        # INI values
-        ini_values = {
-            "llm_report_html": "ini.html",
-            "llm_report_json": "ini.json",
-        }
-        mock_config.getini.side_effect = lambda key: ini_values.get(key)
+        # Create pyproject.toml
+        pyproject = tmp_path / "pyproject.toml"
+        pyproject.write_text("""
+[tool.pytest_llm_report]
+provider = "ollama"
+""")
 
+        mock_config = MagicMock()
         # CLI overrides
         mock_config.option.llm_report_html = "cli.html"
         mock_config.option.llm_report_json = "cli.json"
@@ -116,7 +121,9 @@ class TestPluginLoadConfig:
         mock_config.option.llm_aggregate_policy = "merge"
         mock_config.option.llm_aggregate_run_id = "run-123"
         mock_config.option.llm_aggregate_group_id = "group-abc"
-        mock_config.rootpath = Path("/project")
+        mock_config.option.llm_max_retries = None
+        mock_config.option.llm_coverage_source = None
+        mock_config.rootpath = tmp_path
 
         cfg = load_config(mock_config)
 
@@ -147,18 +154,20 @@ class TestPluginConfigure:
         # addinivalue_line is still called for markers before worker check
         assert mock_config.addinivalue_line.called
 
-    def test_pytest_configure_validation_errors(self):
+    def test_pytest_configure_validation_errors(self, tmp_path):
         """Test that validation errors raise UsageError."""
         from pytest_llm_report.plugin import pytest_configure
+
+        # Create invalid pyproject.toml
+        pyproject = tmp_path / "pyproject.toml"
+        pyproject.write_text("""
+[tool.pytest_llm_report]
+provider = "invalid_provider"
+""")
 
         mock_config = MagicMock()
         del mock_config.workerinput  # Not a worker
 
-        # Set up invalid config
-        ini_values = {
-            "llm_report_provider": "invalid_provider",  # Invalid
-        }
-        mock_config.getini.side_effect = lambda key: ini_values.get(key)
         mock_config.option.llm_report_html = None
         mock_config.option.llm_report_json = None
         mock_config.option.llm_report_pdf = None
@@ -170,26 +179,29 @@ class TestPluginConfigure:
         mock_config.option.llm_aggregate_run_id = None
         mock_config.option.llm_aggregate_group_id = None
         mock_config.option.llm_max_retries = None
-        mock_config.rootpath = Path("/project")
+        mock_config.option.llm_coverage_source = None
+        mock_config.rootpath = tmp_path
         mock_config.stash = {}
 
         with pytest.raises(pytest.UsageError, match="configuration errors"):
             pytest_configure(mock_config)
 
-    def test_pytest_configure_llm_enabled_warning(self):
+    def test_pytest_configure_llm_enabled_warning(self, tmp_path):
         """Test that LLM enabled warning is raised."""
         from pytest_llm_report.plugin import pytest_configure
+
+        # Create valid pyproject.toml with LLM enabled
+        pyproject = tmp_path / "pyproject.toml"
+        pyproject.write_text("""
+[tool.pytest_llm_report]
+provider = "ollama"
+model = "llama3.2"
+context_mode = "minimal"
+""")
 
         mock_config = MagicMock()
         del mock_config.workerinput
 
-        # Valid config with LLM enabled
-        ini_values = {
-            "llm_report_provider": "ollama",
-            "llm_report_model": "llama3.2",
-            "llm_report_context_mode": "minimal",
-        }
-        mock_config.getini.side_effect = lambda key: ini_values.get(key)
         mock_config.option.llm_report_html = None
         mock_config.option.llm_report_json = None
         mock_config.option.llm_report_pdf = None
@@ -201,8 +213,8 @@ class TestPluginConfigure:
         mock_config.option.llm_aggregate_run_id = None
         mock_config.option.llm_aggregate_group_id = None
         mock_config.option.llm_max_retries = None
-        mock_config.option.llm_max_retries = None
-        mock_config.rootpath = Path("/project")
+        mock_config.option.llm_coverage_source = None
+        mock_config.rootpath = tmp_path
         mock_config.stash = {}
 
         with pytest.warns(UserWarning, match="LLM provider 'ollama' is enabled"):
@@ -587,17 +599,14 @@ class TestPluginTerminalSummary:
         assert any("--llm-report" in args[0] for args in calls)
         assert any("--llm-coverage-source" in args[0] for args in calls)
 
-    def test_pytest_addoption_ini(self):
-        """Test pytest_addoption adds INI options (lines 13-34)."""
+    def test_pytest_addoption_no_ini(self):
+        """Test pytest_addoption no longer adds INI options."""
         from pytest_llm_report.plugin import pytest_addoption
 
         parser = MagicMock()
         pytest_addoption(parser)
-        # Verify ini additions
-        ini_calls = [c[0][0] for c in parser.addini.call_args_list]
-        assert "llm_report_html" in ini_calls
-        assert "llm_report_json" in ini_calls
-        assert "llm_report_max_retries" in ini_calls
+        # Verify NO ini additions (we removed them)
+        assert not parser.addini.called
 
 
 class TestPluginTerminalSummaryErrors:
@@ -637,16 +646,26 @@ class TestPluginTerminalSummaryErrors:
 class TestPluginConfigureFallback:
     """Tests for configuration fallback paths."""
 
-    def test_pytest_configure_fallback_load(self):
-        """Test fallback to load_config if Config.load is missing (lines 188-195)."""
+    def test_pytest_configure_fallback_load(self, tmp_path):
+        """Test fallback to load_config if Config.load is missing."""
         from pytest_llm_report.plugin import pytest_configure
 
         mock_config = MagicMock()
         del mock_config.workerinput
         mock_config.stash = {}
-        mock_config.getini.return_value = None
         mock_config.option.llm_report_html = None
+        mock_config.option.llm_report_json = None
+        mock_config.option.llm_report_pdf = None
+        mock_config.option.llm_evidence_bundle = None
+        mock_config.option.llm_dependency_snapshot = None
+        mock_config.option.llm_requests_per_minute = None
+        mock_config.option.llm_aggregate_dir = None
+        mock_config.option.llm_aggregate_policy = None
+        mock_config.option.llm_aggregate_run_id = None
+        mock_config.option.llm_aggregate_group_id = None
         mock_config.option.llm_max_retries = None
+        mock_config.option.llm_coverage_source = None
+        mock_config.rootpath = tmp_path
 
         with (
             patch("pytest_llm_report.options.Config", spec=[]),  # No load() method

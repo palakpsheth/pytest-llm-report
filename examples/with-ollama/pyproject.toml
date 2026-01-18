@@ -22,12 +22,13 @@ addopts = [
     "--llm-report-json=reports/pytest_llm_report.json",
 ]
 
-llm_report_provider = "ollama"
-llm_report_model = "llama3.2"
-llm_report_context_mode = "complete"
-llm_max_tests = 50
-
-
+[tool.pytest_llm_report]
+provider = "ollama"
+model = "llama3.2"
+context_mode = "complete"
+max_tests = 50
+omit_tests_from_coverage = true
+include_phase = "run"
 
 [tool.coverage.run]
 source = ["pytest_llm_report"]
