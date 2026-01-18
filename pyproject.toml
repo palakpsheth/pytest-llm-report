@@ -103,17 +103,14 @@ addopts = [
 ]
 pythonpath = ["src"]
 norecursedirs = ["tests/fixtures"]
-# LLM Report settings (read via parser.addini)
-llm_report_provider = "ollama"
-llm_report_model = "llama3.2:1b"
-llm_report_context_mode = "minimal"
 
 [tool.pytest_llm_report]
-provider = "ollama"
+provider = "none"
 model = "llama3.2:1b"
+context_mode = "minimal"
 ollama_host = "http://127.0.0.1:11434"
-llm_timeout_seconds = 120
-llm_max_tests = 10000
+timeout_seconds = 120
+max_tests = 10000
 omit_tests_from_coverage = true
 include_phase = "run"
 

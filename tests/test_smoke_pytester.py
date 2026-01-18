@@ -82,14 +82,18 @@ class TestBasicReportGeneration:
             """
         )
 
-        report_path = pytester.path / "report.json"
-        pytester.runpytest(
-            "-o",
-            "llm_report_provider=litellm",
-            "-o",
-            "llm_report_model=gpt-4o-mini",
-            f"--llm-report-json={report_path}",
+        # Create pyproject.toml with [tool.pytest_llm_report] configuration
+        pytester.makefile(
+            ".toml",
+            pyproject="""
+[tool.pytest_llm_report]
+provider = "litellm"
+model = "gpt-4o-mini"
+""",
         )
+
+        report_path = pytester.path / "report.json"
+        pytester.runpytest(f"--llm-report-json={report_path}")
 
         data = json.loads(report_path.read_text())
         assert data["tests"][0]["llm_annotation"]["scenario"] == "Checks the happy path"
@@ -109,14 +113,18 @@ class TestBasicReportGeneration:
             """
         )
 
-        report_path = pytester.path / "report.html"
-        pytester.runpytest(
-            "-o",
-            "llm_report_provider=litellm",
-            "-o",
-            "llm_report_model=gpt-4o-mini",
-            f"--llm-report={report_path}",
+        # Create pyproject.toml with [tool.pytest_llm_report] configuration
+        pytester.makefile(
+            ".toml",
+            pyproject="""
+[tool.pytest_llm_report]
+provider = "litellm"
+model = "gpt-4o-mini"
+""",
         )
+
+        report_path = pytester.path / "report.html"
+        pytester.runpytest(f"--llm-report={report_path}")
 
         content = report_path.read_text()
         assert "LLM error" in content

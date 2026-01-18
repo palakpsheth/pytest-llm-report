@@ -92,9 +92,8 @@ class TestConfig:
 
 class TestLoadConfig:
     @pytest.fixture
-    def mock_pytest_config(self):
+    def mock_pytest_config(self, tmp_path):
         config = MagicMock()
-        config.getini = MagicMock(return_value=None)
         # Mock CLI options as an object with attributes
         config.option = MagicMock()
         # Set all potential CLI options to None by default
@@ -114,7 +113,7 @@ class TestLoadConfig:
         ]:
             setattr(config.option, attr, None)
 
-        config.rootpath = "/mock/root"
+        config.rootpath = tmp_path
         return config
 
     def test_load_defaults(self, mock_pytest_config):
@@ -123,18 +122,40 @@ class TestLoadConfig:
         assert cfg.provider == "none"
         assert cfg.report_html is None
 
-    def test_load_from_ini(self, mock_pytest_config):
-        """Test loading values from ini options."""
-        ini_values = {
-            "llm_report_provider": "ollama",
-            "llm_report_model": "llama3",
-            "llm_report_context_mode": "balanced",
-            "llm_report_requests_per_minute": 10,
-            "llm_report_max_retries": 2,
-            "llm_report_html": "report.html",
-            "llm_report_json": "report.json",
-        }
-        mock_pytest_config.getini.side_effect = lambda key: ini_values.get(key)
+    def test_load_from_pyproject(self, tmp_path):
+        """Test loading values from pyproject.toml."""
+
+        # Create pyproject.toml
+        pyproject = tmp_path / "pyproject.toml"
+        pyproject.write_text("""
+[tool.pytest_llm_report]
+provider = "ollama"
+model = "llama3"
+context_mode = "balanced"
+requests_per_minute = 10
+max_retries = 2
+""")
+
+        # Mock config
+        from unittest.mock import MagicMock
+
+        mock_pytest_config = MagicMock()
+        for attr in [
+            "llm_report_html",
+            "llm_report_json",
+            "llm_report_pdf",
+            "llm_evidence_bundle",
+            "llm_dependency_snapshot",
+            "llm_requests_per_minute",
+            "llm_aggregate_dir",
+            "llm_aggregate_policy",
+            "llm_aggregate_run_id",
+            "llm_aggregate_group_id",
+            "llm_coverage_source",
+            "llm_max_retries",
+        ]:
+            setattr(mock_pytest_config.option, attr, None)
+        mock_pytest_config.rootpath = tmp_path
 
         cfg = load_config(mock_pytest_config)
         assert cfg.provider == "ollama"
@@ -142,35 +163,69 @@ class TestLoadConfig:
         assert cfg.llm_context_mode == "balanced"
         assert cfg.llm_requests_per_minute == 10
         assert cfg.llm_max_retries == 2
-        assert cfg.report_html == "report.html"
-        assert cfg.report_json == "report.json"
 
-    def test_load_config_invalid_int_ini(self, mock_pytest_config):
-        """Test handling of invalid integer values in INI (lines 266-267)."""
-        ini_values = {
-            "llm_report_max_retries": "garbage",
-        }
-        mock_pytest_config.getini.side_effect = lambda key: ini_values.get(key)
+    def test_load_config_missing_pyproject(self, tmp_path):
+        """Test handling when pyproject.toml doesn't exist."""
+        from unittest.mock import MagicMock
+
+        mock_pytest_config = MagicMock()
+        for attr in [
+            "llm_report_html",
+            "llm_report_json",
+            "llm_report_pdf",
+            "llm_evidence_bundle",
+            "llm_dependency_snapshot",
+            "llm_requests_per_minute",
+            "llm_aggregate_dir",
+            "llm_aggregate_policy",
+            "llm_aggregate_run_id",
+            "llm_aggregate_group_id",
+            "llm_coverage_source",
+            "llm_max_retries",
+        ]:
+            setattr(mock_pytest_config.option, attr, None)
+        mock_pytest_config.rootpath = tmp_path  # No pyproject.toml here
+
         cfg = load_config(mock_pytest_config)
-        # Should fallback to default 10 or not crash
+        # Should fallback to defaults
         assert cfg.llm_max_retries == 10
 
-    def test_load_from_cli_overrides_ini(self, mock_pytest_config):
-        """Test that CLI options override ini options."""
-        # Set ini values
-        mock_pytest_config.getini.side_effect = (
-            lambda key: "ini_value" if key == "llm_report_html" else None
-        )
+    def test_load_from_cli_overrides_pyproject(self, tmp_path):
+        """Test that CLI options override pyproject.toml options."""
+        from unittest.mock import MagicMock
 
+        # Create pyproject.toml
+        pyproject = tmp_path / "pyproject.toml"
+        pyproject.write_text("""
+[tool.pytest_llm_report]
+provider = "ollama"
+""")
+
+        # Mock config
+        mock_pytest_config = MagicMock()
         # Set CLI values
         mock_pytest_config.option.llm_report_html = "cli_report.html"
         mock_pytest_config.option.llm_requests_per_minute = 100
+        for attr in [
+            "llm_report_json",
+            "llm_report_pdf",
+            "llm_evidence_bundle",
+            "llm_dependency_snapshot",
+            "llm_aggregate_dir",
+            "llm_aggregate_policy",
+            "llm_aggregate_run_id",
+            "llm_aggregate_group_id",
+            "llm_coverage_source",
+            "llm_max_retries",
+        ]:
+            setattr(mock_pytest_config.option, attr, None)
+        mock_pytest_config.rootpath = tmp_path
 
         cfg = load_config(mock_pytest_config)
 
         # CLI should win for html
         assert cfg.report_html == "cli_report.html"
-        # CLI should set values not in ini
+        # CLI should set values not in pyproject
         assert cfg.llm_requests_per_minute == 100
 
     def test_load_from_cli_retries(self, mock_pytest_config):

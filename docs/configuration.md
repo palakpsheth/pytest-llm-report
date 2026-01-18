@@ -22,32 +22,29 @@ Complete configuration reference for pytest-llm-report.
 
 ## pyproject.toml Options
 
+Configure defaults in `pyproject.toml`:
+
 ```toml
-[tool.pytest.ini_options]
-# Output defaults
-llm_report_html = "reports/test-report.html"
-llm_report_json = "reports/test-report.json"
+[tool.pytest_llm_report]
+# LLM provider configuration
+provider = "ollama"              # Options: none, ollama, litellm, gemini
+model = "llama3.2"
+context_mode = "minimal"     # Options: minimal, balanced, complete
+requests_per_minute = 5
 
-# LLM provider (none, ollama, litellm, gemini)
-llm_report_provider = "none"
-llm_report_model = "llama3.2"
-llm_report_context_mode = "minimal"
-llm_report_requests_per_minute = 5
+# Execution limits
+max_tests = 50              # Limit number of tests to annotate (0 = no limit)
+max_concurrency = 1         # Max concurrent LLM requests
+max_retries = 10           # Max retries for transient errors
 
-# Limit number of tests to annotate (0 = no limit, default)
-# Set this to limit costs/time when running with many tests
-llm_max_tests = 50
-
-# Max number of concurrent LLM requests (default: 1)
-# Lower this if experiencing timeouts or system instability with local LLM
-llm_max_concurrency = 1
-
-# Maximum retries for transient errors (default: 10)
-llm_report_max_retries = 10
-
-# Tip: Local providers (like "ollama") skip rate limiting automatically
-# so you can increase concurrency to speed up annotations.
+# Coverage settings
+omit_tests_from_coverage = true
+include_phase = "run"           # Options: run, setup, teardown, all
 ```
+
+> [!TIP]
+> Local providers (like `ollama`) skip rate limiting automatically, so you can safely increase `llm_max_concurrency` to speed up annotations.
+
 
 ## LLM Provider Settings
 
@@ -58,8 +55,9 @@ No LLM calls. Reports are generated without annotations.
 ### Provider: ollama
 
 ```toml
-llm_report_provider = "ollama"
-llm_report_model = "llama3.2"
+[tool.pytest_llm_report]
+provider = "ollama"
+model = "llama3.2"
 ```
 
 Environment variables:
@@ -68,8 +66,9 @@ Environment variables:
 ### Provider: litellm
 
 ```toml
-llm_report_provider = "litellm"
-llm_report_model = "gpt-4o-mini"
+[tool.pytest_llm_report]
+provider = "litellm"
+model = "gpt-4o-mini"
 ```
 
 Environment variables depend on the model (e.g., `OPENAI_API_KEY`).
@@ -77,8 +76,9 @@ Environment variables depend on the model (e.g., `OPENAI_API_KEY`).
 ### Provider: gemini
 
 ```toml
-llm_report_provider = "gemini"
-llm_report_model = "gemini-1.5-flash-latest"
+[tool.pytest_llm_report]
+provider = "gemini"
+model = "gemini-1.5-flash-latest"
 ```
 
 Environment variables:

@@ -262,9 +262,9 @@ def get_default_config() -> Config:
 
 
 def load_config(config: "pytest.Config") -> Config:
-    """Load Config from pytest options and ini file.
+    """Load Config from pytest options and pyproject.toml [tool.pytest_llm_report].
 
-    CLI options take precedence over ini file options.
+    CLI options take precedence over pyproject.toml options.
 
     Args:
         config: pytest configuration object.
@@ -275,47 +275,136 @@ def load_config(config: "pytest.Config") -> Config:
     # Start with defaults
     cfg = Config()
 
-    # Load from ini (pyproject.toml [tool.pytest.ini_options])
-    if config.getini("llm_report_provider"):
-        cfg.provider = config.getini("llm_report_provider")
-    if config.getini("llm_report_model"):
-        cfg.model = config.getini("llm_report_model")
-    if config.getini("llm_report_context_mode"):
-        cfg.llm_context_mode = config.getini("llm_report_context_mode")
-    if config.getini("llm_report_requests_per_minute") is not None:
-        cfg.llm_requests_per_minute = config.getini("llm_report_requests_per_minute")
-    if config.getini("llm_report_html"):
-        cfg.report_html = config.getini("llm_report_html")
-    if config.getini("llm_report_json"):
-        cfg.report_json = config.getini("llm_report_json")
-    if config.getini("llm_report_max_retries") is not None:
+    # Load from pyproject.toml [tool.pytest_llm_report]
+    try:
+        import tomllib
+    except ImportError:
+        # Python < 3.11
         try:
-            cfg.llm_max_retries = int(config.getini("llm_report_max_retries"))
-        except (ValueError, TypeError):
-            pass
+            import tomli as tomllib  # type: ignore
+        except ImportError:
+            tomllib = None  # type: ignore
 
-    # Load LiteLLM-specific options from ini
-    str_options = [
-        "litellm_api_base",
-        "litellm_api_key",
-        "litellm_token_refresh_command",
-        "litellm_token_output_format",
-        "litellm_token_json_key",
-    ]
-    for option in str_options:
-        value = config.getini(f"llm_report_{option}")
-        if value:
-            setattr(cfg, option, value)
+    if tomllib:
+        pyproject_path = config.rootpath / "pyproject.toml"
+        if pyproject_path.exists():
+            try:
+                with open(pyproject_path, "rb") as f:
+                    pyproject_data = tomllib.load(f)
 
-    if config.getini("llm_report_litellm_token_refresh_interval") is not None:
-        try:
-            cfg.litellm_token_refresh_interval = int(
-                config.getini("llm_report_litellm_token_refresh_interval")
-            )
-        except (ValueError, TypeError):
-            pass
+                tool_config = pyproject_data.get("tool", {}).get(
+                    "pytest_llm_report", {}
+                )
 
-    # Override with CLI options
+                # Map configuration from [tool.pytest_llm_report] to Config
+                if "provider" in tool_config:
+                    cfg.provider = tool_config["provider"]
+                if "model" in tool_config:
+                    cfg.model = tool_config["model"]
+                if "ollama_host" in tool_config:
+                    cfg.ollama_host = tool_config["ollama_host"]
+
+                # LiteLLM-specific settings
+                if "litellm_api_base" in tool_config:
+                    cfg.litellm_api_base = tool_config["litellm_api_base"]
+                if "litellm_api_key" in tool_config:
+                    cfg.litellm_api_key = tool_config["litellm_api_key"]
+                if "litellm_token_refresh_command" in tool_config:
+                    cfg.litellm_token_refresh_command = tool_config[
+                        "litellm_token_refresh_command"
+                    ]
+                if "litellm_token_refresh_interval" in tool_config:
+                    cfg.litellm_token_refresh_interval = tool_config[
+                        "litellm_token_refresh_interval"
+                    ]
+                if "litellm_token_output_format" in tool_config:
+                    cfg.litellm_token_output_format = tool_config[
+                        "litellm_token_output_format"
+                    ]
+                if "litellm_token_json_key" in tool_config:
+                    cfg.litellm_token_json_key = tool_config["litellm_token_json_key"]
+
+                # LLM context controls
+                if "context_mode" in tool_config:
+                    cfg.llm_context_mode = tool_config["context_mode"]
+                if "context_bytes" in tool_config:
+                    cfg.llm_context_bytes = tool_config["context_bytes"]
+                if "context_file_limit" in tool_config:
+                    cfg.llm_context_file_limit = tool_config["context_file_limit"]
+                if "context_include_globs" in tool_config:
+                    cfg.llm_context_include_globs = tool_config["context_include_globs"]
+                if "context_exclude_globs" in tool_config:
+                    cfg.llm_context_exclude_globs = tool_config["context_exclude_globs"]
+
+                # LLM parameter handling
+                if "include_param_values" in tool_config:
+                    cfg.llm_include_param_values = tool_config["include_param_values"]
+                if "param_value_max_chars" in tool_config:
+                    cfg.llm_param_value_max_chars = tool_config["param_value_max_chars"]
+
+                # LLM execution controls
+                if "max_tests" in tool_config:
+                    cfg.llm_max_tests = tool_config["max_tests"]
+                if "max_concurrency" in tool_config:
+                    cfg.llm_max_concurrency = tool_config["max_concurrency"]
+                if "requests_per_minute" in tool_config:
+                    cfg.llm_requests_per_minute = tool_config["requests_per_minute"]
+                if "timeout_seconds" in tool_config:
+                    cfg.llm_timeout_seconds = tool_config["timeout_seconds"]
+                if "max_retries" in tool_config:
+                    cfg.llm_max_retries = tool_config["max_retries"]
+                if "cache_ttl_seconds" in tool_config:
+                    cfg.llm_cache_ttl_seconds = tool_config["cache_ttl_seconds"]
+                if "cache_dir" in tool_config:
+                    cfg.cache_dir = tool_config["cache_dir"]
+
+                # Coverage settings
+                if "omit_tests_from_coverage" in tool_config:
+                    cfg.omit_tests_from_coverage = tool_config[
+                        "omit_tests_from_coverage"
+                    ]
+                if "include_phase" in tool_config:
+                    cfg.include_phase = tool_config["include_phase"]
+
+                # Report behavior
+                if "report_collect_only" in tool_config:
+                    cfg.report_collect_only = tool_config["report_collect_only"]
+                if "capture_failed_output" in tool_config:
+                    cfg.capture_failed_output = tool_config["capture_failed_output"]
+                if "capture_output_max_chars" in tool_config:
+                    cfg.capture_output_max_chars = tool_config[
+                        "capture_output_max_chars"
+                    ]
+
+                # Invocation summary
+                if "include_pytest_invocation" in tool_config:
+                    cfg.include_pytest_invocation = tool_config[
+                        "include_pytest_invocation"
+                    ]
+                if "invocation_redact_patterns" in tool_config:
+                    cfg.invocation_redact_patterns = tool_config[
+                        "invocation_redact_patterns"
+                    ]
+
+                # Aggregation (less likely to be in config, but support it)
+                if "aggregate_policy" in tool_config:
+                    cfg.aggregate_policy = tool_config["aggregate_policy"]
+                if "aggregate_include_history" in tool_config:
+                    cfg.aggregate_include_history = tool_config[
+                        "aggregate_include_history"
+                    ]
+
+                # Compliance
+                if "metadata_file" in tool_config:
+                    cfg.metadata_file = tool_config["metadata_file"]
+                if "hmac_key_file" in tool_config:
+                    cfg.hmac_key_file = tool_config["hmac_key_file"]
+
+            except Exception:
+                # If pyproject.toml parsing fails, continue with defaults
+                pass
+
+    # Override with CLI options (CLI takes precedence)
     if config.option.llm_report_html:
         cfg.report_html = config.option.llm_report_html
     if config.option.llm_report_json:
