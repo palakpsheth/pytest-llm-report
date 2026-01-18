@@ -22,6 +22,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Improved LLM response parsing to handle JSON wrapped in markdown code fences (` ```json ... ``` `)
 
+## [0.2.0] - 2026-01-18
+
+### Added
+
+- **New LiteLLM Provider**: Support for LiteLLM as an LLM provider (`--llm-provider litellm`).
+- **Table of Contents**: Added a Table of Contents to the HTML report for better navigation.
+- **Grouped Tests**: HTML report now groups tests by file.
+
+### Changed
+
+- **[BREAKING] Standardized Configuration**: Renamed configuration properties in `pyproject.toml` and `pytest.ini` to remove the redundant `llm_` prefix.
+    - `llm_provider` -> `provider`
+    - `llm_model` -> `model`
+    - `llm_context_mode` -> `context_mode`
+    - `llm_timeout_seconds` -> `timeout_seconds`
+    - `llm_max_tests` -> `max_tests`
+    - `llm_omit_tests_from_coverage` -> `omit_tests_from_coverage`
+    - `llm_include_phase` -> `include_phase`
+    - `llm_max_concurrency` -> `max_concurrency`
+
+## [0.1.1] - 2026-01-14
+
+### Fixed
+
+- Fix broken documentation links in README.
+- Fix PyPI badge.
+
 ## [0.1.0] - 2026-01-07
 
 ### Added
