@@ -1,42 +1,111 @@
 # SPDX-License-Identifier: MIT
 """Example tests demonstrating various test statuses for the example report.
 
-This file is used to generate the example report with a variety of test outcomes.
+This file is used to generate the example report with a variety of test outcomes,
+source coverage, and LLM annotations.
 """
 
 import pytest
+from calculator import (
+    add,
+    divide,
+    factorial,
+    fibonacci,
+    is_even,
+    is_positive,
+    multiply,
+    subtract,
+)
 
 
-# Passed tests
+# Passed tests - Calculator operations
 class TestCalculator:
-    """Tests for a simple calculator."""
+    """Tests for basic calculator operations."""
 
     def test_addition(self):
         """Test that addition works correctly."""
-        assert 2 + 2 == 4
+        assert add(2, 2) == 4
+        assert add(-1, 1) == 0
+        assert add(0, 0) == 0
 
     def test_subtraction(self):
         """Test that subtraction works correctly."""
-        assert 10 - 3 == 7
+        assert subtract(10, 3) == 7
+        assert subtract(5, 5) == 0
+        assert subtract(0, 5) == -5
 
     def test_multiplication(self):
         """Test that multiplication works correctly."""
-        assert 6 * 7 == 42
+        assert multiply(6, 7) == 42
+        assert multiply(-2, 3) == -6
+        assert multiply(0, 100) == 0
+
+    def test_division(self):
+        """Test that division works correctly."""
+        assert divide(10, 2) == 5.0
+        assert divide(7, 2) == 3.5
+        assert divide(0, 5) == 0.0
+
+    def test_division_by_zero(self):
+        """Test that division by zero raises an error."""
+        with pytest.raises(ValueError, match="Cannot divide by zero"):
+            divide(10, 0)
 
 
-class TestStringOperations:
-    """Tests for string operations."""
+class TestNumberProperties:
+    """Tests for number property checks."""
 
-    def test_concatenation(self):
-        """Test string concatenation."""
-        assert "hello" + " " + "world" == "hello world"
+    def test_is_even(self):
+        """Test even number detection."""
+        assert is_even(2) is True
+        assert is_even(4) is True
+        assert is_even(0) is True
+        assert is_even(1) is False
+        assert is_even(-3) is False
 
-    def test_upper(self):
-        """Test string upper case conversion."""
-        assert "hello".upper() == "HELLO"
+    def test_is_positive(self):
+        """Test positive number detection."""
+        assert is_positive(1) is True
+        assert is_positive(100) is True
+        assert is_positive(0) is False
+        assert is_positive(-1) is False
 
 
-# Failed test
+class TestRecursiveFunctions:
+    """Tests for recursive mathematical functions."""
+
+    def test_fibonacci_base_cases(self):
+        """Test Fibonacci base cases."""
+        assert fibonacci(0) == 0
+        assert fibonacci(1) == 1
+
+    def test_fibonacci_sequence(self):
+        """Test Fibonacci sequence values."""
+        assert fibonacci(5) == 5
+        assert fibonacci(10) == 55
+
+    def test_fibonacci_negative_raises(self):
+        """Test that negative input raises an error."""
+        with pytest.raises(ValueError, match="n must be non-negative"):
+            fibonacci(-1)
+
+    def test_factorial_base_cases(self):
+        """Test factorial base cases."""
+        assert factorial(0) == 1
+        assert factorial(1) == 1
+
+    def test_factorial_values(self):
+        """Test factorial values."""
+        assert factorial(5) == 120
+        assert factorial(10) == 3628800
+
+    def test_factorial_negative_raises(self):
+        """Test that negative input raises an error."""
+        with pytest.raises(ValueError, match="n must be non-negative"):
+            factorial(-1)
+
+
+# Failed test - intentional failure for demo
 class TestFailures:
     """Tests that intentionally fail for demonstration."""
 
@@ -49,14 +118,14 @@ class TestFailures:
 class TestSkipped:
     """Tests that are skipped."""
 
-    @pytest.mark.skip(reason="Not implemented yet")
+    @pytest.mark.skip(reason="Feature not implemented yet")
     def test_not_implemented(self):
         """This feature is not implemented yet."""
         pass
 
-    @pytest.mark.skipif(True, reason="Skipped on all platforms for demo")
-    def test_platform_specific(self):
-        """Platform-specific test that is skipped."""
+    @pytest.mark.skipif(True, reason="Skipped for demonstration")
+    def test_conditionally_skipped(self):
+        """Conditionally skipped test."""
         pass
 
 
@@ -64,12 +133,12 @@ class TestSkipped:
 class TestExpectedFailures:
     """Tests that are expected to fail."""
 
-    @pytest.mark.xfail(reason="Known bug in external library")
+    @pytest.mark.xfail(reason="Known bug in edge case handling")
     def test_known_bug(self):
         """Test that fails due to a known bug."""
         raise AssertionError("Known bug")
 
-    @pytest.mark.xfail(reason="Expected to fail but passes - XPASS")
+    @pytest.mark.xfail(reason="Expected to fail but actually passes")
     def test_xpass_demo(self):
         """Test marked as xfail that actually passes (xpassed)."""
         assert True
@@ -94,20 +163,23 @@ class TestParameterized:
             (1, 1, 2),
             (2, 3, 5),
             (10, 20, 30),
+            (-5, 5, 0),
         ],
     )
     def test_add_numbers(self, a, b, expected):
         """Test addition with various inputs."""
-        assert a + b == expected
+        assert add(a, b) == expected
 
     @pytest.mark.parametrize(
-        "value,expected",
+        "n,expected",
         [
-            ("hello", 5),
-            ("world", 5),
-            ("python", 6),
+            (0, True),
+            (1, False),
+            (2, True),
+            (100, True),
+            (-4, True),
         ],
     )
-    def test_string_length(self, value, expected):
-        """Test string length calculation."""
-        assert len(value) == expected
+    def test_is_even_parametrized(self, n, expected):
+        """Test is_even with various inputs."""
+        assert is_even(n) == expected
