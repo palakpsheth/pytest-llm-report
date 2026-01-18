@@ -111,17 +111,16 @@ jobs:
       - name: Install Playwright browsers
         run: uv run playwright install chromium
 
-      # Ollama setup (Main branch only)
       - name: Install Ollama
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' && matrix.python-version == '3.12'
         run: curl -fsSL https://ollama.com/install.sh | sh
 
       - name: Start Ollama
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' && matrix.python-version == '3.12'
         run: ollama serve &
 
       - name: Pull LLM Model
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' && matrix.python-version == '3.12'
         run: |
           sleep 5
           ollama pull llama3.2:1b
@@ -130,31 +129,32 @@ jobs:
         id: pytest
         continue-on-error: true
         run: |
+          set +e  # Disable immediate exit on error so we can capture exit codes
           mkdir -p reports
+          html_report="reports/pytest_llm_report-py${{ matrix.python-version }}.html"
           json_report="reports/pytest_llm_report-py${{ matrix.python-version }}.json"
           pdf_report="reports/pytest_llm_report-py${{ matrix.python-version }}.pdf"
+          llm_provider="none"
           llm_args=()
-
-          # Use Ollama on main branch for Python 3.12
           if [ "${{ matrix.python-version }}" = "3.12" ] && [ "${{ github.ref }}" = "refs/heads/main" ]; then
-             llm_args+=(
-              --llm-provider=ollama
-              -o llm_report_model=llama3.2:1b
-              -o llm_report_context_mode=minimal
+            llm_provider="ollama"
+            llm_args+=(
+              --llm-model=llama3.2:1b
+              --llm-context-mode=minimal
             )
           fi
-
-          uv run coverage run -m pytest \
-            -o "addopts=" \
-            -p no:pytest-cov \
-            -o llm_report_context_mode=complete \
+          uv run pytest tests \
+            -o "addopts=--cov=src/pytest_llm_report --cov-branch --cov-context=test --cov-report=" \
+            --llm-provider="${llm_provider}" \
+            --llm-report="${html_report}" \
             --llm-report-json="${json_report}" \
             --llm-pdf="${pdf_report}" \
+            --llm-aggregate-run-id="${{ github.run_id }}-py${{ matrix.python-version }}" \
             "${llm_args[@]}"
           test_exit_code=$?
 
           uv run coverage xml
-          uv run coverage report --fail-under=90
+          uv run coverage report
           cov_exit_code=$?
 
           if [ $test_exit_code -ne 0 ]; then
@@ -173,16 +173,23 @@ jobs:
         if: matrix.python-version == '3.12'
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.xml
+          disable_search: true
           fail_ci_if_error: false
 
+      - name: Prepare coverage artifact
+        if: matrix.python-version == '3.12'
+        run: cp .coverage reports/coverage.py3.12
+
       - name: Upload report artifact
-        uses: actions/upload-artifact@v4
-        if: always()
+        if: matrix.python-version == '3.12'
+        uses: actions/upload-artifact@v6
         with:
           name: report-py${{ matrix.python-version }}
           path: |
             reports/pytest_llm_report-py${{ matrix.python-version }}.json
             reports/pytest_llm_report-py${{ matrix.python-version }}.pdf
+            reports/coverage.py${{ matrix.python-version }}
           retention-days: 7
 
       - name: Fail if tests failed
@@ -193,10 +200,124 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: astral-sh/setup-uv@v7
-      - run: uv sync
-      - run: uv run ruff check .
-      - run: uv run ruff format --check .
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Lint
+        run: uv run ruff check .
+
+      - name: Format check
+        run: uv run ruff format --check .
+
+  # Aggregate reports and deploy to GitHub Pages (main branch only)
+  # This job builds both docs AND test reports to avoid overwriting each other
+  report:
+    needs: test
+    runs-on: ubuntu-latest
+    # Run on main push OR pull request
+    if: always() && ((github.ref == 'refs/heads/main' && github.event_name == 'push') || github.event_name == 'pull_request')
+    permissions:
+      contents: write  # Required to push to gh-pages branch
+      pull-requests: write # Required to post comments
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Build docs
+        run: uv tool run --from mkdocs-material --with mkdocs-git-revision-date-localized-plugin mkdocs build
+
+      - name: Download all report artifacts
+        uses: actions/download-artifact@v7
+        with:
+          pattern: report-py*
+          path: collected-reports/
+          merge-multiple: true
+
+      - name: Debug - List collected reports
+        run: ls -R collected-reports/
+
+      - name: Generate aggregated report
+        run: |
+          mkdir -p site/reports
+          uv run pytest --collect-only -q \
+            --llm-aggregate-dir=collected-reports/ \
+            --llm-aggregate-policy=merge \
+            --llm-report=site/reports/index.html \
+            --llm-report-json=site/reports/latest.json \
+            --llm-coverage-source=collected-reports/coverage.py3.12
+
+      - name: Copy latest PDF report
+        run: |
+          mkdir -p site/reports
+          if [ -f "collected-reports/pytest_llm_report-py3.12.pdf" ]; then
+            cp "collected-reports/pytest_llm_report-py3.12.pdf" "site/reports/latest.pdf"
+          fi
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: site
+          # Clean only if main, but exclude PR folders
+          clean: ${{ github.ref == 'refs/heads/main' }}
+          clean-exclude: |
+            pr-*
+          # Target folder: root for main (empty = root), 'pr-{id}' for PRs
+          target-folder: ${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.number) || '' }}
+
+      - name: Post Report Link to PR
+        uses: actions/github-script@v8
+        if: github.event_name == 'pull_request'
+        with:
+          script: |
+            const prNumber = context.issue.number;
+            const repo = context.repo.owner + "/" + context.repo.repo;
+            const baseUrl = `https://${context.repo.owner}.github.io/${context.repo.repo}/pr-${prNumber}`;
+            const reportUrl = `${baseUrl}/reports/`;
+
+            const body = `<!-- pytest-llm-report-link -->
+            ## 📊 Test Report & Docs Ready
+
+            Preview the documentation and test results for this PR:
+
+            * 📘 **[Documentation Preview](${baseUrl}/)**
+            * result **[Interactive Test Report](${reportUrl})**
+            `;
+
+            // Find existing comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+            });
+
+            const botComment = comments.find(c => c.body.includes('<!-- pytest-llm-report-link -->'));
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: body
+              });
+            }
 
   publish:
     needs: [test, lint]
@@ -207,9 +328,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
-      - uses: astral-sh/setup-uv@v7
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
       - name: Build
         run: uv build
+
       - name: Publish to PyPI
         run: uv publish
         env:

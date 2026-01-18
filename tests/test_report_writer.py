@@ -4,6 +4,7 @@
 from datetime import UTC, datetime
 from pathlib import Path
 
+from pytest_llm_report.__about__ import __version__
 from pytest_llm_report.errors import WarningCode
 from pytest_llm_report.models import CoverageEntry, SourceCoverageEntry, TestCaseResult
 from pytest_llm_report.options import Config
@@ -105,7 +106,7 @@ class TestReportWriter:
 
         assert meta.duration == 60.0
         assert meta.pytest_version  # Should have a value
-        assert meta.plugin_version == "0.2.0"
+        assert meta.plugin_version == __version__
         assert meta.python_version
 
     def test_write_report_assembles_tests(self):
