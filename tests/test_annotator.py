@@ -178,3 +178,164 @@ class TestAnnotateTests:
         captured = capsys.readouterr()
         assert "1 error(s)" in captured.out
         assert "First error: fail" in captured.out
+
+    def test_respects_opt_out_and_limit(
+        self, mock_provider: MagicMock, mock_cache: MagicMock, mock_assembler: MagicMock
+    ):
+        """LLM annotations should skip opt-out tests and respect max tests."""
+        config = Config(provider="ollama", llm_max_tests=1)
+        tests = [
+            TestCaseResult(nodeid="tests/test_a.py::test_a", outcome="passed"),
+            TestCaseResult(
+                nodeid="tests/test_b.py::test_b", outcome="passed", llm_opt_out=True
+            ),
+            TestCaseResult(nodeid="tests/test_c.py::test_c", outcome="passed"),
+        ]
+
+        annotate_tests(tests, config)
+
+        assert mock_provider.annotate.call_count == 1
+        assert tests[0].llm_annotation is not None
+        assert tests[1].llm_annotation is None  # Opted out
+        assert tests[2].llm_annotation is None  # Beyond limit
+
+    def test_respects_rate_limit(
+        self,
+        mock_provider: MagicMock,
+        mock_cache: MagicMock,
+        mock_assembler: MagicMock,
+        monkeypatch: pytest.MonkeyPatch,
+    ):
+        """LLM annotations should respect the requests-per-minute rate limit."""
+        from types import SimpleNamespace
+
+        config = Config(
+            provider="litellm",
+            llm_requests_per_minute=60,
+        )
+        tests = [
+            TestCaseResult(nodeid="tests/test_a.py::test_a", outcome="passed"),
+            TestCaseResult(nodeid="tests/test_b.py::test_b", outcome="passed"),
+        ]
+        mock_provider.get_rate_limits.return_value = SimpleNamespace(
+            requests_per_minute=30
+        )
+        sleep_calls: list[float] = []
+        times = iter([0.0, 0.0, 2.0])
+
+        monkeypatch.setattr(
+            "pytest_llm_report.llm.annotator.time.monotonic", lambda: next(times)
+        )
+        monkeypatch.setattr(
+            "pytest_llm_report.llm.annotator.time.sleep", sleep_calls.append
+        )
+
+        annotate_tests(tests, config)
+
+        assert mock_provider.annotate.call_count == 2
+        assert sleep_calls == [2.0]
+
+    def test_reports_progress_messages(
+        self,
+        mock_provider: MagicMock,
+        mock_cache: MagicMock,
+        mock_assembler: MagicMock,
+    ):
+        """LLM annotation progress should be reported via callback."""
+        config = Config(provider="litellm")
+        test = TestCaseResult(
+            nodeid="tests/test_progress.py::test_case", outcome="passed"
+        )
+        messages: list[str] = []
+
+        annotate_tests([test], config, progress=messages.append)
+
+        assert (
+            messages[0] == "pytest-llm-report: Starting LLM annotations for 1 test(s)"
+        )
+        assert "LLM annotation 1/1" in messages[1]
+        assert "tests/test_progress.py::test_case" in messages[1]
+
+    def test_cached_progress_reporting(
+        self,
+        mock_provider: MagicMock,
+        mock_cache: MagicMock,
+        mock_assembler: MagicMock,
+    ):
+        """Should report progress for cached tests."""
+        cached_annotation = LlmAnnotation(scenario="cached")
+        mock_cache.get.return_value = cached_annotation
+
+        config = Config(provider="ollama")
+        test = TestCaseResult(nodeid="test_cached", outcome="passed")
+        progress_msgs: list[str] = []
+
+        annotate_tests([test], config, progress=progress_msgs.append)
+
+        assert any("(cache): test_cached" in m for m in progress_msgs)
+
+    def test_batch_optimization_message(
+        self,
+        mock_provider: MagicMock,
+        mock_cache: MagicMock,
+        mock_assembler: MagicMock,
+        monkeypatch: pytest.MonkeyPatch,
+    ):
+        """Should report optimization message when tests are batched."""
+        from pytest_llm_report.llm import batching
+
+        # Create parametrized test to trigger batching
+        config = Config(
+            provider="ollama", batch_parametrized_tests=True, llm_max_concurrency=1
+        )
+        tests = [
+            TestCaseResult(nodeid="tests/test_foo.py::test_x[a]", outcome="passed"),
+            TestCaseResult(nodeid="tests/test_foo.py::test_x[b]", outcome="passed"),
+        ]
+        progress_msgs: list[str] = []
+
+        # Mock batching to return a BatchedRequest
+        mock_batch = batching.BatchedRequest(
+            tests=tests,
+            base_nodeid="tests/test_foo.py::test_x",
+            source_hash="abc123",
+        )
+
+        monkeypatch.setattr(
+            batching, "group_tests_for_batching", lambda tests, cfg, fn: [mock_batch]
+        )
+        monkeypatch.setattr(
+            batching, "build_batch_prompt", lambda g, s, c: "batched prompt"
+        )
+
+        annotate_tests(tests, config, progress=progress_msgs.append)
+
+        assert any("Optimization" in m and "grouped" in m for m in progress_msgs)
+
+    def test_sequential_annotation_error_tracking(
+        self,
+        mock_provider: MagicMock,
+        mock_cache: MagicMock,
+        mock_assembler: MagicMock,
+    ):
+        """Should track first error in sequential annotation."""
+        mock_provider.annotate.side_effect = [
+            LlmAnnotation(scenario="ok", why_needed="test", key_assertions=[]),
+            LlmAnnotation(error="First error"),
+            LlmAnnotation(error="Second error"),
+        ]
+
+        config = Config(provider="ollama", llm_max_concurrency=1)
+        tests = [
+            TestCaseResult(nodeid="t1", outcome="passed"),
+            TestCaseResult(nodeid="t2", outcome="passed"),
+            TestCaseResult(nodeid="t3", outcome="passed"),
+        ]
+
+        annotate_tests(tests, config)
+
+        # First test should have annotation
+        assert tests[0].llm_annotation.scenario == "ok"
+        # Others should have errors
+        assert tests[1].llm_annotation.error == "First error"
+        assert tests[2].llm_annotation.error == "Second error"

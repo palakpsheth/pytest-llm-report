@@ -525,3 +525,112 @@ class TestCliOverrides:
         mock.option.llm_dependency_snapshot = "deps.json"
         cfg = load_config(mock)
         assert cfg.report_dependency_snapshot == "deps.json"
+
+
+class TestValidationCoverageExtended:
+    """Additional validation tests for uncovered branches."""
+
+    def test_validate_invalid_prompt_tier(self):
+        """Test validation with invalid prompt_tier."""
+        cfg = Config(prompt_tier="extra_verbose")
+        errors = cfg.validate()
+        assert any("Invalid prompt_tier" in e for e in errors)
+
+    def test_validate_invalid_context_compression(self):
+        """Test validation with invalid context_compression."""
+        cfg = Config(context_compression="gzip")
+        errors = cfg.validate()
+        assert any("Invalid context_compression" in e for e in errors)
+
+    def test_validate_batch_max_tests_too_small(self):
+        """Test validation with batch_max_tests < 1."""
+        cfg = Config(batch_max_tests=0)
+        errors = cfg.validate()
+        assert any("batch_max_tests must be at least 1" in e for e in errors)
+
+    def test_validate_context_line_padding_negative(self):
+        """Test validation with negative context_line_padding."""
+        cfg = Config(context_line_padding=-1)
+        errors = cfg.validate()
+        assert any("context_line_padding must be 0 or positive" in e for e in errors)
+
+
+class TestPyprojectTokenOptimization:
+    """Tests for token optimization config loading from pyproject.toml."""
+
+    def _make_mock_config(self, tmp_path):
+        """Create a mock pytest config for testing."""
+        mock = MagicMock()
+        for attr in [
+            "llm_report_html",
+            "llm_report_json",
+            "llm_report_pdf",
+            "llm_evidence_bundle",
+            "llm_dependency_snapshot",
+            "llm_requests_per_minute",
+            "llm_aggregate_dir",
+            "llm_aggregate_policy",
+            "llm_aggregate_run_id",
+            "llm_aggregate_group_id",
+            "llm_coverage_source",
+            "llm_max_retries",
+            "llm_provider",
+            "llm_model",
+            "llm_context_mode",
+            "llm_prompt_tier",
+            "llm_batch_parametrized",
+            "llm_context_compression",
+        ]:
+            setattr(mock.option, attr, None)
+        mock.rootpath = tmp_path
+        return mock
+
+    def test_load_prompt_tier(self, tmp_path):
+        """Test loading prompt_tier from pyproject.toml."""
+        pyproject = tmp_path / "pyproject.toml"
+        pyproject.write_text("""
+[tool.pytest_llm_report]
+prompt_tier = "minimal"
+""")
+        cfg = load_config(self._make_mock_config(tmp_path))
+        assert cfg.prompt_tier == "minimal"
+
+    def test_load_batch_parametrized_tests(self, tmp_path):
+        """Test loading batch_parametrized_tests from pyproject.toml."""
+        pyproject = tmp_path / "pyproject.toml"
+        pyproject.write_text("""
+[tool.pytest_llm_report]
+batch_parametrized_tests = false
+""")
+        cfg = load_config(self._make_mock_config(tmp_path))
+        assert cfg.batch_parametrized_tests is False
+
+    def test_load_batch_max_tests(self, tmp_path):
+        """Test loading batch_max_tests from pyproject.toml."""
+        pyproject = tmp_path / "pyproject.toml"
+        pyproject.write_text("""
+[tool.pytest_llm_report]
+batch_max_tests = 10
+""")
+        cfg = load_config(self._make_mock_config(tmp_path))
+        assert cfg.batch_max_tests == 10
+
+    def test_load_context_compression(self, tmp_path):
+        """Test loading context_compression from pyproject.toml."""
+        pyproject = tmp_path / "pyproject.toml"
+        pyproject.write_text("""
+[tool.pytest_llm_report]
+context_compression = "none"
+""")
+        cfg = load_config(self._make_mock_config(tmp_path))
+        assert cfg.context_compression == "none"
+
+    def test_load_context_line_padding(self, tmp_path):
+        """Test loading context_line_padding from pyproject.toml."""
+        pyproject = tmp_path / "pyproject.toml"
+        pyproject.write_text("""
+[tool.pytest_llm_report]
+context_line_padding = 5
+""")
+        cfg = load_config(self._make_mock_config(tmp_path))
+        assert cfg.context_line_padding == 5

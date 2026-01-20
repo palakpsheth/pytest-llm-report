@@ -22,11 +22,31 @@ class TestConfig:
         assert cfg.include_phase == "run"
         assert cfg.aggregate_policy == "latest"
         assert cfg.is_llm_enabled() is False
+        assert cfg.omit_tests_from_coverage is True
+
+    def test_default_exclude_globs(self):
+        """Should have correct default exclude globs."""
+        config = Config()
+        defaults = config.llm_context_exclude_globs
+        assert "*.pyc" in defaults
+        assert "__pycache__/*" in defaults
+        assert "*secret*" in defaults
+        assert "*password*" in defaults
+
+    def test_default_redact_patterns(self):
+        """Should have correct default redact patterns."""
+        config = Config()
+        patterns = config.invocation_redact_patterns
+        assert any("--password" in p for p in patterns)
+        assert any("--token" in p for p in patterns)
+        assert any("--api[_-]?key" in p for p in patterns)
 
     def test_is_llm_enabled(self):
         """Test is_llm_enabled check."""
         assert Config(provider="none").is_llm_enabled() is False
         assert Config(provider="ollama").is_llm_enabled() is True
+        assert Config(provider="litellm").is_llm_enabled() is True
+        assert Config(provider="gemini").is_llm_enabled() is True
         cfg = Config()
         assert not cfg.is_llm_enabled()
         cfg.provider = "ollama"
