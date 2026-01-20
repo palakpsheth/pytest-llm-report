@@ -898,17 +898,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#release-checklist" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Release Checklist
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#verification" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1063,7 +1052,7 @@
 <a id="__codelineno-5-67" name="__codelineno-5-67" href="#__codelineno-5-67"></a><span class="w">            </span><span class="no">)</span>
 <a id="__codelineno-5-68" name="__codelineno-5-68" href="#__codelineno-5-68"></a><span class="w">          </span><span class="no">fi</span>
 <a id="__codelineno-5-69" name="__codelineno-5-69" href="#__codelineno-5-69"></a><span class="w">          </span><span class="no">uv run pytest tests \</span>
-<a id="__codelineno-5-70" name="__codelineno-5-70" href="#__codelineno-5-70"></a><span class="w">            </span><span class="no">-o &quot;addopts=--cov=src/pytest_llm_report --cov-branch --cov-context=test --cov-report=&quot; \</span>
+<a id="__codelineno-5-70" name="__codelineno-5-70" href="#__codelineno-5-70"></a><span class="w">            </span><span class="no">-o &quot;addopts=--cov=src/pytest_llm_report --cov-context=test --cov-report=&quot; \</span>
 <a id="__codelineno-5-71" name="__codelineno-5-71" href="#__codelineno-5-71"></a><span class="w">            </span><span class="no">--llm-provider=&quot;${llm_provider}&quot; \</span>
 <a id="__codelineno-5-72" name="__codelineno-5-72" href="#__codelineno-5-72"></a><span class="w">            </span><span class="no">--llm-report=&quot;${html_report}&quot; \</span>
 <a id="__codelineno-5-73" name="__codelineno-5-73" href="#__codelineno-5-73"></a><span class="w">            </span><span class="no">--llm-report-json=&quot;${json_report}&quot; \</span>
@@ -1261,30 +1250,33 @@
 </code></pre></div>
 <h2 id="version-management">Version Management</h2>
 <p>Update version in <code>src/pytest_llm_report/__about__.py</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">__version__</span> <span class="o">=</span> <span class="s2">&quot;0.1.0&quot;</span>
-</code></pre></div>
-<h2 id="release-checklist">Release Checklist</h2>
+<p><code>python
+-__version__ = "0.1.0"
++__version__ = "0.2.0"</code></p>
+<p>## Release Checklist</p>
 <ol>
 <li>[ ] Update version in <code>__about__.py</code></li>
 <li>[ ] Update CHANGELOG.md</li>
 <li>[ ] Run full test suite: <code>uv run pytest</code></li>
 <li>[ ] Check lint: <code>uv run ruff check .</code></li>
 <li>[ ] Build: <code>uv build</code></li>
-<li>[ ] Test install: <code>pip install dist/*.whl</code></li>
-<li>[ ] Create git tag: <code>git tag v0.1.0</code></li>
-<li>[ ] Push tag: <code>git push origin v0.1.0</code></li>
+<li>[ ] Test install: <code>pip install dist/*.whl</code>
+-7. [ ] Create git tag: <code>git tag v0.1.0</code>
+-8. [ ] Push tag: <code>git push origin v0.1.0</code>
++7. [ ] Create git tag: <code>git tag v0.2.0</code>
++8. [ ] Push tag: <code>git push origin v0.2.0</code></li>
 <li>[ ] Create GitHub release</li>
 </ol>
 <h2 id="verification">Verification</h2>
 <p>After publishing:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Install from PyPI</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>pip<span class="w"> </span>install<span class="w"> </span>pytest-llm-report
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># Verify installation</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import pytest_llm_report; print(pytest_llm_report.__version__)&quot;</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="c1"># Test in a project</span>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>pytest<span class="w"> </span>--llm-report<span class="o">=</span>report.html
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Install from PyPI</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>pip<span class="w"> </span>install<span class="w"> </span>pytest-llm-report
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># Verify installation</span>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import pytest_llm_report; print(pytest_llm_report.__version__)&quot;</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1"># Test in a project</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>pytest<span class="w"> </span>--llm-report<span class="o">=</span>report.html
 </code></pre></div>
 
 
@@ -1308,7 +1300,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="January 18, 2026 21:17:19 UTC"><span class="timeago" datetime="2026-01-18T21:17:19+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="January 18, 2026 21:17:19 UTC">2026-01-18</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="January 18, 2026 23:08:39 UTC"><span class="timeago" datetime="2026-01-18T23:08:39+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="January 18, 2026 23:08:39 UTC">2026-01-18</span>
   </span>
 
     
@@ -1318,7 +1310,7 @@
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="January 18, 2026 21:17:19 UTC"><span class="timeago" datetime="2026-01-18T21:17:19+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="January 18, 2026 21:17:19 UTC">2026-01-18</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="January 18, 2026 23:08:39 UTC"><span class="timeago" datetime="2026-01-18T23:08:39+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="January 18, 2026 23:08:39 UTC">2026-01-18</span>
   </span>
 
     
