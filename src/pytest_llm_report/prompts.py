@@ -165,6 +165,15 @@ class ContextAssembler:
 
             try:
                 full_content = file_path.read_text()
+
+                # Apply docstring stripping if enabled
+                if getattr(self.config, "llm_strip_docstrings", True):
+                    from pytest_llm_report.context_util import optimize_context
+
+                    full_content = optimize_context(
+                        full_content, strip_docs=True, strip_comms=False
+                    )
+
                 lines = full_content.split("\n")
 
                 # Apply compression if enabled and we have line range info

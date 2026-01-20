@@ -164,6 +164,156 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         help="Context compression mode (none, lines). Default: lines",
     )
 
+    # Context controls
+    group.addoption(
+        "--llm-context-bytes",
+        dest="llm_context_bytes",
+        type=int,
+        default=None,
+        help="Maximum bytes for context window (default: 32000)",
+    )
+    group.addoption(
+        "--llm-context-file-limit",
+        dest="llm_context_file_limit",
+        type=int,
+        default=None,
+        help="Maximum number of files in context (default: 10)",
+    )
+
+    # Execution controls
+    group.addoption(
+        "--llm-max-tests",
+        dest="llm_max_tests",
+        type=int,
+        default=None,
+        help="Maximum tests to annotate, 0=unlimited (default: 0)",
+    )
+    group.addoption(
+        "--llm-max-concurrency",
+        dest="llm_max_concurrency",
+        type=int,
+        default=None,
+        help="Maximum concurrent LLM requests (default: 1)",
+    )
+    group.addoption(
+        "--llm-timeout-seconds",
+        dest="llm_timeout_seconds",
+        type=int,
+        default=None,
+        help="Timeout for LLM requests in seconds (default: 30)",
+    )
+
+    # Behavior controls
+    group.addoption(
+        "--llm-capture-failed",
+        dest="llm_capture_failed",
+        action="store_true",
+        default=None,
+        help="Capture stdout/stderr for failed tests (default: enabled)",
+    )
+    group.addoption(
+        "--llm-no-capture-failed",
+        dest="llm_capture_failed",
+        action="store_false",
+        help="Disable capturing failed test output",
+    )
+
+    # Provider-specific options
+    group.addoption(
+        "--llm-ollama-host",
+        dest="llm_ollama_host",
+        default=None,
+        help="Ollama server URL (default: http://127.0.0.1:11434)",
+    )
+    group.addoption(
+        "--llm-litellm-api-base",
+        dest="llm_litellm_api_base",
+        default=None,
+        help="LiteLLM API base URL for proxy",
+    )
+    group.addoption(
+        "--llm-litellm-api-key",
+        dest="llm_litellm_api_key",
+        default=None,
+        help="LiteLLM API key override",
+    )
+    group.addoption(
+        "--llm-litellm-token-refresh-command",
+        dest="llm_litellm_token_refresh_command",
+        default=None,
+        help="Command to fetch fresh auth token",
+    )
+    group.addoption(
+        "--llm-litellm-token-refresh-interval",
+        dest="llm_litellm_token_refresh_interval",
+        type=int,
+        default=None,
+        help="Token refresh interval in seconds (default: 3300)",
+    )
+    group.addoption(
+        "--llm-litellm-token-output-format",
+        dest="llm_litellm_token_output_format",
+        default=None,
+        help="Token command output format: text or json (default: text)",
+    )
+    group.addoption(
+        "--llm-litellm-token-json-key",
+        dest="llm_litellm_token_json_key",
+        default=None,
+        help="JSON key for token extraction (default: token)",
+    )
+
+    # Maintenance options
+    group.addoption(
+        "--llm-cache-dir",
+        dest="llm_cache_dir",
+        default=None,
+        help="Directory for LLM cache (default: .pytest_llm_cache)",
+    )
+    group.addoption(
+        "--llm-cache-ttl",
+        dest="llm_cache_ttl",
+        type=int,
+        default=None,
+        help="Cache TTL in seconds (default: 86400)",
+    )
+
+    # Metadata options
+    group.addoption(
+        "--llm-metadata-file",
+        dest="llm_metadata_file",
+        default=None,
+        help="Path to custom metadata JSON/YAML file",
+    )
+    group.addoption(
+        "--llm-hmac-key-file",
+        dest="llm_hmac_key_file",
+        default=None,
+        help="Path to HMAC key file for signatures",
+    )
+
+    # Content optimization options
+    group.addoption(
+        "--llm-include-params",
+        dest="llm_include_params",
+        action="store_true",
+        default=None,
+        help="Include test parameter values in context",
+    )
+    group.addoption(
+        "--llm-strip-docstrings",
+        dest="llm_strip_docstrings",
+        action="store_true",
+        default=None,
+        help="Strip docstrings from context (default: enabled)",
+    )
+    group.addoption(
+        "--llm-no-strip-docstrings",
+        dest="llm_strip_docstrings",
+        action="store_false",
+        help="Disable docstring stripping",
+    )
+
 
 def pytest_configure(config: pytest.Config) -> None:
     """Configure the plugin.

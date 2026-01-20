@@ -72,10 +72,10 @@ class TestCollectorMarkerExtraction:
 class TestCollectorOutputCapture:
     """Tests for output capture in collector."""
 
-    def test_capture_disabled_by_default(self):
-        """Output capture should be disabled by default."""
+    def test_capture_enabled_by_default(self):
+        """Output capture should be enabled by default."""
         config = Config()
-        assert config.capture_failed_output is False
+        assert config.capture_failed_output is True
 
     def test_capture_max_chars_default(self):
         """Default max chars should be 4000."""

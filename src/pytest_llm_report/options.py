@@ -161,8 +161,9 @@ class Config:
 
     # Report behavior
     report_collect_only: bool = True
-    capture_failed_output: bool = False
+    capture_failed_output: bool = True  # Changed from False to True
     capture_output_max_chars: int = 4000
+    llm_strip_docstrings: bool = True  # New: strip docstrings by default
 
     # Invocation summary
     include_pytest_invocation: bool = True
@@ -492,6 +493,107 @@ def load_config(config: "pytest.Config") -> Config:
         cfg.llm_requests_per_minute = config.option.llm_requests_per_minute
     if config.option.llm_max_retries is not None:
         cfg.llm_max_retries = config.option.llm_max_retries
+
+    # Context controls
+    if (
+        hasattr(config.option, "llm_context_bytes")
+        and config.option.llm_context_bytes is not None
+    ):
+        cfg.llm_context_bytes = config.option.llm_context_bytes
+    if (
+        hasattr(config.option, "llm_context_file_limit")
+        and config.option.llm_context_file_limit is not None
+    ):
+        cfg.llm_context_file_limit = config.option.llm_context_file_limit
+
+    # Execution controls
+    if (
+        hasattr(config.option, "llm_max_tests")
+        and config.option.llm_max_tests is not None
+    ):
+        cfg.llm_max_tests = config.option.llm_max_tests
+    if (
+        hasattr(config.option, "llm_max_concurrency")
+        and config.option.llm_max_concurrency is not None
+    ):
+        cfg.llm_max_concurrency = config.option.llm_max_concurrency
+    if (
+        hasattr(config.option, "llm_timeout_seconds")
+        and config.option.llm_timeout_seconds is not None
+    ):
+        cfg.llm_timeout_seconds = config.option.llm_timeout_seconds
+
+    # Behavior controls
+    if (
+        hasattr(config.option, "llm_capture_failed")
+        and config.option.llm_capture_failed is not None
+    ):
+        cfg.capture_failed_output = config.option.llm_capture_failed
+
+    # Provider-specific options
+    if hasattr(config.option, "llm_ollama_host") and config.option.llm_ollama_host:
+        cfg.ollama_host = config.option.llm_ollama_host
+    if (
+        hasattr(config.option, "llm_litellm_api_base")
+        and config.option.llm_litellm_api_base
+    ):
+        cfg.litellm_api_base = config.option.llm_litellm_api_base
+    if (
+        hasattr(config.option, "llm_litellm_api_key")
+        and config.option.llm_litellm_api_key
+    ):
+        cfg.litellm_api_key = config.option.llm_litellm_api_key
+    if (
+        hasattr(config.option, "llm_litellm_token_refresh_command")
+        and config.option.llm_litellm_token_refresh_command
+    ):
+        cfg.litellm_token_refresh_command = (
+            config.option.llm_litellm_token_refresh_command
+        )
+    if (
+        hasattr(config.option, "llm_litellm_token_refresh_interval")
+        and config.option.llm_litellm_token_refresh_interval is not None
+    ):
+        cfg.litellm_token_refresh_interval = (
+            config.option.llm_litellm_token_refresh_interval
+        )
+    if (
+        hasattr(config.option, "llm_litellm_token_output_format")
+        and config.option.llm_litellm_token_output_format
+    ):
+        cfg.litellm_token_output_format = config.option.llm_litellm_token_output_format
+    if (
+        hasattr(config.option, "llm_litellm_token_json_key")
+        and config.option.llm_litellm_token_json_key
+    ):
+        cfg.litellm_token_json_key = config.option.llm_litellm_token_json_key
+
+    # Maintenance options
+    if hasattr(config.option, "llm_cache_dir") and config.option.llm_cache_dir:
+        cfg.cache_dir = config.option.llm_cache_dir
+    if (
+        hasattr(config.option, "llm_cache_ttl")
+        and config.option.llm_cache_ttl is not None
+    ):
+        cfg.llm_cache_ttl_seconds = config.option.llm_cache_ttl
+
+    # Metadata options
+    if hasattr(config.option, "llm_metadata_file") and config.option.llm_metadata_file:
+        cfg.metadata_file = config.option.llm_metadata_file
+    if hasattr(config.option, "llm_hmac_key_file") and config.option.llm_hmac_key_file:
+        cfg.hmac_key_file = config.option.llm_hmac_key_file
+
+    # Content optimization options
+    if (
+        hasattr(config.option, "llm_include_params")
+        and config.option.llm_include_params is not None
+    ):
+        cfg.llm_include_param_values = config.option.llm_include_params
+    if (
+        hasattr(config.option, "llm_strip_docstrings")
+        and config.option.llm_strip_docstrings is not None
+    ):
+        cfg.llm_strip_docstrings = config.option.llm_strip_docstrings
 
     # Aggregation options
     if config.option.llm_aggregate_dir:

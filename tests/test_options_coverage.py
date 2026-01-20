@@ -32,10 +32,33 @@ class TestPyprojectLoadingCoverage:
             "llm_aggregate_group_id",
             "llm_coverage_source",
             "llm_max_retries",
-            # New Core CLI Flags
+            # Core CLI Flags
             "llm_provider",
             "llm_model",
             "llm_context_mode",
+            # New CLI options from our changes
+            "llm_context_bytes",
+            "llm_context_file_limit",
+            "llm_max_tests",
+            "llm_max_concurrency",
+            "llm_timeout_seconds",
+            "llm_capture_failed",
+            "llm_ollama_host",
+            "llm_litellm_api_base",
+            "llm_litellm_api_key",
+            "llm_litellm_token_refresh_command",
+            "llm_litellm_token_refresh_interval",
+            "llm_litellm_token_output_format",
+            "llm_litellm_token_json_key",
+            "llm_cache_dir",
+            "llm_cache_ttl",
+            "llm_metadata_file",
+            "llm_hmac_key_file",
+            "llm_include_params",
+            "llm_strip_docstrings",
+            "llm_prompt_tier",
+            "llm_batch_parametrized",
+            "llm_context_compression",
         ]:
             setattr(mock.option, attr, None)
         mock.rootpath = tmp_path
