@@ -148,6 +148,12 @@ class Config:
     cache_dir: str = ".pytest_llm_cache"
     prompt_tier: str = "auto"  # "minimal", "standard", "auto"
 
+    # Token optimization settings
+    batch_parametrized_tests: bool = True
+    batch_max_tests: int = 5
+    context_compression: str = "none"  # "none", "lines"
+    context_line_padding: int = 2
+
     # Coverage settings
     omit_tests_from_coverage: bool = True
     include_phase: str = "run"
@@ -253,6 +259,18 @@ class Config:
                 f"Invalid prompt_tier '{self.prompt_tier}'. "
                 f"Must be one of: {valid_tiers}"
             )
+
+        # Validate token optimization settings
+        valid_compression = ("none", "lines")
+        if self.context_compression not in valid_compression:
+            errors.append(
+                f"Invalid context_compression '{self.context_compression}'. "
+                f"Must be one of: {valid_compression}"
+            )
+        if self.batch_max_tests < 1:
+            errors.append("batch_max_tests must be at least 1")
+        if self.context_line_padding < 0:
+            errors.append("context_line_padding must be 0 or positive")
 
         return errors
 
@@ -368,6 +386,18 @@ def load_config(config: "pytest.Config") -> Config:
                     cfg.cache_dir = tool_config["cache_dir"]
                 if "prompt_tier" in tool_config:
                     cfg.prompt_tier = tool_config["prompt_tier"]
+
+                # Token optimization settings
+                if "batch_parametrized_tests" in tool_config:
+                    cfg.batch_parametrized_tests = tool_config[
+                        "batch_parametrized_tests"
+                    ]
+                if "batch_max_tests" in tool_config:
+                    cfg.batch_max_tests = tool_config["batch_max_tests"]
+                if "context_compression" in tool_config:
+                    cfg.context_compression = tool_config["context_compression"]
+                if "context_line_padding" in tool_config:
+                    cfg.context_line_padding = tool_config["context_line_padding"]
 
                 # Coverage settings
                 if "omit_tests_from_coverage" in tool_config:

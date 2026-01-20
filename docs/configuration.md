@@ -74,6 +74,15 @@ Settings specific to the `litellm` provider.
 | `include_param_values` | Include test parameter values in validation | `False` |
 | `param_value_max_chars` | Max characters for parameter values | `100` |
 
+### Token Optimization
+
+| Key | Description | Default |
+|-----|-------------|---------|
+| `batch_parametrized_tests` | Group parametrized tests for single annotation | `true` |
+| `batch_max_tests` | Maximum tests per batch | `5` |
+| `context_compression` | Context compression mode (`none`, `lines`) | `\"none\"` |
+| `context_line_padding` | Lines of context around covered ranges | `2` |
+
 ### Report & Coverage
 
 | Key | Description | Default |
