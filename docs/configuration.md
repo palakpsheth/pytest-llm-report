@@ -19,6 +19,10 @@ Complete configuration reference for pytest-llm-report.
 | `--llm-provider NAME` | Override LLM provider (ollama, litellm, gemini) | None |
 | `--llm-model NAME` | Override LLM model name | None |
 | `--llm-context-mode MODE` | Override context mode (minimal, balanced, complete) | None |
+| `--llm-prompt-tier TIER` | System prompt tier (minimal, standard, auto) | auto |
+| `--llm-batch-parametrized` | Group parametrized tests for single annotation | enabled |
+| `--llm-no-batch-parametrized` | Disable test batching | - |
+| `--llm-context-compression MODE` | Context compression (none, lines) | lines |
 | `--llm-coverage-source PATH` | Path to .coverage file/dir to inject into report | None |
 
 > **Tip**: Run `pytest --help` to see usage examples for each option.
@@ -73,6 +77,15 @@ Settings specific to the `litellm` provider.
 | `context_exclude_globs` | List of file patterns to exclude | `["*.pyc", "__pycache__/*", ...]` |
 | `include_param_values` | Include test parameter values in validation | `False` |
 | `param_value_max_chars` | Max characters for parameter values | `100` |
+
+### Token Optimization
+
+| Key | Description | Default |
+|-----|-------------|---------|
+| `batch_parametrized_tests` | Group parametrized tests for single annotation | `true` |
+| `batch_max_tests` | Maximum tests per batch | `5` |
+| `context_compression` | Context compression mode (`none`, `lines`) | `"lines"` |
+| `context_line_padding` | Lines of context around covered ranges | `2` |
 
 ### Report & Coverage
 

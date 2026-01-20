@@ -121,6 +121,7 @@ class ContextAssembler:
         """Get balanced context from coverage.
 
         Includes files covered by the test, limited by config.
+        Uses line-range extraction for compression when enabled.
 
         Args:
             test: Test result.
@@ -137,6 +138,10 @@ class ContextAssembler:
         max_bytes = self.config.llm_context_bytes
         max_files = self.config.llm_context_file_limit
 
+        # Check for compression mode
+        compression_mode = getattr(self.config, "context_compression", "none")
+        line_padding = getattr(self.config, "context_line_padding", 2)
+
         for entry in test.coverage[:max_files]:
             if total_bytes >= max_bytes:
                 break
@@ -149,7 +154,21 @@ class ContextAssembler:
                 continue
 
             try:
-                content = file_path.read_text()
+                full_content = file_path.read_text()
+                lines = full_content.split("\n")
+
+                # Apply compression if enabled and we have line range info
+                if (
+                    compression_mode == "lines"
+                    and hasattr(entry, "lines")
+                    and entry.lines
+                ):
+                    content = self._extract_covered_lines(
+                        lines, entry.lines, line_padding
+                    )
+                else:
+                    content = full_content
+
                 # Truncate if needed
                 remaining = max_bytes - total_bytes
                 if len(content) > remaining:
@@ -161,6 +180,54 @@ class ContextAssembler:
                 continue
 
         return context
+
+    def _extract_covered_lines(
+        self, lines: list[str], covered_lines: set[int] | list[int], padding: int = 2
+    ) -> str:
+        """Extract only covered lines with padding for context.
+
+        Args:
+            lines: All lines in the file.
+            covered_lines: Set/list of 1-indexed line numbers that were covered.
+            padding: Number of context lines to include around covered lines.
+
+        Returns:
+            Extracted content with line numbers as comments.
+        """
+        if not covered_lines:
+            return ""
+
+        covered_set = set(covered_lines)
+        total_lines = len(lines)
+
+        # Expand covered lines with padding
+        expanded_lines: set[int] = set()
+        for line_num in covered_set:
+            for offset in range(-padding, padding + 1):
+                adj_line = line_num + offset
+                if 1 <= adj_line <= total_lines:
+                    expanded_lines.add(adj_line)
+
+        # Sort and group into contiguous ranges
+        sorted_lines = sorted(expanded_lines)
+        if not sorted_lines:
+            return ""
+
+        result_parts: list[str] = []
+        current_range_start = sorted_lines[0]
+        prev_line = sorted_lines[0]
+
+        for line_num in sorted_lines[1:] + [sorted_lines[-1] + 2]:  # sentinel
+            if line_num - prev_line > 1:
+                # End of a range, add lines
+                if result_parts:
+                    result_parts.append("# ...")  # Gap indicator
+                for ln in range(current_range_start, prev_line + 1):
+                    result_parts.append(f"# L{ln}: {lines[ln - 1]}")
+                current_range_start = line_num
+            prev_line = line_num
+
+        return "\n".join(result_parts)
 
     def _get_complete_context(
         self, test: TestCaseResult, repo_root: Path

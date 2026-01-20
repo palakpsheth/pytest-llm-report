@@ -137,6 +137,33 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         help="LLM context mode (minimal, balanced, complete)",
     )
 
+    # Token optimization options
+    group.addoption(
+        "--llm-prompt-tier",
+        dest="llm_prompt_tier",
+        default=None,
+        help="Prompt tier for system prompts (minimal, standard, auto). Default: auto",
+    )
+    group.addoption(
+        "--llm-batch-parametrized",
+        dest="llm_batch_parametrized",
+        action="store_true",
+        default=None,
+        help="Group parametrized tests for single LLM annotation (default: enabled)",
+    )
+    group.addoption(
+        "--llm-no-batch-parametrized",
+        dest="llm_batch_parametrized",
+        action="store_false",
+        help="Disable batching of parametrized tests",
+    )
+    group.addoption(
+        "--llm-context-compression",
+        dest="llm_context_compression",
+        default=None,
+        help="Context compression mode (none, lines). Default: lines",
+    )
+
 
 def pytest_configure(config: pytest.Config) -> None:
     """Configure the plugin.

@@ -24,6 +24,9 @@ class TestPluginMaximal:
         mock_config.option.llm_aggregate_group_id = None
         mock_config.option.llm_max_retries = None
         mock_config.option.llm_coverage_source = None
+        mock_config.option.llm_prompt_tier = None
+        mock_config.option.llm_batch_parametrized = None
+        mock_config.option.llm_context_compression = None
 
         mock_config.rootpath = tmp_path
 
@@ -93,6 +96,9 @@ requests_per_minute = 10
         mock_config.option.llm_provider = None
         mock_config.option.llm_model = None
         mock_config.option.llm_context_mode = None
+        mock_config.option.llm_prompt_tier = None
+        mock_config.option.llm_batch_parametrized = None
+        mock_config.option.llm_context_compression = None
         mock_config.rootpath = tmp_path
 
         cfg = load_config(mock_config)
@@ -127,6 +133,9 @@ provider = "ollama"
         mock_config.option.llm_aggregate_group_id = "group-abc"
         mock_config.option.llm_max_retries = None
         mock_config.option.llm_coverage_source = None
+        mock_config.option.llm_prompt_tier = None
+        mock_config.option.llm_batch_parametrized = None
+        mock_config.option.llm_context_compression = None
         mock_config.rootpath = tmp_path
 
         cfg = load_config(mock_config)
@@ -187,6 +196,9 @@ provider = "invalid_provider"
         mock_config.option.llm_provider = None
         mock_config.option.llm_model = None
         mock_config.option.llm_context_mode = None
+        mock_config.option.llm_prompt_tier = None
+        mock_config.option.llm_batch_parametrized = None
+        mock_config.option.llm_context_compression = None
         mock_config.rootpath = tmp_path
         mock_config.stash = {}
 
@@ -224,6 +236,9 @@ context_mode = "minimal"
         mock_config.option.llm_provider = None
         mock_config.option.llm_model = None
         mock_config.option.llm_context_mode = None
+        mock_config.option.llm_prompt_tier = None
+        mock_config.option.llm_batch_parametrized = None
+        mock_config.option.llm_context_compression = None
         mock_config.rootpath = tmp_path
         mock_config.stash = {}
 
@@ -678,6 +693,9 @@ class TestPluginConfigureFallback:
         mock_config.option.llm_provider = None
         mock_config.option.llm_model = None
         mock_config.option.llm_context_mode = None
+        mock_config.option.llm_prompt_tier = None
+        mock_config.option.llm_batch_parametrized = None
+        mock_config.option.llm_context_compression = None
         mock_config.rootpath = tmp_path
 
         with (
