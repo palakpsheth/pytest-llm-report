@@ -16,6 +16,9 @@ if TYPE_CHECKING:
     from pytest_llm_report.options import Config
 
 
+MAX_CONTEXT_FILES_IN_PROMPT = 5
+
+
 @dataclass
 class BatchedRequest:
     """A group of tests to be annotated together."""
@@ -114,7 +117,7 @@ def group_tests_for_batching(
         else:
             # Multiple tests with same base - these are parametrized
             # Get source from first test
-            source = get_source(group[0].nodeid) if group else ""
+            source = get_source(group[0].nodeid)
             source_hash = _compute_source_hash(source)
 
             # Split into batches of max size
@@ -179,7 +182,7 @@ def build_batch_prompt(
 
     if context_files:
         parts.append("\nRelevant context:")
-        for path, content in list(context_files.items())[:5]:
+        for path, content in list(context_files.items())[:MAX_CONTEXT_FILES_IN_PROMPT]:
             parts.append(f"\n{path}:")
             parts.append("```python")
             parts.append(content[:2000])

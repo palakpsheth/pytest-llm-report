@@ -95,8 +95,6 @@ def annotate_tests(
     uncached_tasks: list[_AnnotationTask] = []
     completed = 0
 
-    assembler = ContextAssembler(config)
-
     for group in test_groups:
         if isinstance(group, BatchedRequest):
             # 1. Check if we need to run this batch
