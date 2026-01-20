@@ -86,7 +86,8 @@ class LiteLLMProvider(LlmProvider):
 
         import time
 
-        from pytest_llm_report.llm.base import SYSTEM_PROMPT
+        # Select appropriate system prompt based on test complexity
+        system_prompt = self._select_system_prompt(test_source)
 
         # Build prompt
         prompt = self._build_prompt(test, test_source, context_files)
@@ -103,7 +104,7 @@ class LiteLLMProvider(LlmProvider):
                 # It returns an LlmAnnotation on success or for non-retriable
                 # parsing errors. We can return this directly. The surrounding
                 # retry loop is for transient API errors caught as exceptions.
-                return self._make_request(litellm, prompt, SYSTEM_PROMPT)
+                return self._make_request(litellm, prompt, system_prompt)
 
             except Exception as e:
                 # Check if this is an authentication error (401)
@@ -118,7 +119,7 @@ class LiteLLMProvider(LlmProvider):
                         self._token_refresher.invalidate()
                         try:
                             return self._make_request(
-                                litellm, prompt, SYSTEM_PROMPT, force_refresh=True
+                                litellm, prompt, system_prompt, force_refresh=True
                             )
                         except Exception as retry_e:
                             last_error = f"Auth retry failed: {retry_e}"
@@ -169,6 +170,7 @@ class LiteLLMProvider(LlmProvider):
             ],
             "temperature": 0.3,
             "timeout": self.config.llm_timeout_seconds,
+            "response_format": {"type": "json_object"},  # Structured output
         }
 
         # Add api_base if configured

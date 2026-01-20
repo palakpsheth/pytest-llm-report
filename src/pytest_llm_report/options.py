@@ -146,6 +146,7 @@ class Config:
     llm_max_retries: int = 10
     llm_cache_ttl_seconds: int = 86400  # 24 hours
     cache_dir: str = ".pytest_llm_cache"
+    prompt_tier: str = "auto"  # "minimal", "standard", "auto"
 
     # Coverage settings
     omit_tests_from_coverage: bool = True
@@ -244,6 +245,14 @@ class Config:
             errors.append("llm_timeout_seconds must be at least 1")
         if self.llm_max_retries < 0:
             errors.append("llm_max_retries must be 0 or positive")
+
+        # Validate prompt_tier
+        valid_tiers = ("minimal", "standard", "auto")
+        if self.prompt_tier not in valid_tiers:
+            errors.append(
+                f"Invalid prompt_tier '{self.prompt_tier}'. "
+                f"Must be one of: {valid_tiers}"
+            )
 
         return errors
 
@@ -357,6 +366,8 @@ def load_config(config: "pytest.Config") -> Config:
                     cfg.llm_cache_ttl_seconds = tool_config["cache_ttl_seconds"]
                 if "cache_dir" in tool_config:
                     cfg.cache_dir = tool_config["cache_dir"]
+                if "prompt_tier" in tool_config:
+                    cfg.prompt_tier = tool_config["prompt_tier"]
 
                 # Coverage settings
                 if "omit_tests_from_coverage" in tool_config:

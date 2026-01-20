@@ -22,8 +22,13 @@ if TYPE_CHECKING:
     from pytest_llm_report.options import Config
 
 
-# System prompt for test annotation
-SYSTEM_PROMPT = """You are a helpful assistant that analyzes Python test code.
+# System prompts for test annotation (tiered by complexity)
+
+# Minimal prompt for simple tests (~60 tokens)
+MINIMAL_SYSTEM_PROMPT = """Analyze test, return JSON: {"scenario":"...","why_needed":"...","key_assertions":["..."]}"""
+
+# Standard prompt for typical tests (~180 tokens)
+STANDARD_SYSTEM_PROMPT = """You are a helpful assistant that analyzes Python test code.
 Given a test function, provide a structured annotation with:
 1. scenario: What the test verifies (1-3 sentences)
 2. why_needed: What bug or regression this test prevents (1-3 sentences)
@@ -35,6 +40,12 @@ Respond ONLY with valid JSON in this exact format:
   "why_needed": "...",
   "key_assertions": ["...", "..."]
 }"""
+
+# Legacy alias for backward compatibility
+SYSTEM_PROMPT = STANDARD_SYSTEM_PROMPT
+
+# Threshold for determining simple vs complex tests
+COMPLEXITY_THRESHOLD = 10
 
 
 class LlmProvider(ABC):
@@ -145,6 +156,54 @@ class LlmProvider(ABC):
             True if the provider runs locally.
         """
         return False
+
+    def _estimate_test_complexity(self, test_source: str | None) -> int:
+        """Estimate test complexity for prompt tier selection.
+
+        Args:
+            test_source: Test function source code.
+
+        Returns:
+            Complexity score (0-100+).
+        """
+        if not test_source:
+            return 0
+
+        import re
+
+        # Count complexity indicators using word boundaries for accuracy
+        score = 0
+        score += len(re.findall(r"\bassert\b", test_source)) * 3
+        score += len(re.findall(r"\bmock\b", test_source, re.IGNORECASE)) * 5
+        score += len(re.findall(r"\bpatch\b", test_source)) * 5
+        score += len(re.findall(r"\bfixture\b", test_source)) * 2
+        score += test_source.count("pytest.raises") * 3
+        score += test_source.count("@") * 2  # Decorators
+        score += len(test_source) // 100  # Length factor
+
+        return score
+
+    def _select_system_prompt(self, test_source: str | None) -> str:
+        """Select appropriate system prompt based on test complexity.
+
+        Args:
+            test_source: Test function source code.
+
+        Returns:
+            Selected system prompt string.
+        """
+        # Check config override
+        prompt_tier = getattr(self.config, "prompt_tier", "auto")
+
+        if prompt_tier == "minimal":
+            return MINIMAL_SYSTEM_PROMPT
+        elif prompt_tier == "standard":
+            return STANDARD_SYSTEM_PROMPT
+        else:  # "auto"
+            complexity = self._estimate_test_complexity(test_source)
+            if complexity < COMPLEXITY_THRESHOLD:
+                return MINIMAL_SYSTEM_PROMPT
+            return STANDARD_SYSTEM_PROMPT
 
     def _build_prompt(
         self,

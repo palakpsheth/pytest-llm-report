@@ -60,13 +60,14 @@ Settings specific to the `litellm` provider.
 | `timeout_seconds` | Timeout for each LLM request | `30` |
 | `max_retries` | Maximum retries for transient errors | `10` |
 | `cache_ttl_seconds` | How long to cache responses | `86400` (24h) |
+| `prompt_tier` | System prompt complexity (`minimal`, `standard`, `auto`) | `"auto"` |
 
 ### Context & Content
 
 | Key | Description | Default |
 |-----|-------------|---------|
 | `context_mode` | Context level (`minimal`, `balanced`, `complete`) | `"minimal"` |
-| `context_bytes` | Max bytes for context window | `32000` |
+| `context_bytes` | Max bytes for context window (adaptive limit) | `32000` |
 | `context_file_limit` | Max number of files in context | `10` |
 | `context_include_globs` | List of file patterns to force include | `[]` |
 | `context_exclude_globs` | List of file patterns to exclude | `["*.pyc", "__pycache__/*", ...]` |
