@@ -76,6 +76,38 @@ z = "contains # hash"'''
         assert 'x = "hello world"' in result
         assert "y = 'another string'" in result
 
+    def test_preserves_multiline_data_strings(self):
+        """Should preserve triple-quoted strings assigned to variables."""
+        source = '''def foo():
+    """Docstring."""
+    data = """
+    This is data
+    not a docstring
+    """
+    return data'''
+        result = strip_docstrings(source)
+        assert '"""' in result  # Should keep the data string quotes
+        assert "This is data" in result
+        assert "not a docstring" in result
+        # But real docstring should be gone
+        assert '"""Docstring."""' not in result
+
+    def test_preserves_strings_in_structures(self):
+        """Should preserve strings in lists/dicts."""
+        source = '''x = [
+            """string 1""",
+            "string 2"
+        ]'''
+        result = strip_docstrings(source)
+        assert '"""string 1"""' in result
+        assert '"string 2"' in result
+
+    def test_handles_syntax_error_gracefully(self):
+        """Should return original source on syntax error."""
+        source = "def foo( unclosed paren"
+        result = strip_docstrings(source)
+        assert result == source
+
 
 class TestStripComments:
     """Tests for strip_comments function."""

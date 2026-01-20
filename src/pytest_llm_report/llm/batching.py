@@ -66,7 +66,8 @@ def _compute_source_hash(source: str) -> str:
     """
     if not source:
         return ""
-    return hashlib.sha256(source.encode()).hexdigest()[:16]
+    # Use full hash or at least 32 chars to minimize collision risk
+    return hashlib.sha256(source.encode()).hexdigest()[:32]
 
 
 def group_tests_for_batching(

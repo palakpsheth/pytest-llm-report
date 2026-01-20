@@ -47,7 +47,7 @@ class TestComputeSourceHash:
         hash1 = _compute_source_hash(source)
         hash2 = _compute_source_hash(source)
         assert hash1 == hash2
-        assert len(hash1) == 16
+        assert len(hash1) == 32
 
     def test_different_source_different_hash(self):
         """Different source should produce different hash."""

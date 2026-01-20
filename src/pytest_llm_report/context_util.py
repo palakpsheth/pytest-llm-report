@@ -7,17 +7,16 @@ to reduce token consumption while preserving logical structure.
 Component Contract:
     Input: Source code strings
     Output: Optimized source code strings
-    Dependencies: None (pure text processing)
+    Dependencies: tokenize, io
 """
 
+import io
 import re
+import tokenize
 
 
 def strip_docstrings(source: str) -> str:
-    """Remove Python docstrings from source code.
-
-    Removes both triple-quoted docstrings while preserving
-    the logical structure of the code.
+    """Remove Python docstrings from source code using tokenizer.
 
     Args:
         source: Python source code.
@@ -25,32 +24,53 @@ def strip_docstrings(source: str) -> str:
     Returns:
         Source code with docstrings removed.
     """
-    # Remove triple double-quoted docstrings
-    triple_double = '"""'
-    result = re.sub(
-        re.escape(triple_double) + r".*?" + re.escape(triple_double),
-        "",
-        source,
-        flags=re.DOTALL,
-    )
+    try:
+        # standard tokenize expects bytes
+        tokens = list(tokenize.tokenize(io.BytesIO(source.encode("utf-8")).readline))
+    except tokenize.TokenError:
+        return source
 
-    # Remove triple single-quoted docstrings
-    triple_single = "'''"
-    result = re.sub(
-        re.escape(triple_single) + r".*?" + re.escape(triple_single),
-        "",
-        result,
-        flags=re.DOTALL,
-    )
+    out_tokens = []
 
+    for i, token in enumerate(tokens):
+        if token.type == tokenize.STRING:
+            # Backtrack to find significant token
+            j = i - 1
+            while j >= 0:
+                t_type = tokens[j].type
+                if t_type in (
+                    tokenize.NL,
+                    tokenize.COMMENT,
+                    tokenize.NEWLINE,
+                    tokenize.INDENT,
+                ):
+                    j -= 1
+                    continue
+                break
+
+            is_doc = False
+            if j < 0:  # Start of stream
+                is_doc = True
+            else:
+                prev = tokens[j]
+                if prev.type == tokenize.ENCODING:
+                    is_doc = True
+                elif prev.type == tokenize.OP and prev.string == ":":
+                    is_doc = True
+
+            if is_doc:
+                continue  # Skip the docstring
+
+        out_tokens.append(token)
+
+    result = tokenize.untokenize(out_tokens)
+    if isinstance(result, bytes):
+        result = result.decode("utf-8")
     return result
 
 
 def strip_comments(source: str) -> str:
-    """Remove Python comments from source code.
-
-    Removes # comments while preserving the code structure.
-    Does not remove comments that are part of strings.
+    """Remove Python comments from source code using tokenizer.
 
     Args:
         source: Python source code.
@@ -58,34 +78,19 @@ def strip_comments(source: str) -> str:
     Returns:
         Source code with comments removed.
     """
-    lines = []
-    for line in source.split("\n"):
-        # Simple heuristic: remove everything after # if not in a string
-        # This is not perfect but works for most cases
-        if "#" in line:
-            # Check if # is inside a string
-            in_string = False
-            quote_char = None
-            result_chars = []
+    try:
+        tokens = list(tokenize.tokenize(io.BytesIO(source.encode("utf-8")).readline))
+    except tokenize.TokenError:
+        return source
 
-            for i, char in enumerate(line):
-                if char in ('"', "'") and (i == 0 or line[i - 1] != "\\"):
-                    if not in_string:
-                        in_string = True
-                        quote_char = char
-                    elif char == quote_char:
-                        in_string = False
-                        quote_char = None
+    out_tokens = [t for t in tokens if t.type != tokenize.COMMENT]
 
-                if char == "#" and not in_string:
-                    break
-                result_chars.append(char)
+    result = tokenize.untokenize(out_tokens)
+    if isinstance(result, bytes):
+        result = result.decode("utf-8")
 
-            lines.append("".join(result_chars).rstrip())
-        else:
-            lines.append(line)
-
-    return "\n".join(lines)
+    # Remove trailing whitespace from lines efficiently
+    return "\n".join(line.rstrip() for line in result.splitlines())
 
 
 def collapse_empty_lines(source: str) -> str:
@@ -97,9 +102,10 @@ def collapse_empty_lines(source: str) -> str:
     Returns:
         Source code with collapsed empty lines.
     """
-    # Replace 3+ consecutive newlines with 2 newlines
-    result = re.sub(r"\n\n\n+", "\n\n", source)
-    return result
+    # Replace 3+ consecutive newlines with 2 newlines (preserves paragraph structure but compacts)
+    # or just all multiple newlines to single blank line?
+    # Original logic was 3+ -> 2.
+    return re.sub(r"\n\n\n+", "\n\n", source)
 
 
 def optimize_context(
