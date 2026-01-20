@@ -44,6 +44,9 @@ Respond ONLY with valid JSON in this exact format:
 # Legacy alias for backward compatibility
 SYSTEM_PROMPT = STANDARD_SYSTEM_PROMPT
 
+# Threshold for determining simple vs complex tests
+COMPLEXITY_THRESHOLD = 10
+
 
 class LlmProvider(ABC):
     """Abstract base class for LLM providers.
@@ -154,7 +157,7 @@ class LlmProvider(ABC):
         """
         return False
 
-    def _estimate_test_complexity(self, test_source: str) -> int:
+    def _estimate_test_complexity(self, test_source: str | None) -> int:
         """Estimate test complexity for prompt tier selection.
 
         Args:
@@ -166,19 +169,21 @@ class LlmProvider(ABC):
         if not test_source:
             return 0
 
-        # Count complexity indicators
+        import re
+
+        # Count complexity indicators using word boundaries for accuracy
         score = 0
-        score += test_source.count("assert") * 3
-        score += test_source.count("mock") * 5
-        score += test_source.count("patch") * 5
-        score += test_source.count("fixture") * 2
+        score += len(re.findall(r"\bassert\b", test_source)) * 3
+        score += len(re.findall(r"\bmock\b", test_source, re.IGNORECASE)) * 5
+        score += len(re.findall(r"\bpatch\b", test_source)) * 5
+        score += len(re.findall(r"\bfixture\b", test_source)) * 2
         score += test_source.count("pytest.raises") * 3
         score += test_source.count("@") * 2  # Decorators
         score += len(test_source) // 100  # Length factor
 
         return score
 
-    def _select_system_prompt(self, test_source: str) -> str:
+    def _select_system_prompt(self, test_source: str | None) -> str:
         """Select appropriate system prompt based on test complexity.
 
         Args:
@@ -196,8 +201,7 @@ class LlmProvider(ABC):
             return STANDARD_SYSTEM_PROMPT
         else:  # "auto"
             complexity = self._estimate_test_complexity(test_source)
-            # Use minimal prompt for simple tests (complexity < 10)
-            if complexity < 10:
+            if complexity < COMPLEXITY_THRESHOLD:
                 return MINIMAL_SYSTEM_PROMPT
             return STANDARD_SYSTEM_PROMPT
 

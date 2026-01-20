@@ -172,7 +172,7 @@ class GeminiProvider(LlmProvider):
         system_prompt = self._select_system_prompt(test_source)
 
         prompt = self._build_prompt(test, test_source, context_files)
-        estimated_tokens = self._estimate_tokens(prompt)
+        estimated_tokens = self._estimate_tokens(prompt, system_prompt)
 
         models = self._ensure_models_and_limits(api_token)
 
@@ -405,12 +405,11 @@ class GeminiProvider(LlmProvider):
             requests_per_day=rpd,
         )
 
-    def _estimate_tokens(self, prompt: str) -> int:
-        # Estimate ~4 characters per token for prompt + average system prompt overhead
-        # Minimal prompt ~60 tokens, Standard prompt ~180 tokens, average ~120 tokens
+    def _estimate_tokens(self, prompt: str, system_prompt: str) -> int:
+        # Estimate ~4 characters per token for prompt and system prompt
         estimated_prompt_tokens = len(prompt) // 4
-        average_system_prompt_tokens = 120
-        return max(1, estimated_prompt_tokens + average_system_prompt_tokens)
+        estimated_system_prompt_tokens = len(system_prompt) // 4
+        return max(1, estimated_prompt_tokens + estimated_system_prompt_tokens)
 
     def _normalize_model_name(self, model: str) -> str:
         if model.startswith("models/"):
