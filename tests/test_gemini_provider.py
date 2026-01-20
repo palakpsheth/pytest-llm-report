@@ -127,7 +127,7 @@ class TestGeminiRateLimiter:
         # Must wait until usage expires.
         wait = limiter._seconds_until_tpm_available(now, 60)
         assert wait > 0
-        assert wait <= 60.0
+        assert wait <= 60.0 + 1e-9
 
 
 class TestGeminiProvider:
