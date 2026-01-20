@@ -137,6 +137,8 @@ class GeminiProvider(LlmProvider):
         self._rate_limits: dict[str, _GeminiRateLimitConfig] = {}
         self._rate_limiters: dict[str, _GeminiRateLimiter] = {}
         self._models: list[str] | None = None
+        self._token_limits: dict[str, int] = {}  # Map model name to input token limit
+        self._models_fetched_at: float = 0.0
         self._models_fetched_at: float = 0.0
         # Track when each model hit its daily limit (for recovery after 24h)
         self._model_exhausted_at: dict[str, float] = {}
@@ -472,6 +474,21 @@ class GeminiProvider(LlmProvider):
             return model.split("/", 1)[1]
         return model
 
+    def get_max_context_tokens(self) -> int:
+        """Get the maximum number of input tokens allowed for the current model.
+
+        Returns:
+            Max input tokens.
+        """
+        model_name = self.get_model_name()
+        # Ensure models are fetched to populate limits
+        if not self._token_limits:
+            api_token = os.getenv("GEMINI_API_TOKEN")
+            if api_token:
+                self._ensure_models_and_limits(api_token)
+
+        return self._token_limits.get(model_name, 4096)
+
     def _ensure_models_and_limits(self, api_token: str) -> list[str]:
         # Check if we should refresh the model list (every 6 hours for long sessions)
         now = time.time()
@@ -480,7 +497,7 @@ class GeminiProvider(LlmProvider):
         )
 
         if should_refresh:
-            self._models = self._fetch_available_models(api_token)
+            self._models, self._token_limits = self._fetch_available_models(api_token)
             self._models_fetched_at = now
             if not self._models:
                 self._models = [self.config.model or "gemini-1.5-flash-latest"]
@@ -510,7 +527,9 @@ class GeminiProvider(LlmProvider):
             if part.strip()
         ]
 
-    def _fetch_available_models(self, api_token: str) -> list[str]:
+    def _fetch_available_models(
+        self, api_token: str
+    ) -> tuple[list[str], dict[str, int]]:
         import httpx
 
         url = f"https://generativelanguage.googleapis.com/v1beta/models?key={api_token}"
@@ -519,8 +538,11 @@ class GeminiProvider(LlmProvider):
             response.raise_for_status()
             data = response.json()
         except Exception:
-            return []
+            return [], {}
+
         models = []
+        limits = {}
+
         for model_info in data.get("models", []):
             name = model_info.get("name")
             if not isinstance(name, str):
@@ -529,5 +551,20 @@ class GeminiProvider(LlmProvider):
             if not isinstance(methods, list):
                 continue
             if "generateContent" in methods:
-                models.append(self._normalize_model_name(name))
-        return models
+                normalized_name = self._normalize_model_name(name)
+                models.append(normalized_name)
+
+                # Extract input token limit
+                input_limit = model_info.get("inputTokenLimit")
+                if isinstance(input_limit, int):
+                    limits[normalized_name] = input_limit
+                else:
+                    # Fallback defaults for common models if API doesn't return it
+                    if "flash" in normalized_name:
+                        limits[normalized_name] = 1_000_000
+                    elif "pro" in normalized_name:
+                        limits[normalized_name] = (
+                            2_000_000 if "1.5" in normalized_name else 32_000
+                        )
+
+        return models, limits

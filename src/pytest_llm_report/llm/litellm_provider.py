@@ -203,6 +203,27 @@ class LiteLLMProvider(LlmProvider):
 
         return annotation
 
+    def get_max_context_tokens(self) -> int:
+        """Get the maximum number of input tokens allowed for the current model.
+
+        Returns:
+            Max input tokens.
+        """
+        try:
+            import litellm
+
+            model = self.config.model or "gpt-3.5-turbo"
+            # litellm.get_max_tokens() returns dict sometimes or int?
+            # It usually returns total context window.
+            limit = litellm.get_max_tokens(model)
+            if isinstance(limit, int):
+                return limit
+            if isinstance(limit, dict) and "max_tokens" in limit:
+                return int(limit["max_tokens"])
+        except Exception:
+            pass
+        return 4096
+
     def _check_availability(self) -> bool:
         """Check if LiteLLM is available.
 

@@ -112,6 +112,56 @@ class OllamaProvider(LlmProvider):
         """
         return True
 
+    def get_max_context_tokens(self) -> int:
+        """Get the maximum number of input tokens allowed for the current model.
+
+        Tries to inspector model info, defaults to 4096.
+
+        Returns:
+            Max input tokens.
+        """
+        import httpx
+
+        model = self.config.model or "llama3.2"
+        # Try to show model info
+        url = f"{self.config.ollama_host}/api/show"
+        try:
+            response = httpx.post(
+                url,
+                json={"name": model},
+                timeout=2.0,  # Quick timeout for metadata
+            )
+            if response.status_code == 200:
+                data = response.json()
+                # Ollama models often list context window in details or parameters
+                # But standardization varies.
+                # "model_info" might contain "llama.context_length" or similar.
+
+                # Check model parameters if available
+                if "parameters" in data:
+                    # Try to parse num_ctx
+                    import re
+
+                    match = re.search(r"num_ctx\s+(\d+)", data["parameters"])
+                    if match:
+                        return int(match.group(1))
+
+                # Check model_info
+                if "model_info" in data:
+                    info = data["model_info"]
+                    for key in [
+                        "llama.context_length",
+                        "context_length",
+                        "general.file.context_length",
+                    ]:
+                        if key in info:
+                            return int(info[key])
+
+        except Exception:
+            pass
+
+        return 4096  # Safe default for many Ollama models
+
     def _call_ollama(self, prompt: str, system_prompt: str) -> str:
         """Make a request to the Ollama API.
 

@@ -94,3 +94,29 @@ class TestContextAssembler:
         assert "f1.py" in context
         assert "... truncated" in context["f1.py"]
         assert len(context["f1.py"]) <= 40  # 20 bytes + truncation message
+
+    def test_complete_context_limits_override(self, tmp_path):
+        # Config has small limits
+        config = Config(
+            llm_context_mode="complete",
+            repo_root=tmp_path,
+            llm_context_bytes=20,  # Should be ignored in complete mode
+            llm_context_file_limit=1,
+        )
+        assembler = ContextAssembler(config)
+
+        f1 = tmp_path / "f1.py"
+        content = "Long content that exceeds 20 bytes"
+        f1.write_text(content)
+
+        test_result = TestCaseResult(
+            nodeid="t.py::t",
+            outcome="passed",
+            coverage=[CoverageEntry(file_path="f1.py", line_ranges="1", line_count=1)],
+        )
+
+        _, context = assembler.assemble(test_result)
+        assert "f1.py" in context
+        # Should NOT be truncated despite the 20 byte config limit
+        assert context["f1.py"] == content
+        assert "truncated" not in context["f1.py"]

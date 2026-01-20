@@ -116,7 +116,11 @@ class ContextAssembler:
         return "\n".join(func_lines)
 
     def _get_balanced_context(
-        self, test: TestCaseResult, repo_root: Path
+        self,
+        test: TestCaseResult,
+        repo_root: Path,
+        max_bytes: int | None = None,
+        max_files: int | None = None,
     ) -> dict[str, str]:
         """Get balanced context from coverage.
 
@@ -126,6 +130,8 @@ class ContextAssembler:
         Args:
             test: Test result.
             repo_root: Repository root.
+            max_bytes: Optional override for max context bytes.
+            max_files: Optional override for max context files.
 
         Returns:
             Dict of file paths to content.
@@ -135,15 +141,19 @@ class ContextAssembler:
 
         context = {}
         total_bytes = 0
-        max_bytes = self.config.llm_context_bytes
-        max_files = self.config.llm_context_file_limit
+        current_max_bytes = (
+            max_bytes if max_bytes is not None else self.config.llm_context_bytes
+        )
+        current_max_files = (
+            max_files if max_files is not None else self.config.llm_context_file_limit
+        )
 
         # Check for compression mode
         compression_mode = getattr(self.config, "context_compression", "none")
         line_padding = getattr(self.config, "context_line_padding", 2)
 
-        for entry in test.coverage[:max_files]:
-            if total_bytes >= max_bytes:
+        for entry in test.coverage[:current_max_files]:
+            if total_bytes >= current_max_bytes:
                 break
 
             file_path = repo_root / entry.file_path
@@ -170,7 +180,7 @@ class ContextAssembler:
                     content = full_content
 
                 # Truncate if needed
-                remaining = max_bytes - total_bytes
+                remaining = current_max_bytes - total_bytes
                 if len(content) > remaining:
                     content = content[:remaining] + "\n# ... truncated"
 
@@ -243,8 +253,15 @@ class ContextAssembler:
         Returns:
             Dict of file paths to content.
         """
-        # Same as balanced but with higher limits
-        return self._get_balanced_context(test, repo_root)
+        # Complete mode: Use very large limits, relying on the provider
+        # (and our new context limit enforcement) to handle the final truncation safely.
+        # This ensures we don't artificially limit context in the collection phase.
+        return self._get_balanced_context(
+            test,
+            repo_root,
+            max_bytes=10_000_000,  # ~10MB should be enough for any model
+            max_files=100,
+        )
 
     def _should_exclude(self, path: str) -> bool:
         """Check if a path should be excluded from context.
