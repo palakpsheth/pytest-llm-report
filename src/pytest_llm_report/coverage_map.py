@@ -14,7 +14,7 @@ from __future__ import annotations
 
 import glob
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from pytest_llm_report.errors import WarningCode, make_warning
 from pytest_llm_report.models import CoverageEntry, ReportWarning, SourceCoverageEntry
@@ -122,7 +122,7 @@ class CoverageMapper:
             measured_files = data.measured_files()
         except AttributeError:
             # Older coverage.py API
-            measured_files = getattr(data, "_lines", {}).keys()
+            measured_files = cast(set[str], getattr(data, "_lines", {}).keys())
 
         if not measured_files:
             return result

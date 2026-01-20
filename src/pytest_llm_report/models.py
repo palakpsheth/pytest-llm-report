@@ -17,6 +17,8 @@ Component Contracts:
 from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
+from pytest_llm_report.errors import ReportWarning
+
 # Schema version for report format compatibility
 SCHEMA_VERSION = "1.1.0"
 
@@ -125,7 +127,7 @@ class LlmAnnotation:
 
     def to_dict(self) -> dict:
         """Convert to dictionary for JSON serialization."""
-        result = {
+        result: dict[str, Any] = {
             "scenario": self.scenario,
             "why_needed": self.why_needed,
             "key_assertions": self.key_assertions,
@@ -240,31 +242,6 @@ class CollectionError:
             "nodeid": self.nodeid,
             "message": self.message,
         }
-
-
-@dataclass
-class ReportWarning:
-    """A warning captured during report generation.
-
-    Attributes:
-        code: Warning code (e.g., "W001").
-        message: Human-readable warning message.
-        detail: Optional additional context.
-    """
-
-    code: str
-    message: str
-    detail: str | None = None
-
-    def to_dict(self) -> dict:
-        """Convert to dictionary for JSON serialization."""
-        result = {
-            "code": self.code,
-            "message": self.message,
-        }
-        if self.detail:
-            result["detail"] = self.detail
-        return result
 
 
 @dataclass

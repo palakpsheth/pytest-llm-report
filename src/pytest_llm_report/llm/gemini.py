@@ -162,8 +162,8 @@ class GeminiProvider(LlmProvider):
             LlmAnnotation with parsed response.
         """
         try:
-            import google.generativeai as genai
-            from google.api_core import exceptions
+            import google.generativeai as genai  # type: ignore
+            from google.api_core import exceptions  # type: ignore
         except ImportError:
             return LlmAnnotation(
                 error="google-generativeai not installed. Install with: pip install google-generativeai"
@@ -186,7 +186,7 @@ class GeminiProvider(LlmProvider):
         api_token = os.getenv("GEMINI_API_TOKEN")
         if not api_token:
             return LlmAnnotation(error="GEMINI_API_TOKEN is not set")
-        estimated_tokens = self._estimate_tokens(prompt, system_prompt)
+        estimated_tokens = self._estimate_request_cost(prompt, system_prompt)
 
         try:
             models = self._ensure_models_and_limits(api_token)
@@ -466,7 +466,7 @@ class GeminiProvider(LlmProvider):
             requests_per_day=rpd,
         )
 
-    def _estimate_tokens(self, prompt: str, system_prompt: str) -> int:
+    def _estimate_request_cost(self, prompt: str, system_prompt: str) -> int:
         # Estimate ~4 characters per token for prompt and system prompt
         estimated_prompt_tokens = len(prompt) // 4
         estimated_system_prompt_tokens = len(system_prompt) // 4
@@ -515,6 +515,7 @@ class GeminiProvider(LlmProvider):
             ordered_models.extend([m for m in self._models if m not in seen_models])
             self._models = ordered_models
 
+        assert self._models is not None
         for model in self._models:
             self._ensure_rate_limits(api_token, model)
         return self._models

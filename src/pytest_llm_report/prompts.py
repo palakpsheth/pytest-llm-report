@@ -98,7 +98,7 @@ class ContextAssembler:
         lines = source.split("\n")
         in_func = False
         func_lines = []
-        indent = None
+        indent = 0
 
         for line in lines:
             if f"def {test_name}(" in line:

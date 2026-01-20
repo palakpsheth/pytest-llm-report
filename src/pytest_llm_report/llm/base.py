@@ -15,7 +15,7 @@ from __future__ import annotations
 import json
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from pytest_llm_report.models import LlmAnnotation
 
@@ -302,7 +302,7 @@ class LlmProvider(ABC):
         # 2. Distribute budget
         # Sort by needed size (asc) to satisfy small files first
         sorted_indices = sorted(
-            range(len(file_data)), key=lambda i: file_data[i]["needed"]
+            range(len(file_data)), key=lambda i: cast(int, file_data[i]["needed"])
         )
 
         remaining_budget = available_token_budget
@@ -316,17 +316,19 @@ class LlmProvider(ABC):
                 break
             fair_share = remaining_budget // remaining_files
 
-            needed = file_data[idx]["needed"]
+            needed = cast(int, file_data[idx]["needed"])
 
             if needed <= fair_share:
                 # Fully satisfy this file
-                allocations[idx] = file_data[idx]["content_tokens"]
+                allocations[idx] = cast(int, file_data[idx]["content_tokens"])
                 remaining_budget -= needed
             else:
                 # Give it the fair share (minus overhead)
                 # If fair_share < overhead, we might give 0 content, which is fine
                 # content = fair_share - overhead
-                overhead = file_data[idx]["needed"] - file_data[idx]["content_tokens"]
+                overhead = cast(int, file_data[idx]["needed"]) - cast(
+                    int, file_data[idx]["content_tokens"]
+                )
                 allocations[idx] = max(0, fair_share - overhead)
                 remaining_budget -= fair_share
 
@@ -341,15 +343,15 @@ class LlmProvider(ABC):
             if limit_tokens <= 0:
                 continue
 
-            path = data["path"]
-            content = data["content"]
+            path = str(data["path"])
+            content = str(data["content"])
 
             parts.append(f"\n{path}:")
             parts.append("```python")
 
             # If we allocated the full requested amount, don't truncate
             # (Avoids off-by-one errors in char estimation)
-            if limit_tokens >= data["content_tokens"]:
+            if limit_tokens >= cast(int, data["content_tokens"]):
                 parts.append(content)
             else:
                 # Roughly convert token limit to chars for slicing

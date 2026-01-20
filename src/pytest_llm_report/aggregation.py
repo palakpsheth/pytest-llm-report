@@ -106,6 +106,9 @@ class Aggregator:
         Returns:
             List of ReportRoot objects.
         """
+        if not self.config.aggregate_dir:
+            return []
+
         dir_path = Path(self.config.aggregate_dir)
         if not dir_path.exists():
             return []

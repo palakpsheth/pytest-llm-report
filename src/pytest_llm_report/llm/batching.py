@@ -8,6 +8,7 @@ to reduce the number of LLM calls and system prompt overhead.
 from __future__ import annotations
 
 import hashlib
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
@@ -71,7 +72,7 @@ def _compute_source_hash(source: str) -> str:
 def group_tests_for_batching(
     tests: list[TestCaseResult],
     config: Config,
-    get_source: callable,
+    get_source: Callable[[str], str],
 ) -> list[BatchedRequest]:
     """Group tests that can be annotated together.
 

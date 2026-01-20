@@ -87,7 +87,7 @@ class AnnotationSchema:
         Returns:
             Dictionary representation.
         """
-        result = {
+        result: dict[str, Any] = {
             "scenario": self.scenario,
             "why_needed": self.why_needed,
         }

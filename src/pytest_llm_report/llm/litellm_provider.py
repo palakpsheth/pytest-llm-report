@@ -7,7 +7,7 @@ Supports custom proxy URLs and dynamic token refresh for corporate environments.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from pytest_llm_report.llm.base import LlmProvider
 from pytest_llm_report.models import LlmAnnotation, LlmTokenUsage
@@ -147,7 +147,7 @@ class LiteLLMProvider(LlmProvider):
 
     def _make_request(
         self,
-        litellm: object,
+        litellm: Any,
         prompt: str,
         system_prompt: str,
         force_refresh: bool = False,

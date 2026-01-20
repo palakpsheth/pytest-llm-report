@@ -6,7 +6,7 @@ Connects to a local or remote Ollama server for LLM annotations.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, cast
 
 from pytest_llm_report.llm.base import LlmProvider
 from pytest_llm_report.models import LlmAnnotation, LlmTokenUsage
@@ -177,7 +177,7 @@ class OllamaProvider(LlmProvider):
 
         return 4096  # Safe default for many Ollama models
 
-    def _call_ollama(self, prompt: str, system_prompt: str) -> dict:
+    def _call_ollama(self, prompt: str, system_prompt: str) -> dict[str, Any]:
         """Make a request to the Ollama API.
 
         Args:
@@ -209,4 +209,4 @@ class OllamaProvider(LlmProvider):
         response.raise_for_status()
 
         data = response.json()
-        return data
+        return cast(dict[str, Any], data)

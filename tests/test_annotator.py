@@ -139,6 +139,7 @@ class TestAnnotateTests:
         assert mock_provider.annotate.call_count == 1
 
         assert tests[0].llm_annotation == cached_annotation
+        assert tests[1].llm_annotation is not None
         assert tests[1].llm_annotation.scenario == "test"  # From default mock
 
     def test_progress_reporting(
@@ -335,7 +336,10 @@ class TestAnnotateTests:
         annotate_tests(tests, config)
 
         # First test should have annotation
+        assert tests[0].llm_annotation is not None
         assert tests[0].llm_annotation.scenario == "ok"
         # Others should have errors
+        assert tests[1].llm_annotation is not None
         assert tests[1].llm_annotation.error == "First error"
+        assert tests[2].llm_annotation is not None
         assert tests[2].llm_annotation.error == "Second error"

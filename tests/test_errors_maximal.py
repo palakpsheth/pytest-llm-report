@@ -3,7 +3,7 @@
 
 from pytest_llm_report.errors import (
     WARNING_MESSAGES,
-    Warning,
+    ReportWarning,
     WarningCode,
     make_warning,
 )
@@ -14,7 +14,7 @@ class TestWarningDataClass:
 
     def test_warning_to_dict_with_detail(self):
         """Should serialize correct dictionary with detail."""
-        w = Warning(
+        w = ReportWarning(
             code=WarningCode.W001_NO_COVERAGE,
             message="No coverage",
             detail="Check setup",
@@ -28,7 +28,7 @@ class TestWarningDataClass:
 
     def test_warning_to_dict_no_detail(self):
         """Should serialize correct dictionary without detail."""
-        w = Warning(
+        w = ReportWarning(
             code=WarningCode.W001_NO_COVERAGE,
             message="No coverage",
         )

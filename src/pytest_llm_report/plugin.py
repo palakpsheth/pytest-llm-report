@@ -13,8 +13,9 @@ Component Contract:
 from __future__ import annotations
 
 import warnings
+from collections.abc import Generator
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import pytest
 from pytest import StashKey
@@ -545,7 +546,9 @@ def pytest_terminal_summary(
 
 
 @pytest.hookimpl(hookwrapper=True)
-def pytest_runtest_makereport(item: pytest.Item, call: pytest.CallInfo) -> None:
+def pytest_runtest_makereport(
+    item: pytest.Item, call: pytest.CallInfo
+) -> Generator[None, Any, None]:
     """Wrapper around test report creation to capture config.
 
     Args:

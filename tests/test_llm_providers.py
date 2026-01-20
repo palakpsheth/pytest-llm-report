@@ -115,6 +115,7 @@ class TestLiteLLMProvider:
         test = CaseResult(nodeid="tests/test_sample.py::test_case", outcome="passed")
         annotation = provider.annotate(test, "def test_case(): assert True")
 
+        assert annotation.error is not None
         assert "Invalid response: key_assertions must be a list" in annotation.error
 
     def test_annotate_handles_completion_error(self, monkeypatch: pytest.MonkeyPatch):
@@ -131,6 +132,7 @@ class TestLiteLLMProvider:
         test = CaseResult(nodeid="tests/test_sample.py::test_case", outcome="passed")
         annotation = provider.annotate(test, "def test_case(): assert True")
 
+        assert annotation.error is not None
         assert "boom" in annotation.error
 
     def test_annotate_missing_dependency(self, mock_import_error):
@@ -326,6 +328,7 @@ class TestLiteLLMProvider:
         test = CaseResult(nodeid="t", outcome="passed")
         annotation = provider.annotate(test, "src")
 
+        assert annotation.error is not None
         assert "Authentication failed" in annotation.error
 
     def test_auth_retry_fails_on_second_attempt(self, monkeypatch: pytest.MonkeyPatch):
@@ -359,6 +362,7 @@ class TestLiteLLMProvider:
         annotation = provider.annotate(test, "src")
 
         # After refresh fails, continues loop and gets auth error again
+        assert annotation.error is not None
         assert "Authentication failed" in annotation.error
 
     def test_annotate_with_token_usage(self, monkeypatch: pytest.MonkeyPatch):
@@ -774,7 +778,7 @@ class TestGeminiProvider:
             return FakeGeminiResponse(rate_limits_payload)
 
         fake_httpx = SimpleNamespace(post=fake_post, get=fake_get)
-        sleep_calls = []
+        sleep_calls: list[float] = []
         monkeypatch.setitem(__import__("sys").modules, "httpx", fake_httpx)
 
         # Mock google.generativeai
@@ -1258,6 +1262,7 @@ class TestGeminiProvider:
         test = CaseResult(nodeid="tests/test.py::test_foo", outcome="passed")
 
         annotation = provider.annotate(test, "def test_foo(): pass")
+        assert annotation.error is not None
         assert "Context too large" in annotation.error
         assert "400" in annotation.error
 
