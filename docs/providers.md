@@ -36,6 +36,8 @@ ollama_host = "http://127.0.0.1:11434"
 | `qwen2.5-coder:7b` | 4GB | Medium | Better |
 | `qwen2.5-coder:14b` | 8GB | Slow | Best |
 
+> **Note**: Ollama automatically requests JSON-formatted output for compatible models, improving parsing reliability.
+
 ## Provider: litellm
 
 Cloud LLMs via [LiteLLM](https://github.com/BerriAI/litellm).
@@ -61,6 +63,8 @@ Cloud LLMs via [LiteLLM](https://github.com/BerriAI/litellm).
 - OpenAI: `gpt-4o-mini`, `gpt-4o`
 - Anthropic: `claude-3-haiku-20240307`, `claude-3-5-sonnet-20241022`
 - Many more via LiteLLM
+
+> **Note**: OpenAI-compatible models automatically use `response_format: json_object` for structured output.
 
 ### Using a LiteLLM Proxy Server
 
@@ -184,6 +188,8 @@ Cloud LLMs via the Gemini API.
 - `gemma-3-27b-it`
 - `gemma-3n-e4b-it`
 - `gemma-3n-e2b-it`
+
+> **Note**: Gemini models use `response_schema` with `response_mime_type: application/json` for guaranteed structured output.
 
 ### Rate limits
 

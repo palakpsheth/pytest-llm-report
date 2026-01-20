@@ -49,14 +49,15 @@ class OllamaProvider(LlmProvider):
         # Build prompt with current context
         prompt = self._build_prompt(test, test_source, context_files)
 
-        from pytest_llm_report.llm.base import SYSTEM_PROMPT
+        # Select appropriate system prompt based on test complexity
+        system_prompt = self._select_system_prompt(test_source)
 
         max_retries = self.config.llm_max_retries
         last_error = None
 
         for attempt in range(max_retries):
             try:
-                response = self._call_ollama(prompt, SYSTEM_PROMPT)
+                response = self._call_ollama(prompt, system_prompt)
                 annotation = self._parse_response(response)
 
                 if annotation.error:
@@ -124,6 +125,7 @@ class OllamaProvider(LlmProvider):
             "prompt": prompt,
             "system": system_prompt,
             "stream": False,
+            "format": "json",  # Request JSON output for compatible models
             "options": {
                 "temperature": 0.3,
             },

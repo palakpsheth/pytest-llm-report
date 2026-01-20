@@ -12,7 +12,7 @@ from collections import deque
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from pytest_llm_report.llm.base import SYSTEM_PROMPT, LlmProvider
+from pytest_llm_report.llm.base import LlmProvider
 from pytest_llm_report.models import LlmAnnotation
 
 if TYPE_CHECKING:
@@ -168,6 +168,9 @@ class GeminiProvider(LlmProvider):
         if not api_token:
             return LlmAnnotation(error="GEMINI_API_TOKEN is not set")
 
+        # Select appropriate system prompt based on test complexity
+        system_prompt = self._select_system_prompt(test_source)
+
         prompt = self._build_prompt(test, test_source, context_files)
         estimated_tokens = self._estimate_tokens(prompt)
 
@@ -218,7 +221,9 @@ class GeminiProvider(LlmProvider):
                 try:
                     limiter = self._get_rate_limiter(api_token, model)
                     limiter.record_request()
-                    response, tokens_used = self._call_gemini(prompt, api_token, model)
+                    response, tokens_used = self._call_gemini(
+                        prompt, api_token, model, system_prompt
+                    )
                     if tokens_used is not None:
                         limiter.record_tokens(tokens_used)
 
@@ -307,13 +312,15 @@ class GeminiProvider(LlmProvider):
         return limits
 
     def _call_gemini(
-        self, prompt: str, api_token: str, model: str
+        self, prompt: str, api_token: str, model: str, system_prompt: str
     ) -> tuple[str, int | None]:
         """Make a request to the Gemini API.
 
         Args:
             prompt: User prompt.
             api_token: Gemini API token.
+            model: Model name.
+            system_prompt: System instruction.
 
         Returns:
             Response text and token usage if available.
@@ -326,9 +333,24 @@ class GeminiProvider(LlmProvider):
             f"{model}:generateContent?key={api_token}"
         )
         payload = {
-            "system_instruction": {"parts": [{"text": SYSTEM_PROMPT}]},
+            "system_instruction": {"parts": [{"text": system_prompt}]},
             "contents": [{"role": "user", "parts": [{"text": prompt}]}],
-            "generation_config": {"temperature": 0.3},
+            "generation_config": {
+                "temperature": 0.3,
+                "response_mime_type": "application/json",
+                "response_schema": {
+                    "type": "object",
+                    "properties": {
+                        "scenario": {"type": "string"},
+                        "why_needed": {"type": "string"},
+                        "key_assertions": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                        },
+                    },
+                    "required": ["scenario", "why_needed"],
+                },
+            },
         }
         response = httpx.post(
             url, json=payload, timeout=self.config.llm_timeout_seconds
@@ -384,8 +406,11 @@ class GeminiProvider(LlmProvider):
         )
 
     def _estimate_tokens(self, prompt: str) -> int:
-        combined = f"{SYSTEM_PROMPT}\n{prompt}"
-        return max(1, len(combined) // 4)
+        # Estimate ~4 characters per token for prompt + average system prompt overhead
+        # Minimal prompt ~60 tokens, Standard prompt ~180 tokens, average ~120 tokens
+        estimated_prompt_tokens = len(prompt) // 4
+        average_system_prompt_tokens = 120
+        return max(1, estimated_prompt_tokens + average_system_prompt_tokens)
 
     def _normalize_model_name(self, model: str) -> str:
         if model.startswith("models/"):
