@@ -19,7 +19,7 @@ uv run pytest -c examples/with-ollama/pyproject.toml \
     -o "llm_report_context_mode=complete" \
     --llm-report=docs/example-report/index.html \
     --llm-report-json=docs/example-report/report.json \
-    --ignore=tests
+    --ignore=tests || true  # Allow pytest to fail (expected for demo reports with intentional failures)
 
 # 3. Generate PDF
 echo "Generating PDF..."

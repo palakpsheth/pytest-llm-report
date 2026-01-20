@@ -16,7 +16,7 @@ This report is automatically generated during CI/CD runs and includes:
 
 - **Test Results**: Pass/fail status for all tests
 - **Coverage Data**: Per-test coverage information showing which files and lines each test exercises
-- **LLM Annotations (optional)**: Scenario, why needed, and key assertions when LLMs are enabled
+- **LLM Annotations (optional)**: Scenario, why needed, key assertions, confidence score, and token usage when LLMs are enabled
 - **Execution Time**: Duration for each test
 - **Error Messages**: Full error details for failed tests
 - **Source Coverage**: Per-file covered/missed/percentage summary (similar to pytest-cov)

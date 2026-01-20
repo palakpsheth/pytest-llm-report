@@ -131,6 +131,15 @@ Each test in the `tests` array has:
 | `scenario` | string | What the test verifies |
 | `why_needed` | string | What bug it prevents |
 | `key_assertions` | array | Critical checks (3-8 bullets) |
-| `confidence` | number | Confidence score (0-1) |
+| `confidence` | number | Confidence score (0-1), displayed as percentage in HTML |
 | `error` | string | Error if LLM call failed |
 | `context_summary` | object | Context used for annotation |
+| `token_usage` | object | Token usage statistics (see below) |
+
+### Token Usage
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `prompt_tokens` | integer | Number of tokens in the prompt |
+| `completion_tokens` | integer | Number of tokens in the completion |
+| `total_tokens` | integer | Total tokens used |

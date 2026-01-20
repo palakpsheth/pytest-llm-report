@@ -210,6 +210,11 @@
                                         </ul>
                                     </div>
                                     {% endif %}
+                                    {% if test.llm_annotation.confidence is not none %}
+                                    <p class="confidence-score" style="font-size: 0.85em; color: var(--text-secondary); margin-top: 0.5rem;">
+                                        <strong>Confidence:</strong> {{ (test.llm_annotation.confidence * 100) | round(0) | int }}%
+                                    </p>
+                                    {% endif %}
                                     {% if test.llm_annotation.error %}
                                     <p><strong>LLM error:</strong> {{ test.llm_annotation.error }}</p>
                                     {% endif %}

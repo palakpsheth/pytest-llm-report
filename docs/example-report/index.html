@@ -627,21 +627,21 @@ document.addEventListener('DOMContentLoaded', function () {
                 <h1>Test Report</h1>
                 <div class="meta">
                     Run ID: N/A &bull;
-                    Generated: 2026-01-20 03:54:22 &bull;
-                    Duration: 74ms<br>
+                    Generated: 2026-01-20 06:16:52 &bull;
+                    Duration: 78ms<br>
                     <strong>Plugin:</strong> v0.2.0
-                        (136dd621b9de6451639b08a3338ccc7fcb4d9535)
+                        (a03dbe622cdc018f89b74731aed91adf1a582867)
 [dirty]<br>
                     <strong>Repo:</strong> v0.1.0
-                        (136dd621b9de6451639b08a3338ccc7fcb4d9535)
+                        (a03dbe622cdc018f89b74731aed91adf1a582867)
 [dirty]<br>
                     <strong>LLM:</strong> ollama / llama3.2
                         (complete context,
                          7 annotated)
                         <br><strong>Token Usage:</strong>
-                        973 input,
-                        494 output
-                        (Total: 1467)
+                        85 input,
+                        57 output
+                        (Total: 142)
                 </div>
             </div>
             <div style="text-align: right">
@@ -782,11 +782,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                             <li>assert add(1, 2) == 3</li>
                                         </ul>
                                     </div>
-                                    <p class="token-usage" style="font-size: 0.85em; color: var(--text-secondary); margin-top: 0.5rem; border-top: 1px dashed #e5e7eb; padding-top: 0.5rem;">
-                                        <strong>Tokens:</strong>
-                                        157 input +
-                                        50 output =
-                                        207 total
+                                    <p class="confidence-score" style="font-size: 0.85em; color: var(--text-secondary); margin-top: 0.5rem;">
+                                        <strong>Confidence:</strong> 80%
                                     </p>
                                 </div>
                             </div>
@@ -827,11 +824,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                             <li>{'description': 'The function should add two negative numbers and return a negative result.', 'expected_result': '-2', 'actual_result': None, 'result': None}</li>
                                         </ul>
                                     </div>
-                                    <p class="token-usage" style="font-size: 0.85em; color: var(--text-secondary); margin-top: 0.5rem; border-top: 1px dashed #e5e7eb; padding-top: 0.5rem;">
-                                        <strong>Tokens:</strong>
-                                        158 input +
-                                        88 output =
-                                        246 total
+                                    <p class="confidence-score" style="font-size: 0.85em; color: var(--text-secondary); margin-top: 0.5rem;">
+                                        <strong>Confidence:</strong> 80%
                                     </p>
                                 </div>
                             </div>
@@ -872,11 +866,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                             <li>{'assertion_type': 'equality', 'expected_result': 5, 'actual_result': None, 'test_case': 'divide(10, 2)'}</li>
                                         </ul>
                                     </div>
-                                    <p class="token-usage" style="font-size: 0.85em; color: var(--text-secondary); margin-top: 0.5rem; border-top: 1px dashed #e5e7eb; padding-top: 0.5rem;">
-                                        <strong>Tokens:</strong>
-                                        159 input +
-                                        95 output =
-                                        254 total
+                                    <p class="confidence-score" style="font-size: 0.85em; color: var(--text-secondary); margin-top: 0.5rem;">
+                                        <strong>Confidence:</strong> 80%
                                     </p>
                                 </div>
                             </div>
@@ -917,11 +908,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                             <li>{'assertion_type': 'raises_error', 'error_message': 'Cannot divide by zero', 'function_name': 'divide'}</li>
                                         </ul>
                                     </div>
-                                    <p class="token-usage" style="font-size: 0.85em; color: var(--text-secondary); margin-top: 0.5rem; border-top: 1px dashed #e5e7eb; padding-top: 0.5rem;">
-                                        <strong>Tokens:</strong>
-                                        163 input +
-                                        87 output =
-                                        250 total
+                                    <p class="confidence-score" style="font-size: 0.85em; color: var(--text-secondary); margin-top: 0.5rem;">
+                                        <strong>Confidence:</strong> 80%
                                     </p>
                                 </div>
                             </div>
@@ -966,11 +954,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                             <li>{'test_name': 'test_failure_demo', 'expected_result': 'AssertionError: 3 != 2', 'actual_result': 'None'}</li>
                                         </ul>
                                     </div>
-                                    <p class="token-usage" style="font-size: 0.85em; color: var(--text-secondary); margin-top: 0.5rem; border-top: 1px dashed #e5e7eb; padding-top: 0.5rem;">
-                                        <strong>Tokens:</strong>
-                                        163 input +
-                                        74 output =
-                                        237 total
+                                    <p class="confidence-score" style="font-size: 0.85em; color: var(--text-secondary); margin-top: 0.5rem;">
+                                        <strong>Confidence:</strong> 80%
                                     </p>
                                 </div>
                             </div>
@@ -1006,13 +991,22 @@ document.addEventListener('DOMContentLoaded', function () {
                             <div class="detail-section">
                                 <div class="detail-title">AI Assessment</div>
                                 <div class="llm-annotation">
-                                    <p><strong>Scenario:</strong> Test: tests/test_calculator.py::test_skip_demo</p>
-                                    <p><strong>Why Needed:</strong> This test is intentionally skipped.</p>
+                                    <p><strong>Scenario:</strong> tests/test_calculator.py::test_skip_demo</p>
+                                    <p><strong>Why Needed:</strong> This test is intentionally skipped for demonstration purposes.</p>
+                                    <div class="key-assertions">
+                                        <strong>Key Assertions:</strong>
+                                        <ul>
+                                            <li>The test should fail with a message indicating it's being skipped.</li>
+                                        </ul>
+                                    </div>
+                                    <p class="confidence-score" style="font-size: 0.85em; color: var(--text-secondary); margin-top: 0.5rem;">
+                                        <strong>Confidence:</strong> 80%
+                                    </p>
                                     <p class="token-usage" style="font-size: 0.85em; color: var(--text-secondary); margin-top: 0.5rem; border-top: 1px dashed #e5e7eb; padding-top: 0.5rem;">
                                         <strong>Tokens:</strong>
-                                        81 input +
-                                        43 output =
-                                        124 total
+                                        85 input +
+                                        57 output =
+                                        142 total
                                     </p>
                                 </div>
                             </div>
@@ -1052,11 +1046,8 @@ E       ZeroD</div>
                                             <li>assert 1 / 0 == 1</li>
                                         </ul>
                                     </div>
-                                    <p class="token-usage" style="font-size: 0.85em; color: var(--text-secondary); margin-top: 0.5rem; border-top: 1px dashed #e5e7eb; padding-top: 0.5rem;">
-                                        <strong>Tokens:</strong>
-                                        92 input +
-                                        57 output =
-                                        149 total
+                                    <p class="confidence-score" style="font-size: 0.85em; color: var(--text-secondary); margin-top: 0.5rem;">
+                                        <strong>Confidence:</strong> 80%
                                     </p>
                                 </div>
                             </div>

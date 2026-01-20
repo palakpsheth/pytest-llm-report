@@ -137,6 +137,13 @@ def render_fallback_html(report: ReportRoot) -> str:
                 <strong>Why needed:</strong> {a.why_needed}
             </div>
             """
+            if a.confidence is not None:
+                confidence_pct = int(round(a.confidence * 100))
+                annotation_html += f"""
+                <div class="confidence-score" style="font-size: 0.85em; color: #666; margin-top: 5px;">
+                    <strong>Confidence:</strong> {confidence_pct}%
+                </div>
+                """
             if a.token_usage:
                 tu = a.token_usage
                 annotation_html += f"""
