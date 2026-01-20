@@ -306,7 +306,9 @@ class TestAnnotateTests:
             batching, "group_tests_for_batching", lambda tests, cfg, fn: [mock_batch]
         )
         monkeypatch.setattr(
-            batching, "build_batch_prompt", lambda g, s, c: "batched prompt"
+            batching,
+            "build_batch_prompt",
+            lambda g, s, c, max_tokens=None: "batched prompt",
         )
 
         annotate_tests(tests, config, progress=progress_msgs.append)

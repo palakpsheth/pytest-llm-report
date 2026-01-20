@@ -183,6 +183,10 @@ module = [
 ]
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+module = "pytest_llm_report.*"
+disallow_untyped_defs = true
+
 [dependency-groups]
 dev = [
     "pre-commit>=4.5.1",

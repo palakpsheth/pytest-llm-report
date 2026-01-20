@@ -140,6 +140,7 @@ def build_batch_prompt(
     batch: BatchedRequest,
     test_source: str,
     context_files: dict[str, str] | None = None,
+    max_tokens: int = 4096,
 ) -> str:
     """Build a prompt for a batch of tests.
 
@@ -147,6 +148,7 @@ def build_batch_prompt(
         batch: Batched request with tests.
         test_source: Source code of the test function.
         context_files: Optional context files.
+        max_tokens: Maximum allowed input tokens (default: 4096).
 
     Returns:
         Prompt string for the batch.
@@ -182,12 +184,41 @@ def build_batch_prompt(
         parts.append(test_source)
         parts.append("```")
 
+    from pytest_llm_report.llm.base import SYSTEM_PROMPT
+    from pytest_llm_report.llm.utils import distribute_token_budget, estimate_tokens
+
     if context_files:
-        parts.append("\nRelevant context:")
-        for path, content in list(context_files.items())[:MAX_CONTEXT_FILES_IN_PROMPT]:
-            parts.append(f"\n{path}:")
-            parts.append("```python")
-            parts.append(content[:2000])
-            parts.append("```")
+        # Calculate budget
+        current_prompt = "\n".join(parts)
+        current_tokens = estimate_tokens(SYSTEM_PROMPT + "\n" + current_prompt)
+        available_token_budget = max(0, max_tokens - current_tokens - 100)  # Buffer
+
+        if available_token_budget > 0:
+            allocations = distribute_token_budget(
+                context_files,
+                available_token_budget,
+                max_files=MAX_CONTEXT_FILES_IN_PROMPT,
+            )
+
+            if allocations:
+                parts.append("\nRelevant context:")
+                for path, content in context_files.items():
+                    if path not in allocations:
+                        continue
+
+                    limit_tokens = allocations[path]
+                    if limit_tokens <= 0:
+                        continue
+
+                    parts.append(f"\n{path}:")
+                    parts.append("```python")
+
+                    limit_chars = limit_tokens * 4
+                    if len(content) <= limit_chars:
+                        parts.append(content)
+                    else:
+                        parts.append(content[:limit_chars] + "\n[... truncated]")
+
+                    parts.append("```")
 
     return "\n".join(parts)

@@ -134,7 +134,12 @@ def annotate_tests(
             if needs_run:
                 # Construct batch prompt
                 # usage of context_files from first test is approximation but usually correct for parametrized
-                batch_prompt = build_batch_prompt(group, template_source, context_files)
+                batch_prompt = build_batch_prompt(
+                    group,
+                    template_source,
+                    context_files,
+                    max_tokens=provider.get_max_context_tokens(),
+                )
 
                 uncached_tasks.append(
                     _AnnotationTask(

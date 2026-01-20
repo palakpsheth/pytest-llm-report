@@ -15,7 +15,7 @@ from __future__ import annotations
 import json
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 
 from pytest_llm_report.models import LlmAnnotation
 
@@ -240,7 +240,9 @@ class LlmProvider(ABC):
         Returns:
              Estimated token count.
         """
-        return max(1, len(text) // 4)
+        from pytest_llm_report.llm.utils import estimate_tokens
+
+        return estimate_tokens(text)
 
     def _build_prompt(
         self,
@@ -272,94 +274,40 @@ class LlmProvider(ABC):
         if available_token_budget <= 0:
             return header
 
-        parts = [header, "\nRelevant context:"]
+        from pytest_llm_report.llm.utils import distribute_token_budget
 
-        # Distribute budget among files
-        # Limit to 5 files max
-        files_to_include = list(context_files.items())[:5]
-        if not files_to_include:
-            return header
-
-        # Optimization: "Smart" budgeting to maximize utilization.
-        # Instead of equal split, we satisfy smaller files first to avoid wasted budget.
-
-        # 1. Analyze files
-        file_data = []
-        for path, content in files_to_include:
-            est = self._estimate_tokens(content)
-            # Add a small overhead for file path line in prompt
-            overhead = self._estimate_tokens(f"\n{path}:\n```python\n\n```")
-            file_data.append(
-                {
-                    "path": path,
-                    "content": content,
-                    "needed": est + overhead,
-                    "content_tokens": est,
-                    "allocated_content": 0,
-                }
-            )
-
-        # 2. Distribute budget
-        # Sort by needed size (asc) to satisfy small files first
-        sorted_indices = sorted(
-            range(len(file_data)), key=lambda i: cast(int, file_data[i]["needed"])
+        allocations = distribute_token_budget(
+            context_files, available_token_budget, max_files=5
         )
 
-        remaining_budget = available_token_budget
-        remaining_files = len(file_data)
+        if not allocations:
+            return header
 
-        allocations = dict.fromkeys(range(len(file_data)), 0)
-
-        for idx in sorted_indices:
-            # Calculate fair share of what's left
-            if remaining_files == 0:
-                break
-            fair_share = remaining_budget // remaining_files
-
-            needed = cast(int, file_data[idx]["needed"])
-
-            if needed <= fair_share:
-                # Fully satisfy this file
-                allocations[idx] = cast(int, file_data[idx]["content_tokens"])
-                remaining_budget -= needed
-            else:
-                # Give it the fair share (minus overhead)
-                # If fair_share < overhead, we might give 0 content, which is fine
-                # content = fair_share - overhead
-                overhead = cast(int, file_data[idx]["needed"]) - cast(
-                    int, file_data[idx]["content_tokens"]
-                )
-                allocations[idx] = max(0, fair_share - overhead)
-                remaining_budget -= fair_share
-
-            remaining_files -= 1
-
-        # Distribute any tiny remainder to the last/largest file (optional, but clean)
-        # (Implicitly handled by integer division rounding usually leaving small change, could just ignore)
+        parts = [header, "\nRelevant context:"]
 
         # 3. Build prompt (in original order to maintain stability)
-        for i, data in enumerate(file_data):
-            limit_tokens = allocations[i]
-            if limit_tokens <= 0:
+        # Use iterating over context_files to preserve order from input
+        for path, content in context_files.items():
+            if path not in allocations:
                 continue
 
-            path = str(data["path"])
-            content = str(data["content"])
+            limit_tokens = allocations[path]
+            if limit_tokens <= 0:
+                continue
 
             parts.append(f"\n{path}:")
             parts.append("```python")
 
-            # If we allocated the full requested amount, don't truncate
-            # (Avoids off-by-one errors in char estimation)
-            if limit_tokens >= cast(int, data["content_tokens"]):
+            # Check if we need to truncate
+            # We re-estimate content tokens here or just trust allocation
+            # Allocation is exact amount of tokens we can use.
+            # Convert to chars:
+            limit_chars = limit_tokens * 4
+
+            if len(content) <= limit_chars:
                 parts.append(content)
             else:
-                # Roughly convert token limit to chars for slicing
-                limit_chars = limit_tokens * 4
-                if len(content) <= limit_chars:
-                    parts.append(content)
-                else:
-                    parts.append(content[:limit_chars] + "\n[... truncated]")
+                parts.append(content[:limit_chars] + "\n[... truncated]")
 
             parts.append("```")
 
