@@ -151,7 +151,7 @@ class Config:
     # Token optimization settings
     batch_parametrized_tests: bool = True
     batch_max_tests: int = 5
-    context_compression: str = "none"  # "none", "lines"
+    context_compression: str = "lines"  # "none", "lines"
     context_line_padding: int = 2
 
     # Coverage settings

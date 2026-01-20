@@ -80,7 +80,7 @@ Settings specific to the `litellm` provider.
 |-----|-------------|---------|
 | `batch_parametrized_tests` | Group parametrized tests for single annotation | `true` |
 | `batch_max_tests` | Maximum tests per batch | `5` |
-| `context_compression` | Context compression mode (`none`, `lines`) | `\"none\"` |
+| `context_compression` | Context compression mode (`none`, `lines`) | `\"lines\"` |
 | `context_line_padding` | Lines of context around covered ranges | `2` |
 
 ### Report & Coverage

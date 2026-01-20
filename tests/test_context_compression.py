@@ -84,11 +84,11 @@ class TestExtractCoveredLines:
 class TestContextCompression:
     """Tests for context compression in ContextAssembler."""
 
-    def test_compression_disabled_by_default(self):
-        """Context compression should be disabled by default."""
-        config = Config(provider="none", context_compression="none")
+    def test_compression_enabled_by_default(self):
+        """Context compression should be enabled by default ("lines")."""
+        config = Config(provider="none")
         # Compression mode check
-        assert config.context_compression == "none"
+        assert config.context_compression == "lines"
 
     def test_compression_mode_lines(self):
         """Lines compression mode should be available."""
