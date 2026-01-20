@@ -1,0 +1,15 @@
+[project]
+name = "example-report"
+version = "1.0.0"
+description = "Example project for pytest-llm-report demo"
+
+[tool.pytest.ini_options]
+# Enable coverage for the calculator module
+addopts = "--cov=calculator --cov-context=test --cov-fail-under=0"
+
+[tool.pytest_llm_report]
+provider = "ollama"
+model = "llama3.2:1b"
+
+[tool.coverage.run]
+relative_files = true
