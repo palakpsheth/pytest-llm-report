@@ -21,3 +21,20 @@ def test_divide_zero():
     """Verify division by zero raises error."""
     with pytest.raises(ValueError):
         divide(10, 0)
+
+
+def test_failure_demo():
+    """A test that intentionally fails to show error reporting."""
+    assert add(1, 1) == 3
+
+
+@pytest.mark.skip(reason="Demonstrating skipped test reporting")
+def test_skip_demo():
+    """A test that is skipped."""
+    pytest.fail("Should be skipped")
+
+
+@pytest.mark.xfail(reason="Demonstrating xfailed test reporting")
+def test_xfail_demo():
+    """A test that is expected to fail."""
+    assert 1 / 0 == 1

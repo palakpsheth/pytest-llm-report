@@ -22,11 +22,31 @@ class TestConfig:
         assert cfg.include_phase == "run"
         assert cfg.aggregate_policy == "latest"
         assert cfg.is_llm_enabled() is False
+        assert cfg.omit_tests_from_coverage is True
+
+    def test_default_exclude_globs(self):
+        """Should have correct default exclude globs."""
+        config = Config()
+        defaults = config.llm_context_exclude_globs
+        assert "*.pyc" in defaults
+        assert "__pycache__/*" in defaults
+        assert "*secret*" in defaults
+        assert "*password*" in defaults
+
+    def test_default_redact_patterns(self):
+        """Should have correct default redact patterns."""
+        config = Config()
+        patterns = config.invocation_redact_patterns
+        assert any("--password" in p for p in patterns)
+        assert any("--token" in p for p in patterns)
+        assert any("--api[_-]?key" in p for p in patterns)
 
     def test_is_llm_enabled(self):
         """Test is_llm_enabled check."""
         assert Config(provider="none").is_llm_enabled() is False
         assert Config(provider="ollama").is_llm_enabled() is True
+        assert Config(provider="litellm").is_llm_enabled() is True
+        assert Config(provider="gemini").is_llm_enabled() is True
         cfg = Config()
         assert not cfg.is_llm_enabled()
         cfg.provider = "ollama"
@@ -110,10 +130,13 @@ class TestLoadConfig:
             "llm_aggregate_group_id",
             "llm_coverage_source",
             "llm_max_retries",
-            # New Core CLI Flags
             "llm_provider",
             "llm_model",
             "llm_context_mode",
+            # Token Optimization CLI Flags
+            "llm_prompt_tier",
+            "llm_batch_parametrized",
+            "llm_context_compression",
         ]:
             setattr(config.option, attr, None)
 
@@ -161,6 +184,10 @@ max_retries = 2
             "llm_provider",
             "llm_model",
             "llm_context_mode",
+            # Token Optimization CLI Flags
+            "llm_prompt_tier",
+            "llm_batch_parametrized",
+            "llm_context_compression",
         ]:
             setattr(mock_pytest_config.option, attr, None)
         mock_pytest_config.rootpath = tmp_path
@@ -194,6 +221,10 @@ max_retries = 2
             "llm_provider",
             "llm_model",
             "llm_context_mode",
+            # Token Optimization CLI Flags
+            "llm_prompt_tier",
+            "llm_batch_parametrized",
+            "llm_context_compression",
         ]:
             setattr(mock_pytest_config.option, attr, None)
         mock_pytest_config.rootpath = tmp_path  # No pyproject.toml here
@@ -229,6 +260,14 @@ provider = "ollama"
             "llm_aggregate_group_id",
             "llm_coverage_source",
             "llm_max_retries",
+            # New Core CLI Flags
+            "llm_provider",
+            "llm_model",
+            "llm_context_mode",
+            # Token Optimization CLI Flags
+            "llm_prompt_tier",
+            "llm_batch_parametrized",
+            "llm_context_compression",
         ]:
             setattr(mock_pytest_config.option, attr, None)
         mock_pytest_config.rootpath = tmp_path
@@ -273,6 +312,10 @@ model = "base"
             "llm_provider",
             "llm_model",
             "llm_context_mode",
+            # Token Optimization CLI Flags
+            "llm_prompt_tier",
+            "llm_batch_parametrized",
+            "llm_context_compression",
         ]:
             setattr(mock_pytest_config.option, attr, None)
         mock_pytest_config.rootpath = tmp_path
@@ -311,3 +354,22 @@ model = "base"
         mock_pytest_config.option.llm_coverage_source = "cov_dir"
         cfg = load_config(mock_pytest_config)
         assert cfg.llm_coverage_source == "cov_dir"
+
+    def test_load_token_optimization_options(self, mock_pytest_config):
+        """Test loading token optimization options from CLI."""
+        mock_pytest_config.option.llm_prompt_tier = "minimal"
+        mock_pytest_config.option.llm_batch_parametrized = False
+        mock_pytest_config.option.llm_context_compression = "none"
+
+        cfg = load_config(mock_pytest_config)
+
+        assert cfg.prompt_tier == "minimal"
+        assert cfg.batch_parametrized_tests is False
+        assert cfg.context_compression == "none"
+
+    def test_load_batch_flag_conflict(self, mock_pytest_config):
+        """Test that disabled batch flag works."""
+        mock_pytest_config.option.llm_batch_parametrized = None
+        # Should be default (True)
+        cfg = load_config(mock_pytest_config)
+        assert cfg.batch_parametrized_tests is True

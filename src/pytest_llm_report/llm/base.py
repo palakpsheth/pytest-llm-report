@@ -17,13 +17,20 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from pytest_llm_report.models import LlmAnnotation
+
 if TYPE_CHECKING:
-    from pytest_llm_report.models import LlmAnnotation, TestCaseResult
+    from pytest_llm_report.models import TestCaseResult
     from pytest_llm_report.options import Config
 
 
-# System prompt for test annotation
-SYSTEM_PROMPT = """You are a helpful assistant that analyzes Python test code.
+# System prompts for test annotation (tiered by complexity)
+
+# Minimal prompt for simple tests (~60 tokens)
+MINIMAL_SYSTEM_PROMPT = """Analyze test, return JSON: {"scenario":"...","why_needed":"...","key_assertions":["..."]}"""
+
+# Standard prompt for typical tests (~180 tokens)
+STANDARD_SYSTEM_PROMPT = """You are a helpful assistant that analyzes Python test code.
 Given a test function, provide a structured annotation with:
 1. scenario: What the test verifies (1-3 sentences)
 2. why_needed: What bug or regression this test prevents (1-3 sentences)
@@ -35,6 +42,12 @@ Respond ONLY with valid JSON in this exact format:
   "why_needed": "...",
   "key_assertions": ["...", "..."]
 }"""
+
+# Legacy alias for backward compatibility
+SYSTEM_PROMPT = STANDARD_SYSTEM_PROMPT
+
+# Threshold for determining simple vs complex tests
+COMPLEXITY_THRESHOLD = 10
 
 
 class LlmProvider(ABC):
@@ -57,6 +70,7 @@ class LlmProvider(ABC):
         test: TestCaseResult,
         test_source: str,
         context_files: dict[str, str] | None = None,
+        prompt_override: str | None = None,
     ) -> LlmAnnotation:
         """Generate an LLM annotation for a test.
 
@@ -64,15 +78,26 @@ class LlmProvider(ABC):
             test: Test result to annotate.
             test_source: Source code of the test function.
             context_files: Optional dict of file paths to content.
+            prompt_override: Optional pre-constructed prompt (skips build_prompt).
 
         Returns:
             LlmAnnotation with scenario, why_needed, key_assertions.
         """
-        # Attempt 1: Try with full context
-        annotation = self._annotate_internal(test, test_source, context_files)
+        # Attempt 1: Try with full context (or override)
+        try:
+            annotation = self._annotate_internal(
+                test, test_source, context_files, prompt_override
+            )
+        except Exception as e:
+            return LlmAnnotation(error=str(e))
 
         # Handle "context too long" - retry with minimal context (first time only)
-        if annotation.error and "context too long" in annotation.error.lower():
+        # Only relevant if NOT using prompt_override (which is fixed)
+        if (
+            not prompt_override
+            and annotation.error
+            and "context too long" in annotation.error.lower()
+        ):
             if context_files:
                 # Retry with no context
                 return self._annotate_internal(test, test_source, None)
@@ -85,6 +110,7 @@ class LlmProvider(ABC):
         test: TestCaseResult,
         test_source: str,
         context_files: dict[str, str] | None = None,
+        prompt_override: str | None = None,
     ) -> LlmAnnotation:
         """Internal annotation method implemented by subclasses.
 
@@ -92,6 +118,7 @@ class LlmProvider(ABC):
             test: Test result.
             test_source: Test source code.
             context_files: Optional context files.
+            prompt_override: Optional pre-constructed prompt.
 
         Returns:
             Annotation result.
@@ -146,6 +173,77 @@ class LlmProvider(ABC):
         """
         return False
 
+    def _estimate_test_complexity(self, test_source: str | None) -> int:
+        """Estimate test complexity for prompt tier selection.
+
+        Args:
+            test_source: Test function source code.
+
+        Returns:
+            Complexity score (0-100+).
+        """
+        if not test_source:
+            return 0
+
+        import re
+
+        # Count complexity indicators using word boundaries for accuracy
+        score = 0
+        score += len(re.findall(r"\bassert\b", test_source)) * 3
+        score += len(re.findall(r"\bmock\b", test_source, re.IGNORECASE)) * 5
+        score += len(re.findall(r"\bpatch\b", test_source)) * 5
+        score += len(re.findall(r"\bfixture\b", test_source)) * 2
+        score += test_source.count("pytest.raises") * 3
+        score += test_source.count("@") * 2  # Decorators
+        score += len(test_source) // 100  # Length factor
+
+        return score
+
+    def _select_system_prompt(self, test_source: str | None) -> str:
+        """Select appropriate system prompt based on test complexity.
+
+        Args:
+            test_source: Test function source code.
+
+        Returns:
+            Selected system prompt string.
+        """
+        # Check config override
+        prompt_tier = getattr(self.config, "prompt_tier", "auto")
+
+        if prompt_tier == "minimal":
+            return MINIMAL_SYSTEM_PROMPT
+        elif prompt_tier == "standard":
+            return STANDARD_SYSTEM_PROMPT
+        else:  # "auto"
+            complexity = self._estimate_test_complexity(test_source)
+            if complexity < COMPLEXITY_THRESHOLD:
+                return MINIMAL_SYSTEM_PROMPT
+            return STANDARD_SYSTEM_PROMPT
+
+    def get_max_context_tokens(self) -> int:
+        """Get the maximum number of input tokens allowed for the current model.
+
+        Returns:
+            Max input tokens (default: 4096).
+        """
+        return 4096
+
+    def _estimate_tokens(self, text: str) -> int:
+        """Estimate the number of tokens in a string.
+
+        This is a rough estimation (chars / 4) suitable for budgeting.
+
+        Args:
+            text: Input text.
+
+        Returns:
+             Estimated token count.
+        """
+        from pytest_llm_report.llm.utils import estimate_tokens
+
+        return estimate_tokens(text)
+
     def _build_prompt(
         self,
         test: TestCaseResult,
@@ -162,15 +260,56 @@ class LlmProvider(ABC):
         Returns:
             Prompt string.
         """
-        parts = [f"Test: {test.nodeid}", "", "```python", test_source, "```"]
+        # Base prompt structure
+        header = f"Test: {test.nodeid}\n\n```python\n{test_source}\n```"
 
-        if context_files:
-            parts.append("\nRelevant context:")
-            for path, content in list(context_files.items())[:5]:
-                parts.append(f"\n{path}:")
-                parts.append("```python")
-                parts.append(content[:2000])  # Truncate long files
-                parts.append("```")
+        if not context_files:
+            return header
+
+        # Calculate budget
+        max_tokens = self.get_max_context_tokens()
+        current_tokens = self._estimate_tokens(SYSTEM_PROMPT + "\n" + header)
+        available_token_budget = max(0, max_tokens - current_tokens - 100)  # Buffer
+
+        if available_token_budget <= 0:
+            return header
+
+        from pytest_llm_report.llm.utils import distribute_token_budget
+
+        allocations = distribute_token_budget(
+            context_files, available_token_budget, max_files=5
+        )
+
+        if not allocations:
+            return header
+
+        parts = [header, "\nRelevant context:"]
+
+        # 3. Build prompt (in original order to maintain stability)
+        # Use iterating over context_files to preserve order from input
+        for path, content in context_files.items():
+            if path not in allocations:
+                continue
+
+            limit_tokens = allocations[path]
+            if limit_tokens <= 0:
+                continue
+
+            parts.append(f"\n{path}:")
+            parts.append("```python")
+
+            # Check if we need to truncate
+            # We re-estimate content tokens here or just trust allocation
+            # Allocation is exact amount of tokens we can use.
+            # Convert to chars:
+            limit_chars = limit_tokens * 4
+
+            if len(content) <= limit_chars:
+                parts.append(content)
+            else:
+                parts.append(content[:limit_chars] + "\n[... truncated]")
+
+            parts.append("```")
 
         return "\n".join(parts)
 

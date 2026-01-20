@@ -81,7 +81,7 @@ def expand_ranges(range_str: str) -> list[int]:
     if not range_str:
         return []
 
-    lines = []
+    lines: list[int] = []
     for part in range_str.split(","):
         part = part.strip()
         if "-" in part:

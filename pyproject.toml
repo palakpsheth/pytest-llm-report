@@ -105,6 +105,7 @@ pythonpath = ["src"]
 norecursedirs = ["tests/fixtures"]
 
 [tool.pytest_llm_report]
+report = "reports/pytest_llm_report.html"
 provider = "none"
 model = "llama3.2:1b"
 context_mode = "minimal"
@@ -168,12 +169,28 @@ known-first-party = ["pytest_llm_report"]
 python_version = "3.11"
 warn_return_any = true
 warn_unused_configs = true
+disallow_untyped_defs = false
+exclude = [
+    "examples/",
+    "docs/",
+]
+
+[[tool.mypy.overrides]]
+module = [
+    "google.generativeai",
+    "google.api_core.*",
+    "pytest_llm_report.llm.gemini",
+]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = "pytest_llm_report.*"
 disallow_untyped_defs = true
 
 [dependency-groups]
 dev = [
     "pre-commit>=4.5.1",
-    "ruff>=0.14.10",
+    "ruff>=0.14.13",
     "mypy>=1.0.0",
     "pytest-xdist>=3.0.0",
     "httpx>=0.24.0",

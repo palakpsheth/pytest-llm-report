@@ -146,6 +146,13 @@ class Config:
     llm_max_retries: int = 10
     llm_cache_ttl_seconds: int = 86400  # 24 hours
     cache_dir: str = ".pytest_llm_cache"
+    prompt_tier: str = "auto"  # "minimal", "standard", "auto"
+
+    # Token optimization settings
+    batch_parametrized_tests: bool = True
+    batch_max_tests: int = 5
+    context_compression: str = "lines"  # "none", "lines"
+    context_line_padding: int = 2
 
     # Coverage settings
     omit_tests_from_coverage: bool = True
@@ -154,8 +161,9 @@ class Config:
 
     # Report behavior
     report_collect_only: bool = True
-    capture_failed_output: bool = False
+    capture_failed_output: bool = True  # Changed from False to True
     capture_output_max_chars: int = 4000
+    llm_strip_docstrings: bool = True  # New: strip docstrings by default
 
     # Invocation summary
     include_pytest_invocation: bool = True
@@ -245,11 +253,35 @@ class Config:
         if self.llm_max_retries < 0:
             errors.append("llm_max_retries must be 0 or positive")
 
+        # Validate prompt_tier
+        valid_tiers = ("minimal", "standard", "auto")
+        if self.prompt_tier not in valid_tiers:
+            errors.append(
+                f"Invalid prompt_tier '{self.prompt_tier}'. "
+                f"Must be one of: {valid_tiers}"
+            )
+
+        # Validate token optimization settings
+        valid_compression = ("none", "lines")
+        if self.context_compression not in valid_compression:
+            errors.append(
+                f"Invalid context_compression '{self.context_compression}'. "
+                f"Must be one of: {valid_compression}"
+            )
+        if self.batch_max_tests < 1:
+            errors.append("batch_max_tests must be at least 1")
+        if self.context_line_padding < 0:
+            errors.append("context_line_padding must be 0 or positive")
+
         return errors
 
     def is_llm_enabled(self) -> bool:
-        """Check if LLM is enabled (provider is not 'none')."""
-        return self.provider != "none"
+        """Check if LLM features are enabled.
+
+        Returns:
+            True if provider is configured and not 'none'.
+        """
+        return self.provider.lower() != "none"
 
 
 def get_default_config() -> Config:
@@ -357,6 +389,20 @@ def load_config(config: "pytest.Config") -> Config:
                     cfg.llm_cache_ttl_seconds = tool_config["cache_ttl_seconds"]
                 if "cache_dir" in tool_config:
                     cfg.cache_dir = tool_config["cache_dir"]
+                if "prompt_tier" in tool_config:
+                    cfg.prompt_tier = tool_config["prompt_tier"]
+
+                # Token optimization settings
+                if "batch_parametrized_tests" in tool_config:
+                    cfg.batch_parametrized_tests = tool_config[
+                        "batch_parametrized_tests"
+                    ]
+                if "batch_max_tests" in tool_config:
+                    cfg.batch_max_tests = tool_config["batch_max_tests"]
+                if "context_compression" in tool_config:
+                    cfg.context_compression = tool_config["context_compression"]
+                if "context_line_padding" in tool_config:
+                    cfg.context_line_padding = tool_config["context_line_padding"]
 
                 # Coverage settings
                 if "omit_tests_from_coverage" in tool_config:
@@ -420,6 +466,18 @@ def load_config(config: "pytest.Config") -> Config:
     if hasattr(config.option, "llm_context_mode") and config.option.llm_context_mode:
         cfg.llm_context_mode = config.option.llm_context_mode
 
+    # Token optimization CLI overrides
+    if hasattr(config.option, "llm_prompt_tier") and config.option.llm_prompt_tier:
+        cfg.prompt_tier = config.option.llm_prompt_tier
+    if hasattr(config.option, "llm_batch_parametrized"):
+        if config.option.llm_batch_parametrized is not None:
+            cfg.batch_parametrized_tests = config.option.llm_batch_parametrized
+    if (
+        hasattr(config.option, "llm_context_compression")
+        and config.option.llm_context_compression
+    ):
+        cfg.context_compression = config.option.llm_context_compression
+
     # Standard overrides (legacy and existing)
     if config.option.llm_report_html:
         cfg.report_html = config.option.llm_report_html
@@ -435,6 +493,107 @@ def load_config(config: "pytest.Config") -> Config:
         cfg.llm_requests_per_minute = config.option.llm_requests_per_minute
     if config.option.llm_max_retries is not None:
         cfg.llm_max_retries = config.option.llm_max_retries
+
+    # Context controls
+    if (
+        hasattr(config.option, "llm_context_bytes")
+        and config.option.llm_context_bytes is not None
+    ):
+        cfg.llm_context_bytes = config.option.llm_context_bytes
+    if (
+        hasattr(config.option, "llm_context_file_limit")
+        and config.option.llm_context_file_limit is not None
+    ):
+        cfg.llm_context_file_limit = config.option.llm_context_file_limit
+
+    # Execution controls
+    if (
+        hasattr(config.option, "llm_max_tests")
+        and config.option.llm_max_tests is not None
+    ):
+        cfg.llm_max_tests = config.option.llm_max_tests
+    if (
+        hasattr(config.option, "llm_max_concurrency")
+        and config.option.llm_max_concurrency is not None
+    ):
+        cfg.llm_max_concurrency = config.option.llm_max_concurrency
+    if (
+        hasattr(config.option, "llm_timeout_seconds")
+        and config.option.llm_timeout_seconds is not None
+    ):
+        cfg.llm_timeout_seconds = config.option.llm_timeout_seconds
+
+    # Behavior controls
+    if (
+        hasattr(config.option, "llm_capture_failed")
+        and config.option.llm_capture_failed is not None
+    ):
+        cfg.capture_failed_output = config.option.llm_capture_failed
+
+    # Provider-specific options
+    if hasattr(config.option, "llm_ollama_host") and config.option.llm_ollama_host:
+        cfg.ollama_host = config.option.llm_ollama_host
+    if (
+        hasattr(config.option, "llm_litellm_api_base")
+        and config.option.llm_litellm_api_base
+    ):
+        cfg.litellm_api_base = config.option.llm_litellm_api_base
+    if (
+        hasattr(config.option, "llm_litellm_api_key")
+        and config.option.llm_litellm_api_key
+    ):
+        cfg.litellm_api_key = config.option.llm_litellm_api_key
+    if (
+        hasattr(config.option, "llm_litellm_token_refresh_command")
+        and config.option.llm_litellm_token_refresh_command
+    ):
+        cfg.litellm_token_refresh_command = (
+            config.option.llm_litellm_token_refresh_command
+        )
+    if (
+        hasattr(config.option, "llm_litellm_token_refresh_interval")
+        and config.option.llm_litellm_token_refresh_interval is not None
+    ):
+        cfg.litellm_token_refresh_interval = (
+            config.option.llm_litellm_token_refresh_interval
+        )
+    if (
+        hasattr(config.option, "llm_litellm_token_output_format")
+        and config.option.llm_litellm_token_output_format
+    ):
+        cfg.litellm_token_output_format = config.option.llm_litellm_token_output_format
+    if (
+        hasattr(config.option, "llm_litellm_token_json_key")
+        and config.option.llm_litellm_token_json_key
+    ):
+        cfg.litellm_token_json_key = config.option.llm_litellm_token_json_key
+
+    # Maintenance options
+    if hasattr(config.option, "llm_cache_dir") and config.option.llm_cache_dir:
+        cfg.cache_dir = config.option.llm_cache_dir
+    if (
+        hasattr(config.option, "llm_cache_ttl")
+        and config.option.llm_cache_ttl is not None
+    ):
+        cfg.llm_cache_ttl_seconds = config.option.llm_cache_ttl
+
+    # Metadata options
+    if hasattr(config.option, "llm_metadata_file") and config.option.llm_metadata_file:
+        cfg.metadata_file = config.option.llm_metadata_file
+    if hasattr(config.option, "llm_hmac_key_file") and config.option.llm_hmac_key_file:
+        cfg.hmac_key_file = config.option.llm_hmac_key_file
+
+    # Content optimization options
+    if (
+        hasattr(config.option, "llm_include_params")
+        and config.option.llm_include_params is not None
+    ):
+        cfg.llm_include_param_values = config.option.llm_include_params
+    if (
+        hasattr(config.option, "llm_strip_docstrings")
+        and config.option.llm_strip_docstrings is not None
+    ):
+        cfg.llm_strip_docstrings = config.option.llm_strip_docstrings
 
     # Aggregation options
     if config.option.llm_aggregate_dir:

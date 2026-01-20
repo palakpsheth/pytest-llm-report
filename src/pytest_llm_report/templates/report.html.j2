@@ -36,6 +36,12 @@
                     <strong>LLM:</strong> {{ report.run_meta.llm_provider }} / {{ report.run_meta.llm_model or "default" }}
                         ({{ report.run_meta.llm_context_mode or "minimal" }} context,
                          {{ report.run_meta.llm_annotations_count or 0 }} annotated{% if report.run_meta.llm_annotations_errors %}, {{ report.run_meta.llm_annotations_errors }} errors{% endif %})
+                        {% if report.run_meta.llm_total_tokens %}
+                        <br><strong>Token Usage:</strong>
+                        {{ report.run_meta.llm_total_input_tokens | default(0) }} input,
+                        {{ report.run_meta.llm_total_output_tokens | default(0) }} output
+                        (Total: {{ report.run_meta.llm_total_tokens }})
+                        {% endif %}
                     {% endif %}
                 </div>
             </div>
@@ -204,8 +210,21 @@
                                         </ul>
                                     </div>
                                     {% endif %}
+                                    {% if test.llm_annotation.confidence is not none %}
+                                    <p class="confidence-score" style="font-size: 0.85em; color: var(--text-secondary); margin-top: 0.5rem;">
+                                        <strong>Confidence:</strong> {{ (test.llm_annotation.confidence * 100) | round(0) | int }}%
+                                    </p>
+                                    {% endif %}
                                     {% if test.llm_annotation.error %}
                                     <p><strong>LLM error:</strong> {{ test.llm_annotation.error }}</p>
+                                    {% endif %}
+                                    {% if test.llm_annotation.token_usage %}
+                                    <p class="token-usage" style="font-size: 0.85em; color: var(--text-secondary); margin-top: 0.5rem; border-top: 1px dashed #e5e7eb; padding-top: 0.5rem;">
+                                        <strong>Tokens:</strong>
+                                        {{ test.llm_annotation.token_usage.prompt_tokens }} input +
+                                        {{ test.llm_annotation.token_usage.completion_tokens }} output =
+                                        {{ test.llm_annotation.token_usage.total_tokens }} total
+                                    </p>
                                     {% endif %}
                                 </div>
                             </div>

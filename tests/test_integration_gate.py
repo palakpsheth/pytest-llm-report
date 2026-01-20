@@ -49,10 +49,10 @@ class TestConfigDefaults:
         assert config.aggregate_policy == "latest"
         assert config.aggregate_include_history is False
 
-    def test_capture_failed_output_default_false(self):
-        """Captured output is opt-in."""
+    def test_capture_failed_output_default_true(self):
+        """Captured output is enabled by default."""
         config = get_default_config()
-        assert config.capture_failed_output is False
+        assert config.capture_failed_output is True
 
     def test_secret_exclude_globs(self):
         """Secret files are excluded by default."""

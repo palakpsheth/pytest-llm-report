@@ -52,7 +52,7 @@ class WarningCode(str, Enum):
 
 
 @dataclass(frozen=True)
-class Warning:
+class ReportWarning:
     """A warning captured during report generation.
 
     Attributes:
@@ -61,14 +61,17 @@ class Warning:
         detail: Optional additional context (e.g., file path, nodeid).
     """
 
-    code: WarningCode
+    code: WarningCode | str
     message: str
     detail: str | None = None
 
     def to_dict(self) -> dict:
         """Convert to dictionary for JSON serialization."""
+        code_val = (
+            self.code.value if isinstance(self.code, WarningCode) else str(self.code)
+        )
         result = {
-            "code": self.code.value,
+            "code": code_val,
             "message": self.message,
         }
         if self.detail:
@@ -126,7 +129,7 @@ WARNING_MESSAGES = {
 }
 
 
-def make_warning(code: WarningCode, detail: str | None = None) -> Warning:
+def make_warning(code: WarningCode, detail: str | None = None) -> ReportWarning:
     """Create a warning with the standard message for the given code.
 
     Args:
@@ -134,9 +137,9 @@ def make_warning(code: WarningCode, detail: str | None = None) -> Warning:
         detail: Optional additional context.
 
     Returns:
-        A Warning instance with the standard message.
+        A ReportWarning instance with the standard message.
     """
-    return Warning(
+    return ReportWarning(
         code=code,
         message=WARNING_MESSAGES.get(code, "Unknown warning."),
         detail=detail,

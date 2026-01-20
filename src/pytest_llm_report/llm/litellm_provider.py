@@ -7,10 +7,10 @@ Supports custom proxy URLs and dynamic token refresh for corporate environments.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 from pytest_llm_report.llm.base import LlmProvider
-from pytest_llm_report.models import LlmAnnotation
+from pytest_llm_report.models import LlmAnnotation, LlmTokenUsage
 
 if TYPE_CHECKING:
     from pytest_llm_report.llm.token_refresh import TokenRefresher
@@ -66,6 +66,7 @@ class LiteLLMProvider(LlmProvider):
         test: TestCaseResult,
         test_source: str,
         context_files: dict[str, str] | None = None,
+        prompt_override: str | None = None,
     ) -> LlmAnnotation:
         """Generate an annotation using LiteLLM.
 
@@ -73,6 +74,7 @@ class LiteLLMProvider(LlmProvider):
             test: Test result to annotate.
             test_source: Source code of the test function.
             context_files: Optional context files.
+            prompt_override: Optional pre-constructed prompt.
 
         Returns:
             LlmAnnotation with parsed response.
@@ -86,10 +88,14 @@ class LiteLLMProvider(LlmProvider):
 
         import time
 
-        from pytest_llm_report.llm.base import SYSTEM_PROMPT
+        # Select appropriate system prompt based on test complexity
+        system_prompt = self._select_system_prompt(test_source)
 
-        # Build prompt
-        prompt = self._build_prompt(test, test_source, context_files)
+        # Build prompt or use override
+        if prompt_override:
+            prompt = prompt_override
+        else:
+            prompt = self._build_prompt(test, test_source, context_files)
 
         max_retries = self.config.llm_max_retries
         last_error = None
@@ -103,7 +109,7 @@ class LiteLLMProvider(LlmProvider):
                 # It returns an LlmAnnotation on success or for non-retriable
                 # parsing errors. We can return this directly. The surrounding
                 # retry loop is for transient API errors caught as exceptions.
-                return self._make_request(litellm, prompt, SYSTEM_PROMPT)
+                return self._make_request(litellm, prompt, system_prompt)
 
             except Exception as e:
                 # Check if this is an authentication error (401)
@@ -118,7 +124,7 @@ class LiteLLMProvider(LlmProvider):
                         self._token_refresher.invalidate()
                         try:
                             return self._make_request(
-                                litellm, prompt, SYSTEM_PROMPT, force_refresh=True
+                                litellm, prompt, system_prompt, force_refresh=True
                             )
                         except Exception as retry_e:
                             last_error = f"Auth retry failed: {retry_e}"
@@ -141,7 +147,7 @@ class LiteLLMProvider(LlmProvider):
 
     def _make_request(
         self,
-        litellm: object,
+        litellm: Any,
         prompt: str,
         system_prompt: str,
         force_refresh: bool = False,
@@ -169,6 +175,7 @@ class LiteLLMProvider(LlmProvider):
             ],
             "temperature": 0.3,
             "timeout": self.config.llm_timeout_seconds,
+            "response_format": {"type": "json_object"},  # Structured output
         }
 
         # Add api_base if configured
@@ -185,6 +192,15 @@ class LiteLLMProvider(LlmProvider):
         content = response.choices[0].message.content
         annotation = self._parse_response(content)
 
+        # Extract token usage if available
+        if hasattr(response, "usage") and response.usage:
+            usage = response.usage
+            annotation.token_usage = LlmTokenUsage(
+                prompt_tokens=getattr(usage, "prompt_tokens", 0),
+                completion_tokens=getattr(usage, "completion_tokens", 0),
+                total_tokens=getattr(usage, "total_tokens", 0),
+            )
+
         if annotation.error:
             # If "context too long", fail immediately so base class can fallback
             if "context too long" in annotation.error.lower():
@@ -195,6 +211,27 @@ class LiteLLMProvider(LlmProvider):
             return annotation
 
         return annotation
+
+    def get_max_context_tokens(self) -> int:
+        """Get the maximum number of input tokens allowed for the current model.
+
+        Returns:
+            Max input tokens.
+        """
+        try:
+            import litellm
+
+            model = self.config.model or "gpt-3.5-turbo"
+            # litellm.get_max_tokens() returns dict sometimes or int?
+            # It usually returns total context window.
+            limit = litellm.get_max_tokens(model)
+            if isinstance(limit, int):
+                return limit
+            if isinstance(limit, dict) and "max_tokens" in limit:
+                return int(limit["max_tokens"])
+        except Exception:
+            pass
+        return 4096
 
     def _check_availability(self) -> bool:
         """Check if LiteLLM is available.

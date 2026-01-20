@@ -98,7 +98,7 @@ class ContextAssembler:
         lines = source.split("\n")
         in_func = False
         func_lines = []
-        indent = None
+        indent = 0
 
         for line in lines:
             if f"def {test_name}(" in line:
@@ -116,15 +116,22 @@ class ContextAssembler:
         return "\n".join(func_lines)
 
     def _get_balanced_context(
-        self, test: TestCaseResult, repo_root: Path
+        self,
+        test: TestCaseResult,
+        repo_root: Path,
+        max_bytes: int | None = None,
+        max_files: int | None = None,
     ) -> dict[str, str]:
         """Get balanced context from coverage.
 
         Includes files covered by the test, limited by config.
+        Uses line-range extraction for compression when enabled.
 
         Args:
             test: Test result.
             repo_root: Repository root.
+            max_bytes: Optional override for max context bytes.
+            max_files: Optional override for max context files.
 
         Returns:
             Dict of file paths to content.
@@ -134,11 +141,19 @@ class ContextAssembler:
 
         context = {}
         total_bytes = 0
-        max_bytes = self.config.llm_context_bytes
-        max_files = self.config.llm_context_file_limit
+        current_max_bytes = (
+            max_bytes if max_bytes is not None else self.config.llm_context_bytes
+        )
+        current_max_files = (
+            max_files if max_files is not None else self.config.llm_context_file_limit
+        )
 
-        for entry in test.coverage[:max_files]:
-            if total_bytes >= max_bytes:
+        # Check for compression mode
+        compression_mode = getattr(self.config, "context_compression", "none")
+        line_padding = getattr(self.config, "context_line_padding", 2)
+
+        for entry in test.coverage[:current_max_files]:
+            if total_bytes >= current_max_bytes:
                 break
 
             file_path = repo_root / entry.file_path
@@ -149,9 +164,32 @@ class ContextAssembler:
                 continue
 
             try:
-                content = file_path.read_text()
+                full_content = file_path.read_text()
+
+                # Apply docstring stripping if enabled
+                if getattr(self.config, "llm_strip_docstrings", True):
+                    from pytest_llm_report.context_util import optimize_context
+
+                    full_content = optimize_context(
+                        full_content, strip_docs=True, strip_comms=False
+                    )
+
+                lines = full_content.split("\n")
+
+                # Apply compression if enabled and we have line range info
+                if (
+                    compression_mode == "lines"
+                    and hasattr(entry, "lines")
+                    and entry.lines
+                ):
+                    content = self._extract_covered_lines(
+                        lines, entry.lines, line_padding
+                    )
+                else:
+                    content = full_content
+
                 # Truncate if needed
-                remaining = max_bytes - total_bytes
+                remaining = current_max_bytes - total_bytes
                 if len(content) > remaining:
                     content = content[:remaining] + "\n# ... truncated"
 
@@ -161,6 +199,54 @@ class ContextAssembler:
                 continue
 
         return context
+
+    def _extract_covered_lines(
+        self, lines: list[str], covered_lines: set[int] | list[int], padding: int = 2
+    ) -> str:
+        """Extract only covered lines with padding for context.
+
+        Args:
+            lines: All lines in the file.
+            covered_lines: Set/list of 1-indexed line numbers that were covered.
+            padding: Number of context lines to include around covered lines.
+
+        Returns:
+            Extracted content with line numbers as comments.
+        """
+        if not covered_lines:
+            return ""
+
+        covered_set = set(covered_lines)
+        total_lines = len(lines)
+
+        # Expand covered lines with padding
+        expanded_lines: set[int] = set()
+        for line_num in covered_set:
+            for offset in range(-padding, padding + 1):
+                adj_line = line_num + offset
+                if 1 <= adj_line <= total_lines:
+                    expanded_lines.add(adj_line)
+
+        # Sort and group into contiguous ranges
+        sorted_lines = sorted(expanded_lines)
+        if not sorted_lines:
+            return ""
+
+        result_parts: list[str] = []
+        current_range_start = sorted_lines[0]
+        prev_line = sorted_lines[0]
+
+        for line_num in sorted_lines[1:] + [sorted_lines[-1] + 2]:  # sentinel
+            if line_num - prev_line > 1:
+                # End of a range, add lines
+                if result_parts:
+                    result_parts.append("# ...")  # Gap indicator
+                for ln in range(current_range_start, prev_line + 1):
+                    result_parts.append(f"# L{ln}: {lines[ln - 1]}")
+                current_range_start = line_num
+            prev_line = line_num
+
+        return "\n".join(result_parts)
 
     def _get_complete_context(
         self, test: TestCaseResult, repo_root: Path
@@ -176,8 +262,15 @@ class ContextAssembler:
         Returns:
             Dict of file paths to content.
         """
-        # Same as balanced but with higher limits
-        return self._get_balanced_context(test, repo_root)
+        # Complete mode: Use very large limits, relying on the provider
+        # (and our new context limit enforcement) to handle the final truncation safely.
+        # This ensures we don't artificially limit context in the collection phase.
+        return self._get_balanced_context(
+            test,
+            repo_root,
+            max_bytes=10_000_000,  # ~10MB should be enough for any model
+            max_files=100,
+        )
 
     def _should_exclude(self, path: str) -> bool:
         """Check if a path should be excluded from context.

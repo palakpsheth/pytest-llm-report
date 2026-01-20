@@ -1,4 +1,4 @@
-from pytest_llm_report.errors import Warning, WarningCode, make_warning
+from pytest_llm_report.errors import ReportWarning, WarningCode, make_warning
 
 
 def test_warning_code_values():
@@ -11,14 +11,16 @@ def test_warning_code_values():
 
 
 def test_warning_to_dict():
-    """Test Warning.to_dict() method."""
-    w = Warning(
+    """Test ReportWarning.to_dict() method."""
+    w = ReportWarning(
         code=WarningCode.W001_NO_COVERAGE, message="No coverage", detail="some/path"
     )
     d = w.to_dict()
     assert d == {"code": "W001", "message": "No coverage", "detail": "some/path"}
 
-    w_no_detail = Warning(code=WarningCode.W101_LLM_ENABLED, message="LLM enabled")
+    w_no_detail = ReportWarning(
+        code=WarningCode.W101_LLM_ENABLED, message="LLM enabled"
+    )
     assert w_no_detail.to_dict() == {"code": "W101", "message": "LLM enabled"}
 
 

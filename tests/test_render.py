@@ -110,7 +110,7 @@ class TestRenderFallbackHtml:
         assert "5 lines" in html
 
     def test_renders_llm_annotation(self):
-        """Should include LLM annotations."""
+        """Should include LLM annotations with confidence score."""
         report = ReportRoot(
             run_meta=RunMeta(end_time="2024-01-01"),
             summary=Summary(total=1, passed=1),
@@ -121,6 +121,7 @@ class TestRenderFallbackHtml:
                     llm_annotation=LlmAnnotation(
                         scenario="Tests login flow",
                         why_needed="Prevents auth bypass",
+                        confidence=0.85,
                     ),
                 ),
             ],
@@ -130,6 +131,8 @@ class TestRenderFallbackHtml:
 
         assert "Tests login flow" in html
         assert "Prevents auth bypass" in html
+        assert "Confidence:" in html
+        assert "85%" in html
 
     def test_renders_xpass_summary(self):
         """Should include xfailed/xpassed summary entries."""
