@@ -275,8 +275,12 @@ class Config:
         return errors
 
     def is_llm_enabled(self) -> bool:
-        """Check if LLM is enabled (provider is not 'none')."""
-        return self.provider != "none"
+        """Check if LLM features are enabled.
+
+        Returns:
+            True if provider is configured and not 'none'.
+        """
+        return self.provider.lower() != "none"
 
 
 def get_default_config() -> Config:
@@ -460,6 +464,18 @@ def load_config(config: "pytest.Config") -> Config:
 
     if hasattr(config.option, "llm_context_mode") and config.option.llm_context_mode:
         cfg.llm_context_mode = config.option.llm_context_mode
+
+    # Token optimization CLI overrides
+    if hasattr(config.option, "llm_prompt_tier") and config.option.llm_prompt_tier:
+        cfg.prompt_tier = config.option.llm_prompt_tier
+    if hasattr(config.option, "llm_batch_parametrized"):
+        if config.option.llm_batch_parametrized is not None:
+            cfg.batch_parametrized_tests = config.option.llm_batch_parametrized
+    if (
+        hasattr(config.option, "llm_context_compression")
+        and config.option.llm_context_compression
+    ):
+        cfg.context_compression = config.option.llm_context_compression
 
     # Standard overrides (legacy and existing)
     if config.option.llm_report_html:

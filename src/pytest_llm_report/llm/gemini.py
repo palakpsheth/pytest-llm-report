@@ -132,6 +132,7 @@ class GeminiProvider(LlmProvider):
             config: Plugin configuration.
         """
         super().__init__(config)
+        self._api_key = os.getenv("GEMINI_API_TOKEN")
         # self._available handled by base
         self._rate_limits: dict[str, _GeminiRateLimitConfig] = {}
         self._rate_limiters: dict[str, _GeminiRateLimiter] = {}
@@ -146,6 +147,7 @@ class GeminiProvider(LlmProvider):
         test: TestCaseResult,
         test_source: str,
         context_files: dict[str, str] | None = None,
+        prompt_override: str | None = None,
     ) -> LlmAnnotation:
         """Generate an annotation using Gemini.
 
@@ -153,28 +155,46 @@ class GeminiProvider(LlmProvider):
             test: Test result to annotate.
             test_source: Source code of the test function.
             context_files: Optional context files.
+            prompt_override: Optional pre-constructed prompt.
 
         Returns:
             LlmAnnotation with parsed response.
         """
         try:
-            import httpx  # noqa: F401
+            import google.generativeai as genai
+            from google.api_core import exceptions
         except ImportError:
             return LlmAnnotation(
-                error="httpx not installed. Install with: pip install httpx"
+                error="google-generativeai not installed. Install with: pip install google-generativeai"
             )
+
+        import time
+
+        # Configure the model
+        genai.configure(api_key=self._api_key)
+        model_name = self.config.model or "gemini-1.5-flash"
+        model = genai.GenerativeModel(model_name)
+
+        # Select system prompt
+        system_prompt = self._select_system_prompt(test_source)
+
+        # Build prompt or use override
+        if prompt_override:
+            prompt = prompt_override
+        else:
+            prompt = self._build_prompt(test, test_source, context_files)
 
         api_token = os.getenv("GEMINI_API_TOKEN")
         if not api_token:
             return LlmAnnotation(error="GEMINI_API_TOKEN is not set")
-
-        # Select appropriate system prompt based on test complexity
-        system_prompt = self._select_system_prompt(test_source)
-
-        prompt = self._build_prompt(test, test_source, context_files)
         estimated_tokens = self._estimate_tokens(prompt, system_prompt)
 
-        models = self._ensure_models_and_limits(api_token)
+        try:
+            models = self._ensure_models_and_limits(api_token)
+        except ImportError:
+            return LlmAnnotation(
+                error="httpx not installed. Install with: pip install httpx"
+            )
 
         daily_limit_hit = False
         attempts = 0
@@ -239,6 +259,42 @@ class GeminiProvider(LlmProvider):
 
                     return annotation
 
+                except (
+                    genai.types.GenerationFailure,
+                    exceptions.ResourceExhausted,
+                ) as e:
+                    # Handle specific Gemini API errors
+                    if isinstance(e, exceptions.ResourceExhausted):
+                        # This typically means rate limit exceeded
+                        # We need to determine if it's daily, minute, or token limit
+                        # The Gemini API error message might contain clues, or we fall back to a default
+                        msg = str(e).lower()
+                        if "daily" in msg:
+                            daily_limit_hit = True
+                            self._model_exhausted_at[model] = time.time()
+                            break  # Try next model
+                        else:
+                            # Assume minute/token limit, apply cooldown
+                            retry_after = 60.0  # Default cooldown
+                            if "retry-after" in msg:  # Attempt to parse if available
+                                try:
+                                    # This is a heuristic, actual header parsing is better in httpx response
+                                    retry_after_str = (
+                                        msg.split("retry-after:")[1]
+                                        .split(" ")[0]
+                                        .strip()
+                                    )
+                                    retry_after = float(retry_after_str)
+                                except ValueError:
+                                    pass
+                            self._cooldowns[model] = time.monotonic() + retry_after
+                            break  # Try next model
+                    elif isinstance(e, genai.types.GenerationFailure):
+                        # Other generation failures, e.g., safety filters, bad prompt
+                        return LlmAnnotation(error=f"Gemini generation failed: {e}")
+                    else:
+                        # Fallback for unexpected errors caught by this block
+                        raise  # Re-raise if not specifically handled
                 except _GeminiRateLimitExceeded as exc:
                     if exc.limit_type == "requests_per_day":
                         daily_limit_hit = True

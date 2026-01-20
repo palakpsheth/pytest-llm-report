@@ -19,6 +19,10 @@ Complete configuration reference for pytest-llm-report.
 | `--llm-provider NAME` | Override LLM provider (ollama, litellm, gemini) | None |
 | `--llm-model NAME` | Override LLM model name | None |
 | `--llm-context-mode MODE` | Override context mode (minimal, balanced, complete) | None |
+| `--llm-prompt-tier TIER` | System prompt tier (minimal, standard, auto) | auto |
+| `--llm-batch-parametrized` | Group parametrized tests for single annotation | enabled |
+| `--llm-no-batch-parametrized` | Disable test batching | - |
+| `--llm-context-compression MODE` | Context compression (none, lines) | lines |
 | `--llm-coverage-source PATH` | Path to .coverage file/dir to inject into report | None |
 
 > **Tip**: Run `pytest --help` to see usage examples for each option.

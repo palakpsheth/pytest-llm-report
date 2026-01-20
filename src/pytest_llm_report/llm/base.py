@@ -17,8 +17,10 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from pytest_llm_report.models import LlmAnnotation
+
 if TYPE_CHECKING:
-    from pytest_llm_report.models import LlmAnnotation, TestCaseResult
+    from pytest_llm_report.models import TestCaseResult
     from pytest_llm_report.options import Config
 
 
@@ -68,6 +70,7 @@ class LlmProvider(ABC):
         test: TestCaseResult,
         test_source: str,
         context_files: dict[str, str] | None = None,
+        prompt_override: str | None = None,
     ) -> LlmAnnotation:
         """Generate an LLM annotation for a test.
 
@@ -75,15 +78,26 @@ class LlmProvider(ABC):
             test: Test result to annotate.
             test_source: Source code of the test function.
             context_files: Optional dict of file paths to content.
+            prompt_override: Optional pre-constructed prompt (skips build_prompt).
 
         Returns:
             LlmAnnotation with scenario, why_needed, key_assertions.
         """
-        # Attempt 1: Try with full context
-        annotation = self._annotate_internal(test, test_source, context_files)
+        # Attempt 1: Try with full context (or override)
+        try:
+            annotation = self._annotate_internal(
+                test, test_source, context_files, prompt_override
+            )
+        except Exception as e:
+            return LlmAnnotation(error=str(e))
 
         # Handle "context too long" - retry with minimal context (first time only)
-        if annotation.error and "context too long" in annotation.error.lower():
+        # Only relevant if NOT using prompt_override (which is fixed)
+        if (
+            not prompt_override
+            and annotation.error
+            and "context too long" in annotation.error.lower()
+        ):
             if context_files:
                 # Retry with no context
                 return self._annotate_internal(test, test_source, None)
@@ -96,6 +110,7 @@ class LlmProvider(ABC):
         test: TestCaseResult,
         test_source: str,
         context_files: dict[str, str] | None = None,
+        prompt_override: str | None = None,
     ) -> LlmAnnotation:
         """Internal annotation method implemented by subclasses.
 
@@ -103,6 +118,7 @@ class LlmProvider(ABC):
             test: Test result.
             test_source: Test source code.
             context_files: Optional context files.
+            prompt_override: Optional pre-constructed prompt.
 
         Returns:
             Annotation result.

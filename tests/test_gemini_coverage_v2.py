@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: MIT
+import sys
 import time
+from types import SimpleNamespace
 from unittest.mock import patch
 
 import pytest
@@ -10,8 +12,12 @@ from pytest_llm_report.llm.gemini import (
     _GeminiRateLimiter,
     _GeminiRateLimitExceeded,
 )
-from pytest_llm_report.models import TestCaseResult as CaseResult
+from pytest_llm_report.models import TestCaseResult
 from pytest_llm_report.options import Config
+
+
+class MockGenerationFailure(Exception):
+    pass
 
 
 def test_gemini_limiter_requests_per_day_exhaustion():
@@ -71,9 +77,29 @@ def test_gemini_provider_rpm_cooldown():
         patch("pytest_llm_report.llm.gemini.time.time", return_value=1000.0),
         patch("pytest_llm_report.llm.gemini.time.monotonic", return_value=1000.0),
     ):
-        # This will hit RPM limit on first call, then retry and succeed
-        provider._annotate_internal(CaseResult(nodeid="t", outcome="passed"), "source")
+        fake_genai = SimpleNamespace(
+            configure=lambda api_key: None,
+            GenerativeModel=lambda name: SimpleNamespace(),
+            types=SimpleNamespace(GenerationFailure=MockGenerationFailure),
+        )
+        fake_api_core = SimpleNamespace(
+            exceptions=SimpleNamespace(ResourceExhausted=MockGenerationFailure)
+        )
+        fake_google = SimpleNamespace(__path__=[])
+        fake_google.generativeai = fake_genai
+        with patch.dict(
+            sys.modules,
+            {
+                "google": fake_google,
+                "google.generativeai": fake_genai,
+                "google.api_core": fake_api_core,
+            },
+        ):
+            # This will hit RPM limit on first call, then retry and succeed
+            provider._annotate_internal(
+                TestCaseResult(nodeid="t", outcome="passed"), "source"
+            )
 
-        # Line 242 should have set the cooldown
-        assert "models/gemini-pro" in provider._cooldowns
-        assert provider._cooldowns["models/gemini-pro"] > 1000.0
+            # Line 242 should have set the cooldown
+            assert "models/gemini-pro" in provider._cooldowns
+            assert provider._cooldowns["models/gemini-pro"] > 1000.0

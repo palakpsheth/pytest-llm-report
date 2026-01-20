@@ -1,3 +1,5 @@
+import sys
+from types import SimpleNamespace
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
@@ -9,6 +11,10 @@ from pytest_llm_report.llm.gemini import (
 )
 from pytest_llm_report.models import TestCaseResult
 from pytest_llm_report.options import Config
+
+
+class MockGenerationFailure(Exception):
+    pass
 
 
 @pytest.fixture
@@ -72,20 +78,38 @@ class TestGeminiProvider:
         test_result = TestCaseResult(nodeid="test1", outcome="passed")
 
         with patch.dict("os.environ", {"GEMINI_API_TOKEN": "test-token"}):
-            provider = GeminiProvider(mock_config)
-            # We need to mock _build_prompt to avoid complex dependency
-            with patch.object(provider, "_build_prompt", return_value="prompt"):
-                # _annotate_internal returns LlmAnnotation
-                # But _parse_response is called which might expect a specific format.
-                # Actually _call_gemini returns text and tokens.
-                # _annotate_internal calls _parse_response(response) where response is the text.
-                with patch.object(provider, "_parse_response") as mock_parse:
-                    mock_parse.return_value = Mock(
-                        scenario="Success Scenario", error=None
-                    )
-                    annotation = provider._annotate_internal(test_result, "source")
-                    assert annotation.scenario == "Success Scenario"
-                    assert not annotation.error
+            fake_genai = SimpleNamespace(
+                configure=lambda api_key: None,
+                GenerativeModel=lambda name: SimpleNamespace(),
+                types=SimpleNamespace(GenerationFailure=MockGenerationFailure),
+            )
+            fake_api_core = SimpleNamespace(
+                exceptions=SimpleNamespace(ResourceExhausted=MockGenerationFailure)
+            )
+            fake_google = SimpleNamespace(__path__=[])
+            fake_google.generativeai = fake_genai
+            with patch.dict(
+                sys.modules,
+                {
+                    "google": fake_google,
+                    "google.generativeai": fake_genai,
+                    "google.api_core": fake_api_core,
+                },
+            ):
+                provider = GeminiProvider(mock_config)
+                # We need to mock _build_prompt to avoid complex dependency
+                with patch.object(provider, "_build_prompt", return_value="prompt"):
+                    # _annotate_internal returns LlmAnnotation
+                    # But _parse_response is called which might expect a specific format.
+                    # Actually _call_gemini returns text and tokens.
+                    # _annotate_internal calls _parse_response(response) where response is the text.
+                    with patch.object(provider, "_parse_response") as mock_parse:
+                        mock_parse.return_value = Mock(
+                            scenario="Success Scenario", error=None
+                        )
+                        annotation = provider._annotate_internal(test_result, "source")
+                        assert annotation.scenario == "Success Scenario"
+                        assert not annotation.error
 
     @patch("httpx.post")
     @patch("httpx.get")
@@ -114,18 +138,38 @@ class TestGeminiProvider:
         test_result = TestCaseResult(nodeid="test1", outcome="passed")
 
         with patch.dict("os.environ", {"GEMINI_API_TOKEN": "test-token"}):
-            provider = GeminiProvider(mock_config)
-            with patch.object(provider, "_build_prompt", return_value="prompt"):
-                # Mock _parse_response to avoid actual parsing logic
-                with patch.object(provider, "_parse_response") as mock_parse:
-                    mock_parse.return_value = Mock(
-                        scenario="Recovered Scenario", error=None
-                    )
-                    # Use a small sleep mock to speed up test
-                    with patch("time.sleep"):
-                        annotation = provider._annotate_internal(test_result, "source")
-                        assert annotation.scenario == "Recovered Scenario"
-                        assert mock_post.call_count == 2
+            fake_genai = SimpleNamespace(
+                configure=lambda api_key: None,
+                GenerativeModel=lambda name: SimpleNamespace(),
+                types=SimpleNamespace(GenerationFailure=MockGenerationFailure),
+            )
+            fake_api_core = SimpleNamespace(
+                exceptions=SimpleNamespace(ResourceExhausted=MockGenerationFailure)
+            )
+            fake_google = SimpleNamespace(__path__=[])
+            fake_google.generativeai = fake_genai
+            with patch.dict(
+                sys.modules,
+                {
+                    "google": fake_google,
+                    "google.generativeai": fake_genai,
+                    "google.api_core": fake_api_core,
+                },
+            ):
+                provider = GeminiProvider(mock_config)
+                with patch.object(provider, "_build_prompt", return_value="prompt"):
+                    # Mock _parse_response to avoid actual parsing logic
+                    with patch.object(provider, "_parse_response") as mock_parse:
+                        mock_parse.return_value = Mock(
+                            scenario="Recovered Scenario", error=None
+                        )
+                        # Use a small sleep mock to speed up test
+                        with patch("time.sleep"):
+                            annotation = provider._annotate_internal(
+                                test_result, "source"
+                            )
+                            assert annotation.scenario == "Recovered Scenario"
+                            assert mock_post.call_count == 2
 
     def test_availability(self):
         with patch.dict("os.environ", {}, clear=True):

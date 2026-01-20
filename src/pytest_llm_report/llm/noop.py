@@ -36,6 +36,7 @@ class NoopProvider(LlmProvider):
         test: TestCaseResult,
         test_source: str,
         context_files: dict[str, str] | None = None,
+        prompt_override: str | None = None,
     ) -> LlmAnnotation:
         """Return an empty annotation.
 

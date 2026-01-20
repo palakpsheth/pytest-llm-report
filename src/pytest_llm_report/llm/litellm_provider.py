@@ -66,6 +66,7 @@ class LiteLLMProvider(LlmProvider):
         test: TestCaseResult,
         test_source: str,
         context_files: dict[str, str] | None = None,
+        prompt_override: str | None = None,
     ) -> LlmAnnotation:
         """Generate an annotation using LiteLLM.
 
@@ -73,6 +74,7 @@ class LiteLLMProvider(LlmProvider):
             test: Test result to annotate.
             test_source: Source code of the test function.
             context_files: Optional context files.
+            prompt_override: Optional pre-constructed prompt.
 
         Returns:
             LlmAnnotation with parsed response.
@@ -89,8 +91,11 @@ class LiteLLMProvider(LlmProvider):
         # Select appropriate system prompt based on test complexity
         system_prompt = self._select_system_prompt(test_source)
 
-        # Build prompt
-        prompt = self._build_prompt(test, test_source, context_files)
+        # Build prompt or use override
+        if prompt_override:
+            prompt = prompt_override
+        else:
+            prompt = self._build_prompt(test, test_source, context_files)
 
         max_retries = self.config.llm_max_retries
         last_error = None
