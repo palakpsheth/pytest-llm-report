@@ -18,7 +18,30 @@ from dataclasses import dataclass, field
 from typing import Any, ClassVar
 
 # Schema version for report format compatibility
-SCHEMA_VERSION = "1.0.0"
+SCHEMA_VERSION = "1.1.0"
+
+
+@dataclass
+class LlmTokenUsage:
+    """Token usage statistics for an LLM call.
+
+    Attributes:
+        prompt_tokens: Number of tokens in the prompt.
+        completion_tokens: Number of tokens in the completion.
+        total_tokens: Total tokens used.
+    """
+
+    prompt_tokens: int = 0
+    completion_tokens: int = 0
+    total_tokens: int = 0
+
+    def to_dict(self) -> dict:
+        """Convert to dictionary for JSON serialization."""
+        return {
+            "prompt_tokens": self.prompt_tokens,
+            "completion_tokens": self.completion_tokens,
+            "total_tokens": self.total_tokens,
+        }
 
 
 @dataclass
@@ -98,6 +121,7 @@ class LlmAnnotation:
     confidence: float | None = None
     error: str | None = None
     context_summary: dict[str, Any] | None = None
+    token_usage: LlmTokenUsage | None = None
 
     def to_dict(self) -> dict:
         """Convert to dictionary for JSON serialization."""
@@ -112,6 +136,8 @@ class LlmAnnotation:
             result["error"] = self.error
         if self.context_summary is not None:
             result["context_summary"] = self.context_summary
+        if self.token_usage is not None:
+            result["token_usage"] = self.token_usage.to_dict()
         return result
 
 
@@ -364,6 +390,9 @@ class RunMeta:
     llm_annotations_enabled: bool = False
     llm_annotations_count: int | None = None
     llm_annotations_errors: int | None = None
+    llm_total_input_tokens: int | None = None
+    llm_total_output_tokens: int | None = None
+    llm_total_tokens: int | None = None
 
     def to_dict(self) -> dict:
         """Convert to dictionary for JSON serialization."""
@@ -422,6 +451,12 @@ class RunMeta:
                 result["llm_annotations_count"] = self.llm_annotations_count
             if self.llm_annotations_errors is not None:
                 result["llm_annotations_errors"] = self.llm_annotations_errors
+            if self.llm_total_input_tokens is not None:
+                result["llm_total_input_tokens"] = self.llm_total_input_tokens
+            if self.llm_total_output_tokens is not None:
+                result["llm_total_output_tokens"] = self.llm_total_output_tokens
+            if self.llm_total_tokens is not None:
+                result["llm_total_tokens"] = self.llm_total_tokens
         return result
 
 

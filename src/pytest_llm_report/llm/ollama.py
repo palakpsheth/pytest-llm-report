@@ -9,7 +9,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from pytest_llm_report.llm.base import LlmProvider
-from pytest_llm_report.models import LlmAnnotation
+from pytest_llm_report.models import LlmAnnotation, LlmTokenUsage
 
 if TYPE_CHECKING:
     from pytest_llm_report.models import TestCaseResult
@@ -62,8 +62,23 @@ class OllamaProvider(LlmProvider):
 
         for attempt in range(max_retries):
             try:
-                response = self._call_ollama(prompt, system_prompt)
-                annotation = self._parse_response(response)
+                response_data = self._call_ollama(prompt, system_prompt)
+                response_text = response_data.get("response", "")
+                annotation = self._parse_response(response_text)
+
+                # Extract token usage
+                if (
+                    "prompt_eval_count" in response_data
+                    or "eval_count" in response_data
+                ):
+                    prompt_tokens = response_data.get("prompt_eval_count", 0)
+                    completion_tokens = response_data.get("eval_count", 0)
+                    total = prompt_tokens + completion_tokens
+                    annotation.token_usage = LlmTokenUsage(
+                        prompt_tokens=prompt_tokens,
+                        completion_tokens=completion_tokens,
+                        total_tokens=total,
+                    )
 
                 if annotation.error:
                     # If "context too long", fail immediately so base class can fallback
@@ -162,7 +177,7 @@ class OllamaProvider(LlmProvider):
 
         return 4096  # Safe default for many Ollama models
 
-    def _call_ollama(self, prompt: str, system_prompt: str) -> str:
+    def _call_ollama(self, prompt: str, system_prompt: str) -> dict:
         """Make a request to the Ollama API.
 
         Args:
@@ -170,7 +185,7 @@ class OllamaProvider(LlmProvider):
             system_prompt: System prompt.
 
         Returns:
-            Response text.
+            Full response dictionary.
         """
         import httpx
 
@@ -194,4 +209,4 @@ class OllamaProvider(LlmProvider):
         response.raise_for_status()
 
         data = response.json()
-        return data.get("response", "")
+        return data

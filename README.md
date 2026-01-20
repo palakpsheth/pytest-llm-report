@@ -23,6 +23,7 @@ Human-friendly pytest test reports with optional LLM annotations.
   - **Why needed**: What regression/bug it prevents
   - **Key assertions**: Critical checks performed
   - **Smart Context**: Automatically fetches model context limits (Gemini, Ollama, LiteLLM) to maximize relevant code included in prompts without hitting token limits.
+  - **Token Usage Reporting**: Tracks and displays input, output, and total token usage for each annotation and the entire test run.
 - HTML and JSON output formats
 - Dark mode support (auto-detects system preference)
 - Optional PDF generation

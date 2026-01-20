@@ -1177,14 +1177,14 @@ I hope this helps!"""
         # Mock call_ollama to return error first, then success
         call_count = 0
 
-        def fake_call(prompt: str, system_prompt: str) -> str:
+        def fake_call(prompt: str, system_prompt: str) -> dict:
             nonlocal call_count
             call_count += 1
             if call_count == 1:
-                return "error"
-            return (
-                '{"scenario": "ok", "why_needed": "fix", "key_assertions": ["assert"]}'
-            )
+                return {"response": "error"}
+            return {
+                "response": '{"scenario": "ok", "why_needed": "fix", "key_assertions": ["assert"]}'
+            }
 
         monkeypatch.setattr(provider, "_call_ollama", fake_call)
 
@@ -1296,7 +1296,7 @@ I hope this helps!"""
 
         result = provider._call_ollama("test prompt", "system prompt")
 
-        assert result == "test response"
+        assert result["response"] == "test response"
         assert captured["url"] == "http://localhost:11434/api/generate"
         assert captured["json"]["model"] == "llama3.2:1b"
         assert captured["json"]["prompt"] == "test prompt"

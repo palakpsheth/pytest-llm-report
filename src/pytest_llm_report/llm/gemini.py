@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
 from pytest_llm_report.llm.base import LlmProvider
-from pytest_llm_report.models import LlmAnnotation
+from pytest_llm_report.models import LlmAnnotation, LlmTokenUsage
 
 if TYPE_CHECKING:
     from pytest_llm_report.models import TestCaseResult
@@ -139,7 +139,6 @@ class GeminiProvider(LlmProvider):
         self._models: list[str] | None = None
         self._token_limits: dict[str, int] = {}  # Map model name to input token limit
         self._models_fetched_at: float = 0.0
-        self._models_fetched_at: float = 0.0
         # Track when each model hit its daily limit (for recovery after 24h)
         self._model_exhausted_at: dict[str, float] = {}
         self._cooldowns: dict[str, float] = {}
@@ -169,8 +168,6 @@ class GeminiProvider(LlmProvider):
             return LlmAnnotation(
                 error="google-generativeai not installed. Install with: pip install google-generativeai"
             )
-
-        import time
 
         # Configure the model
         genai.configure(api_key=self._api_key)
@@ -243,13 +240,15 @@ class GeminiProvider(LlmProvider):
                 try:
                     limiter = self._get_rate_limiter(api_token, model)
                     limiter.record_request()
-                    response, tokens_used = self._call_gemini(
+                    response, token_usage = self._call_gemini(
                         prompt, api_token, model, system_prompt
                     )
-                    if tokens_used is not None:
-                        limiter.record_tokens(tokens_used)
+                    if token_usage is not None:
+                        limiter.record_tokens(token_usage.total_tokens)
 
                     annotation = self._parse_response(response)
+                    if token_usage:
+                        annotation.token_usage = token_usage
                     if annotation.error:
                         # If "context too long", fail immediately so base class can fallback
                         if "context too long" in annotation.error.lower():
@@ -312,9 +311,7 @@ class GeminiProvider(LlmProvider):
                 except (RuntimeError, ValueError, AttributeError) as e:
                     return LlmAnnotation(error=str(e))
                 except Exception as e:
-                    msg = str(e)
-                    if "400" in msg or "too large" in msg.lower():
-                        return LlmAnnotation(error=f"Context too long: {msg}")
+                    return LlmAnnotation(error=f"Unexpected Gemini error: {e}")
 
                 time.sleep(1)
 
@@ -371,7 +368,7 @@ class GeminiProvider(LlmProvider):
 
     def _call_gemini(
         self, prompt: str, api_token: str, model: str, system_prompt: str
-    ) -> tuple[str, int | None]:
+    ) -> tuple[str, LlmTokenUsage | None]:
         """Make a request to the Gemini API.
 
         Args:
@@ -423,9 +420,15 @@ class GeminiProvider(LlmProvider):
         text = ""
         for part in data.get("candidates", [])[0].get("content", {}).get("parts", []):
             text += part.get("text", "")
+
         token_usage = None
         if "usageMetadata" in data:
-            token_usage = data["usageMetadata"].get("totalTokenCount")
+            meta = data["usageMetadata"]
+            token_usage = LlmTokenUsage(
+                prompt_tokens=meta.get("promptTokenCount", 0),
+                completion_tokens=meta.get("candidatesTokenCount", 0),
+                total_tokens=meta.get("totalTokenCount", 0),
+            )
         return text, token_usage
 
     def _fetch_rate_limits(self, api_token: str, model: str) -> _GeminiRateLimitConfig:

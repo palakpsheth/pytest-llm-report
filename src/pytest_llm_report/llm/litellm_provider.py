@@ -10,7 +10,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from pytest_llm_report.llm.base import LlmProvider
-from pytest_llm_report.models import LlmAnnotation
+from pytest_llm_report.models import LlmAnnotation, LlmTokenUsage
 
 if TYPE_CHECKING:
     from pytest_llm_report.llm.token_refresh import TokenRefresher
@@ -191,6 +191,15 @@ class LiteLLMProvider(LlmProvider):
 
         content = response.choices[0].message.content
         annotation = self._parse_response(content)
+
+        # Extract token usage if available
+        if hasattr(response, "usage") and response.usage:
+            usage = response.usage
+            annotation.token_usage = LlmTokenUsage(
+                prompt_tokens=getattr(usage, "prompt_tokens", 0),
+                completion_tokens=getattr(usage, "completion_tokens", 0),
+                total_tokens=getattr(usage, "total_tokens", 0),
+            )
 
         if annotation.error:
             # If "context too long", fail immediately so base class can fallback

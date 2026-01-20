@@ -137,6 +137,13 @@ def render_fallback_html(report: ReportRoot) -> str:
                 <strong>Why needed:</strong> {a.why_needed}
             </div>
             """
+            if a.token_usage:
+                tu = a.token_usage
+                annotation_html += f"""
+                <div class="token-usage" style="font-size: 0.85em; color: #666; margin-top: 5px; border-top: 1px dashed #ccc; padding-top: 5px;">
+                    <strong>Tokens:</strong> {tu.prompt_tokens} input + {tu.completion_tokens} output = {tu.total_tokens} total
+                </div>
+                """
 
         error_html = ""
         if test.error_message:
@@ -193,7 +200,21 @@ def render_fallback_html(report: ReportRoot) -> str:
         </tbody>
     </table>
 """
-    return f"""<!DOCTYPE html>
+    llm_meta_html = ""
+    if report.run_meta.llm_annotations_enabled:
+        llm_meta_html = f"""
+        <div class="meta">
+            <strong>LLM:</strong> {report.run_meta.llm_provider} / {report.run_meta.llm_model}
+            ({report.run_meta.llm_context_mode} context, {report.run_meta.llm_annotations_count} annotated)
+        """
+        if report.run_meta.llm_total_tokens:
+            llm_meta_html += f"""
+            <br><strong>Token Usage:</strong> {report.run_meta.llm_total_input_tokens} input,
+            {report.run_meta.llm_total_output_tokens} output (Total: {report.run_meta.llm_total_tokens})
+            """
+        llm_meta_html += "</div>"
+
+    fallback_html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -235,6 +256,10 @@ def render_fallback_html(report: ReportRoot) -> str:
         {f"({report.run_meta.repo_git_sha})" if report.run_meta.repo_git_sha else ""}
         {"[dirty]" if report.run_meta.repo_git_dirty else ""}
     </div>
+    """
+    fallback_html += llm_meta_html
+
+    fallback_html += f"""
     <div class="summary">
         <div class="summary-item"><div class="count">{summary.total}</div>Total</div>
         <div class="summary-item" style="color:#22c55e"><div class="count">{summary.passed}</div>Passed</div>
@@ -250,3 +275,4 @@ def render_fallback_html(report: ReportRoot) -> str:
 </body>
 </html>
 """
+    return fallback_html

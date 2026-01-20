@@ -298,6 +298,13 @@ class ReportWriter:
             llm_annotations_errors=llm_info.get("annotations_errors")
             if llm_info
             else None,
+            llm_total_input_tokens=llm_info.get("total_input_tokens")
+            if llm_info
+            else None,
+            llm_total_output_tokens=llm_info.get("total_output_tokens")
+            if llm_info
+            else None,
+            llm_total_tokens=llm_info.get("total_tokens") if llm_info else None,
         )
 
     def _build_summary(self, tests: list[TestCaseResult]) -> Summary:

@@ -357,12 +357,27 @@ def pytest_terminal_summary(
                 else:
                     annotations_count += 1
 
+        # Calculate token usage totals
+        total_input = 0
+        total_output = 0
+        total_combined = 0
+
+        for test in tests:
+            if test.llm_annotation and test.llm_annotation.token_usage:
+                usage = test.llm_annotation.token_usage
+                total_input += usage.prompt_tokens
+                total_output += usage.completion_tokens
+                total_combined += usage.total_tokens
+
         llm_info = {
             "provider": cfg.provider,
             "model": provider.get_model_name(),
             "context_mode": cfg.llm_context_mode,
             "annotations_count": annotations_count,
             "annotations_errors": annotations_errors,
+            "total_input_tokens": total_input,
+            "total_output_tokens": total_output,
+            "total_tokens": total_combined,
         }
 
     writer = ReportWriter(cfg)
