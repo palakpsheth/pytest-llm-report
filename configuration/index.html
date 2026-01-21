@@ -690,6 +690,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#token-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Token Optimization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#report-coverage" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1129,6 +1140,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#token-optimization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Token Optimization
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#report-coverage" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1310,6 +1332,11 @@
 </thead>
 <tbody>
 <tr>
+<td><strong>Output Paths</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
 <td><code>--llm-report PATH</code></td>
 <td>HTML report output path</td>
 <td>None</td>
@@ -1330,8 +1357,68 @@
 <td>None</td>
 </tr>
 <tr>
+<td><code>--llm-dependency-snapshot PATH</code></td>
+<td>Dependency snapshot output</td>
+<td>None</td>
+</tr>
+<tr>
+<td><strong>Core LLM Configuration</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>--llm-provider NAME</code></td>
+<td>LLM provider (ollama, litellm, gemini, none)</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>--llm-model NAME</code></td>
+<td>LLM model name</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>--llm-context-mode MODE</code></td>
+<td>Context mode (minimal, balanced, complete)</td>
+<td>None</td>
+</tr>
+<tr>
+<td><strong>Context Controls</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>--llm-context-bytes N</code></td>
+<td>Maximum bytes for context window</td>
+<td>32000</td>
+</tr>
+<tr>
+<td><code>--llm-context-file-limit N</code></td>
+<td>Maximum number of files in context</td>
+<td>10</td>
+</tr>
+<tr>
+<td><strong>Execution Controls</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>--llm-max-tests N</code></td>
+<td>Maximum tests to annotate (0=unlimited)</td>
+<td>0</td>
+</tr>
+<tr>
+<td><code>--llm-max-concurrency N</code></td>
+<td>Maximum concurrent LLM requests</td>
+<td>1</td>
+</tr>
+<tr>
+<td><code>--llm-timeout-seconds N</code></td>
+<td>Timeout for LLM requests in seconds</td>
+<td>30</td>
+</tr>
+<tr>
 <td><code>--llm-requests-per-minute N</code></td>
-<td>LLM request rate limit (also used as a cap for Gemini auto limits)</td>
+<td>LLM request rate limit</td>
 <td>5</td>
 </tr>
 <tr>
@@ -1340,13 +1427,148 @@
 <td>10</td>
 </tr>
 <tr>
+<td><strong>Behavior Controls</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>--llm-capture-failed</code></td>
+<td>Capture stdout/stderr for failed tests</td>
+<td><strong>enabled</strong></td>
+</tr>
+<tr>
+<td><code>--llm-no-capture-failed</code></td>
+<td>Disable capturing failed test output</td>
+<td>-</td>
+</tr>
+<tr>
+<td><strong>Provider-Specific</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>--llm-ollama-host URL</code></td>
+<td>Ollama server URL</td>
+<td>http://127.0.0.1:11434</td>
+</tr>
+<tr>
+<td><code>--llm-litellm-api-base URL</code></td>
+<td>LiteLLM API base URL for proxy</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>--llm-litellm-api-key KEY</code></td>
+<td>LiteLLM API key override</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>--llm-litellm-token-refresh-command CMD</code></td>
+<td>Command to fetch fresh auth token</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>--llm-litellm-token-refresh-interval N</code></td>
+<td>Token refresh interval in seconds</td>
+<td>3300</td>
+</tr>
+<tr>
+<td><code>--llm-litellm-token-output-format FMT</code></td>
+<td>Token command output format (text, json)</td>
+<td>text</td>
+</tr>
+<tr>
+<td><code>--llm-litellm-token-json-key KEY</code></td>
+<td>JSON key for token extraction</td>
+<td>token</td>
+</tr>
+<tr>
+<td><strong>Maintenance</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>--llm-cache-dir DIR</code></td>
+<td>Directory for LLM cache</td>
+<td>.pytest_llm_cache</td>
+</tr>
+<tr>
+<td><code>--llm-cache-ttl N</code></td>
+<td>Cache TTL in seconds</td>
+<td>86400</td>
+</tr>
+<tr>
+<td><strong>Metadata</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>--llm-metadata-file PATH</code></td>
+<td>Path to custom metadata JSON/YAML file</td>
+<td>None</td>
+</tr>
+<tr>
+<td><code>--llm-hmac-key-file PATH</code></td>
+<td>Path to HMAC key file for signatures</td>
+<td>None</td>
+</tr>
+<tr>
+<td><strong>Content Optimization</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>--llm-include-params</code></td>
+<td>Include test parameter values in context</td>
+<td>disabled</td>
+</tr>
+<tr>
+<td><code>--llm-strip-docstrings</code></td>
+<td>Strip docstrings from context</td>
+<td><strong>enabled</strong></td>
+</tr>
+<tr>
+<td><code>--llm-no-strip-docstrings</code></td>
+<td>Disable docstring stripping</td>
+<td>-</td>
+</tr>
+<tr>
+<td><strong>Token Optimization</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>--llm-prompt-tier TIER</code></td>
+<td>System prompt tier (minimal, standard, auto)</td>
+<td>auto</td>
+</tr>
+<tr>
+<td><code>--llm-batch-parametrized</code></td>
+<td>Group parametrized tests for single annotation</td>
+<td>enabled</td>
+</tr>
+<tr>
+<td><code>--llm-no-batch-parametrized</code></td>
+<td>Disable test batching</td>
+<td>-</td>
+</tr>
+<tr>
+<td><code>--llm-context-compression MODE</code></td>
+<td>Context compression (none, lines)</td>
+<td>lines</td>
+</tr>
+<tr>
+<td><strong>Aggregation</strong></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
 <td><code>--llm-aggregate-dir DIR</code></td>
 <td>Directory with reports to <a href="../aggregation/">aggregate</a></td>
 <td>None</td>
 </tr>
 <tr>
 <td><code>--llm-aggregate-policy POLICY</code></td>
-<td>Aggregation policy: latest, merge, all</td>
+<td>Aggregation policy (latest, merge, all)</td>
 <td>latest</td>
 </tr>
 <tr>
@@ -1357,21 +1579,6 @@
 <tr>
 <td><code>--llm-aggregate-group-id ID</code></td>
 <td>Group ID for related runs</td>
-<td>None</td>
-</tr>
-<tr>
-<td><code>--llm-provider NAME</code></td>
-<td>Override LLM provider (ollama, litellm, gemini)</td>
-<td>None</td>
-</tr>
-<tr>
-<td><code>--llm-model NAME</code></td>
-<td>Override LLM model name</td>
-<td>None</td>
-</tr>
-<tr>
-<td><code>--llm-context-mode MODE</code></td>
-<td>Override context mode (minimal, balanced, complete)</td>
 <td>None</td>
 </tr>
 <tr>
@@ -1506,6 +1713,11 @@
 <td>How long to cache responses</td>
 <td><code>86400</code> (24h)</td>
 </tr>
+<tr>
+<td><code>prompt_tier</code></td>
+<td>System prompt complexity (<code>minimal</code>, <code>standard</code>, <code>auto</code>)</td>
+<td><code>"auto"</code></td>
+</tr>
 </tbody>
 </table>
 <h3 id="context-content">Context &amp; Content</h3>
@@ -1525,7 +1737,7 @@
 </tr>
 <tr>
 <td><code>context_bytes</code></td>
-<td>Max bytes for context window</td>
+<td>Max bytes for context window (collection phase limit)</td>
 <td><code>32000</code></td>
 </tr>
 <tr>
@@ -1552,6 +1764,50 @@
 <td><code>param_value_max_chars</code></td>
 <td>Max characters for parameter values</td>
 <td><code>100</code></td>
+</tr>
+<tr>
+<td><code>strip_docstrings</code></td>
+<td>Strip docstrings from context (reduces tokens)</td>
+<td><code>True</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Context Modes Explained:</strong>
+- <strong><code>minimal</code></strong>: Only test source code, no additional files
+- <strong><code>balanced</code></strong> (default): Test source + covered files up to <code>context_bytes</code> limit (32KB)
+- <strong><code>complete</code></strong>: All covered files up to much higher internal limits (~10MB)</p>
+<p><strong>Water-Fill Algorithm:</strong> After context collection, the LLM provider applies a "water-fill" algorithm that fairly distributes the model's actual token budget among files by satisfying smaller files first, maximizing context utilization.</p>
+</blockquote>
+<h3 id="token-optimization">Token Optimization</h3>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>batch_parametrized_tests</code></td>
+<td>Group parametrized tests for single annotation</td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td><code>batch_max_tests</code></td>
+<td>Maximum tests per batch</td>
+<td><code>5</code></td>
+</tr>
+<tr>
+<td><code>context_compression</code></td>
+<td>Context compression mode (<code>none</code>, <code>lines</code>)</td>
+<td><code>"lines"</code></td>
+</tr>
+<tr>
+<td><code>context_line_padding</code></td>
+<td>Lines of context around covered ranges</td>
+<td><code>2</code></td>
 </tr>
 </tbody>
 </table>
@@ -1583,7 +1839,7 @@
 <tr>
 <td><code>capture_failed_output</code></td>
 <td>Include stdout/stderr for failed tests</td>
-<td><code>False</code></td>
+<td><code>True</code></td>
 </tr>
 <tr>
 <td><code>capture_output_max_chars</code></td>
@@ -1750,7 +2006,7 @@ lower than the model’s RPM limit.</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="January 18, 2026 23:08:39 UTC"><span class="timeago" datetime="2026-01-18T23:08:39+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="January 18, 2026 23:08:39 UTC">2026-01-18</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="January 21, 2026 04:16:43 UTC"><span class="timeago" datetime="2026-01-21T04:16:43+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="January 21, 2026 04:16:43 UTC">2026-01-21</span>
   </span>
 
     
@@ -1760,7 +2016,7 @@ lower than the model’s RPM limit.</p>
     <span class="md-icon" title="Created">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M14.47 15.08 11 13V7h1.5v5.25l3.08 1.83c-.41.28-.79.62-1.11 1m-1.39 4.84c-.36.05-.71.08-1.08.08-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8c0 .37-.03.72-.08 1.08.69.1 1.33.32 1.92.64.1-.56.16-1.13.16-1.72 0-5.5-4.5-10-10-10S2 6.5 2 12s4.47 10 10 10c.59 0 1.16-.06 1.72-.16-.32-.59-.54-1.23-.64-1.92M18 15v3h-3v2h3v3h2v-3h3v-2h-3v-3z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="January 18, 2026 23:08:39 UTC"><span class="timeago" datetime="2026-01-18T23:08:39+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="January 18, 2026 23:08:39 UTC">2026-01-18</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="January 21, 2026 04:16:43 UTC"><span class="timeago" datetime="2026-01-21T04:16:43+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="January 21, 2026 04:16:43 UTC">2026-01-21</span>
   </span>
 
     
