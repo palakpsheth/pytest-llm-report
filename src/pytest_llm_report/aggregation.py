@@ -21,6 +21,7 @@ from typing import TYPE_CHECKING
 from pytest_llm_report.models import (
     CoverageEntry,
     LlmAnnotation,
+    LlmTokenUsage,
     ReportRoot,
     RunMeta,
     SourceCoverageEntry,
@@ -144,6 +145,13 @@ class Aggregator:
                         if "llm_annotation" in t_data and t_data["llm_annotation"]:
                             ann_data = t_data["llm_annotation"]
                             if isinstance(ann_data, dict):
+                                # Convert nested token_usage dict to LlmTokenUsage
+                                if "token_usage" in ann_data and isinstance(
+                                    ann_data["token_usage"], dict
+                                ):
+                                    ann_data["token_usage"] = LlmTokenUsage(
+                                        **ann_data["token_usage"]
+                                    )
                                 t_data["llm_annotation"] = LlmAnnotation(**ann_data)
 
                         # Remove computed property 'file_path' - it's derived from nodeid

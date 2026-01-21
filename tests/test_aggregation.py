@@ -9,6 +9,7 @@ from pytest_llm_report.aggregation import Aggregator
 from pytest_llm_report.models import (
     CoverageEntry,
     LlmAnnotation,
+    LlmTokenUsage,
     SourceCoverageEntry,
     Summary,
     TestCaseResult,
@@ -199,7 +200,7 @@ class TestAggregator:
         """Test that coverage and LLM annotations are properly deserialized and can be re-serialized."""
         t1 = "2024-01-01T10:00:00"
 
-        # Create a test with coverage and LLM annotation
+        # Create a test with coverage and LLM annotation including token_usage
         test_case = {
             "nodeid": "tests/test_foo.py::test_bar",
             "outcome": "passed",
@@ -222,6 +223,11 @@ class TestAggregator:
                 "why_needed": "Prevents regression in core functionality",
                 "key_assertions": ["Assert A", "Assert B", "Assert C"],
                 "confidence": 0.95,
+                "token_usage": {
+                    "prompt_tokens": 150,
+                    "completion_tokens": 50,
+                    "total_tokens": 200,
+                },
             },
         }
 
@@ -262,6 +268,13 @@ class TestAggregator:
             assert len(test.llm_annotation.key_assertions) == 3
             assert test.llm_annotation.confidence == 0.95
 
+            # Verify token_usage was properly deserialized (this was the CI bug fix)
+            assert test.llm_annotation.token_usage is not None
+            assert isinstance(test.llm_annotation.token_usage, LlmTokenUsage)
+            assert test.llm_annotation.token_usage.prompt_tokens == 150
+            assert test.llm_annotation.token_usage.completion_tokens == 50
+            assert test.llm_annotation.token_usage.total_tokens == 200
+
             # Most importantly: verify it can be re-serialized (this would fail before the fix)
             serialized = test.to_dict()
             assert "coverage" in serialized
@@ -272,6 +285,10 @@ class TestAggregator:
                 serialized["llm_annotation"]["scenario"]
                 == "Tests the feature works correctly"
             )
+            # Verify token_usage serialization
+            assert "token_usage" in serialized["llm_annotation"]
+            assert serialized["llm_annotation"]["token_usage"]["prompt_tokens"] == 150
+            assert serialized["llm_annotation"]["token_usage"]["total_tokens"] == 200
 
     def test_aggregate_with_source_coverage(self, aggregator):
         """Source coverage summary should be deserialized."""
