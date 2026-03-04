@@ -106,7 +106,7 @@ jobs:
 
       - name: Upload report artifact
         if: matrix.python-version == '3.12'
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: report-py${{ matrix.python-version }}
           path: |
@@ -159,7 +159,7 @@ jobs:
         run: uv tool run --from mkdocs-material --with mkdocs-git-revision-date-localized-plugin mkdocs build
 
       - name: Download all report artifacts
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           pattern: report-py*
           path: collected-reports/
